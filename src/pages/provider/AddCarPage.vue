@@ -1,10 +1,10 @@
 <template>
     <div class="q-ma-md">
-        <h3>Add Car</h3>
+        <h4>Add Car</h4>
         <CarForm></CarForm>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import CarForm from '../../components/forms/CarForm.vue'
 </script>
