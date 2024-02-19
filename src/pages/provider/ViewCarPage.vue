@@ -1,10 +1,13 @@
 <template>
-    <h4>View Car</h4>
+    <Header />
     <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
         <div class="q-pa-md row q-gutter-md">
-            <q-card class="car-card" v-for="car in cars" :key="car.id">
+            <q-card class="car-card col-3" v-for="car in cars" :key="car.id">
+                <img
+                    src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
                 <q-card-section>
-                    {{ car }}
+                    <div class="text-h6">{{ car.brand }}</div>
+                    <div class="text-subtitle2">{{ car.price }}</div>
                 </q-card-section>
                 <q-separator />
                 <q-card-actions>
@@ -28,9 +31,10 @@
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import type { Car } from "@/interfaces/Car";
-import CarService from "@/services/car.service";
-import ConfirmDialog from "@/components/dialog/ConfirmDialog.vue";
 import { useCarStore } from "@/stores/car";
+import CarService from "@/services/car.service";
+import Header from '@/layouts/Header.vue'
+import ConfirmDialog from "@/components/dialog/ConfirmDialog.vue";
 
 const router = useRouter();
 const store = useCarStore();
@@ -51,7 +55,7 @@ function getCars() {
 
 function editCar(car: Car) {
     console.log("Edit car with id " + car.id);
-    store.storeToEdit(car);
+    store.setCarToEdit(car);
     router.push({ name: "edit-car" });
 };
 

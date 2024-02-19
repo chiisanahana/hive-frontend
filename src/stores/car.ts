@@ -2,14 +2,23 @@ import { defineStore } from "pinia";
 import type { Car } from "@/interfaces/Car";
 
 export const useCarStore = defineStore("car", {
-  state: () => ({ car: null as Car | null }),
+  state: () => ({
+    cars: null as Car[] | null,
+    car: null as Car | null,
+  }),
   getters: {
-    getToEdit(): any {
-        return this.car;
+    getFilteredCars(): any {
+      return this.cars;
+    },
+    getCarToEdit(): any {
+      return this.car;
     }
   },
   actions: {
-    storeToEdit(car: Car) {
+    setFilteredCars(cars: Car[] | null): void {
+      this.cars = cars;
+    },
+    setCarToEdit(car: Car) {
       this.car = car;
     },
   },

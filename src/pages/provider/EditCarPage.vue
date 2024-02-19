@@ -11,6 +11,6 @@ const store = useCarStore();
 const car = ref<Car>();
 
 onMounted(() => {
-    car.value = store.getToEdit;
+    car.value = store.getCarToEdit;
 });
 </script>
