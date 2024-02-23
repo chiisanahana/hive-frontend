@@ -1,6 +1,10 @@
 import http from "@/http-common";
 
 class CarService {
+  get(id: number | string): Promise<any> {
+    return http.get("/car");
+  }
+
   getAll(): Promise<any> {
     return http.get("/cars");
   }

@@ -1,16 +1,8 @@
 <template>
-    <!-- <q-layout view="hHh lpR fFf"> -->
-    <!-- <q-header elevated class="bg-primary text-white"> -->
     <Header />
-    <!-- </q-header> -->
-
-    <!-- <q-drawer show-if-above side="left" bordered> -->
-    <!-- drawer content -->
-    <!-- </q-drawer> -->
-
-    <!-- <q-page-container> -->
 
     <CarSearchForm />
+
     <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
         <div class="row">
             <!-- sidebar -->
@@ -26,7 +18,7 @@
 
             <!-- content -->
             <div class="q-pa-md row col-10 q-gutter-md">
-                <q-card class="car-card col-3" v-for="car in cars" :key="car.id">
+                <q-card v-ripple class="car-card col-3" v-for="car in cars" :key="car.id" @click="clickCard(car.id)">
                     <img
                         src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
                     <q-card-section>
@@ -40,8 +32,6 @@
     <q-inner-loading :showing="visible">
         <q-spinner-gears size="50px" color="primary" />
     </q-inner-loading>
-    <!-- </q-page-container> -->
-    <!-- </q-layout> -->
 </template>
 
 <script setup lang="ts">
@@ -49,9 +39,9 @@ import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import type { Car } from "@/interfaces/Car";
 import CarService from "@/services/car.service";
+import CryptoService from '@/services/crypto.service';
 import Header from '@/layouts/Header.vue'
 import CarSearchForm from '@/components/forms/CarSearchForm.vue'
-
 
 const router = useRouter();
 const cars = ref<Car[]>([]);
@@ -65,6 +55,12 @@ function getCars() {
     }).catch((e: Error) => {
         console.error(e);
     });
+}
+
+function clickCard(id: any) {
+    const encryptedId = CryptoService.encrypt(id);
+    console.log("card clicked " + id + " - " + encryptedId);
+    router.push({ name: "car-details", query: { cid: encryptedId } });
 }
 
 onMounted(() => {
