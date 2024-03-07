@@ -1,7 +1,7 @@
 <template>
     <Header />
 
-    <CarSearchForm />
+    <CarSearchForm @on-submit="onSubmit" />
 
     <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
         <div class="row">
@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRouter } from "vue-router"
-import type { Car } from "@/interfaces/Car";
-import CarService from "@/services/car.service";
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import type { Car } from '@/interfaces/rest/Car';
+import CarService from '@/services/car.service';
 import CryptoService from '@/services/crypto.service';
 import Header from '@/layouts/Header.vue'
 import CarSearchForm from '@/components/forms/CarSearchForm.vue'
@@ -59,12 +59,16 @@ function getCars() {
 
 function clickCard(id: any) {
     const encryptedId = CryptoService.encrypt(id);
-    console.log("card clicked " + id + " - " + encryptedId);
-    router.push({ name: "car-details", query: { cid: encryptedId } });
+    console.log('card clicked ' + id + ' - ' + encryptedId);
+    router.push({ name: 'car-details', query: { cid: encryptedId } });
+}
+
+function onSubmit() {
+    console.log("submit");
 }
 
 onMounted(() => {
     visible.value = true
     getCars();
 })
-</script>
+</script>@/interfaces/rest/Car

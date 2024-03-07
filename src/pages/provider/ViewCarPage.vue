@@ -1,5 +1,7 @@
 <template>
     <Header />
+    <Breadcrumb :items="breadcrumbItems" />
+
     <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
         <div class="q-pa-md row q-gutter-md">
             <q-card class="car-card col-3" v-for="car in cars" :key="car.id">
@@ -15,8 +17,8 @@
                     <q-btn flat @click="showConfirm = true; selectedCar = car.id">Delete</q-btn>
                 </q-card-actions>
             </q-card>
-            <ConfirmDialog v-model="showConfirm" message="Are you sure want to delete this car?" action-btn-title="Delete"
-                @confirm-action="deleteCar(selectedCar ?? '')" />
+            <ConfirmDialog v-model="showConfirm" message="Are you sure want to delete this car?"
+                action-btn-title="Delete" @confirm-action="deleteCar(selectedCar!)" />
         </div>
     </transition>
     <div class="q-pa-md row justify-end">
@@ -28,20 +30,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRouter } from "vue-router"
-import type { Car } from "@/interfaces/Car";
-import { useCarStore } from "@/stores/car";
-import CarService from "@/services/car.service";
-import Header from '@/layouts/Header.vue'
-import ConfirmDialog from "@/components/dialog/ConfirmDialog.vue";
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import type { BreadcrumbItem } from '@/interfaces/BreadcrumbItem';
+import type { Car } from '@/interfaces/rest/Car';
+import { useCarStore } from '@/stores/car';
+import CarService from '@/services/car.service';
+import Header from '@/layouts/Header.vue';
+import Breadcrumb from '@/layouts/Breadcrumb.vue';
+import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
 
+const breadcrumbItems: BreadcrumbItem[] = [
+    { icon: 'home', ref: '/' },
+    { label: 'Manage Cars' }
+]
 const router = useRouter();
 const store = useCarStore();
 const cars = ref<Car[]>([]);
 const visible = ref<boolean>(false);
 const showConfirm = ref<boolean>(false);
-const selectedCar = ref<number | string>();
+const selectedCar = ref<number>();
 
 function getCars() {
     CarService.getAll().then((response: any) => {
@@ -54,13 +62,13 @@ function getCars() {
 }
 
 function editCar(car: Car) {
-    console.log("Edit car with id " + car.id);
+    console.log('Edit car with id ' + car.id);
     store.setCarToEdit(car);
-    router.push({ name: "edit-car" });
+    router.push({ name: 'edit-car' });
 };
 
-function deleteCar(id: number | string) {
-    console.log("Delete car with id " + id);
+function deleteCar(id: number) {
+    console.log('Delete car with id ' + id);
     CarService.delete(id).then((response: any) => {
         console.log(response);
         getCars();

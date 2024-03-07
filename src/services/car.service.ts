@@ -1,7 +1,7 @@
-import http from "@/http-common";
+import http from '@/http-common';
 
 class CarService {
-  get(id: number | string): Promise<any> {
+  get(id: number): Promise<any> {
     return http.get(`/cars/${id}/`);
   }
 
@@ -9,8 +9,8 @@ class CarService {
     return http.get("/cars/");
   }
 
-  delete(id: number | string): Promise<any> {
-    return http.post("/cars/delete", { id: id });
+  delete(id: number): Promise<any> {
+    return http.delete(`/cars/${id}/`);
   }
 }
 

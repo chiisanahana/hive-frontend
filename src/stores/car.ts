@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Car } from "@/interfaces/Car";
+import type { Car } from "@/interfaces/rest/Car";
 
 export const useCarStore = defineStore("car", {
   state: () => ({

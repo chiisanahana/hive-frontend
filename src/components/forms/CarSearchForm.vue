@@ -1,7 +1,7 @@
 <template>
     <div class="row justify-center q-ma-md">
-        <q-card class="search-card col-10 q-pa-md">
-            <q-form @submit="onSubmit">
+        <q-card class="search-card q-pa-md">
+            <q-form @submit="$emit('onSubmit')">
                 <q-card-section horizontal class="justify-between">
                     <q-card-section>
                         <q-input outlined dense v-model="form.location" label="Choose your Location">
@@ -16,8 +16,9 @@
                             <q-input outlined dense v-model="form.startDate" mask="date" label="Pick-up Date">
                                 <template v-slot:prepend>
                                     <q-icon name="event" class="cursor-pointer">
-                                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                            <q-date v-model="form.startDate">
+                                        <q-popup-proxy ref="dateProxy" cover transition-show="scale"
+                                            transition-hide="scale">
+                                            <q-date v-model="form.startDate" @update:model-value="dateProxy.hide()">
                                                 <div class="row items-center justify-end">
                                                     <q-btn v-close-popup label="Close" color="primary" flat />
                                                 </div>
@@ -34,8 +35,9 @@
                             <q-input outlined dense v-model="form.endDate" mask="date" label="Return Date">
                                 <template v-slot:prepend>
                                     <q-icon name="event" class="cursor-pointer">
-                                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                            <q-date v-model="form.endDate">
+                                        <q-popup-proxy ref="dateProxy" cover transition-show="scale"
+                                            transition-hide="scale">
+                                            <q-date v-model="form.endDate" @update:model-value="dateProxy.hide()">
                                                 <div class="row items-center justify-end">
                                                     <q-btn v-close-popup label="Close" color="primary" flat />
                                                 </div>
@@ -47,7 +49,7 @@
                         </div>
                     </q-card-section>
                     <q-card-section>
-                        <q-btn type="submit" color="primary" label="Book Your Ride" />
+                        <q-btn type="submit" unelevated color="primary" label="Search Car" />
                     </q-card-section>
                 </q-card-section>
             </q-form>
@@ -56,20 +58,24 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive } from 'vue'
+import { date } from 'quasar'
 
-import { reactive } from 'vue'
-
+const dateProxy = ref();
 const form: any = reactive({
     location: '',
-    startDate: '',
-    endDate: ''
+    startDate: date.formatDate(new Date(), 'YYYY/MM/DD'),
+    endDate: date.formatDate(date.addToDate(new Date(), { days: 1 }), 'YYYY/MM/DD')
 });
+const emit = defineEmits<{
+    onSubmit: []
+}>();
 
-function onSubmit() {
-    if (form.location.value !== '' && form.startDate.value !== '' && form.endDate.value !== '') {
-        console.log('form', form);
-    }
-}
+// function onSubmit() {
+//     if (form.location.value !== '' && form.startDate.value !== '' && form.endDate.value !== '') {
+//         console.log('form', form);
+//     }
+// }
 </script>
 
 <style>

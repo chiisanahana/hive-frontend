@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import type { Car } from "@/interfaces/Car";
+import type { Car } from "@/interfaces/rest/Car";
 import CarService from "@/services/car.service";
 import CryptoService from '@/services/crypto.service';
 import Header from '@/layouts/Header.vue'
@@ -22,7 +22,7 @@ const route = useRoute();
 const car = ref<Car>();
 const visible = ref<boolean>(false);
 
-function getCar(carId: number | string) {
+function getCar(carId: number) {
     CarService.get(carId).then((response: any) => {
         console.log(response);
         visible.value = false;
@@ -39,7 +39,7 @@ onMounted(() => {
     if (typeof carId === 'string') {
         const decryptedId = CryptoService.decrypt(carId);
         console.log("get car data " + carId + " - " + decryptedId);
-        getCar(decryptedId);
+        getCar(parseInt(decryptedId));
     }
 })
-</script>
+</script>@/interfaces/rest/Car

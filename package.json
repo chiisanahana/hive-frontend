@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.9",
+    "appwrite": "^13.0.2",
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0",
     "pinia": "^2.1.7",
