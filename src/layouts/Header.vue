@@ -1,20 +1,111 @@
 <template>
-    <div>
-        <q-toolbar class="bg-primary text-white">
-            <q-avatar>
-                <img :src="logoUrl">
-            </q-avatar>
+    <q-toolbar class="bg-primary text-white">
+        <a class="link" href="/">
+            <img />
+            <p class="text-h6 text-bold text-white">HIVE LOGO</p>
+        </a>
+        <q-space />
 
-            <q-toolbar-title>HiVe</q-toolbar-title>
-
-            <div class="q-pa-md q-gutter-md">
-                <q-btn to="/login" flat color="secondary" label="Log in" />
-                <q-btn to="/sign-up" unelevated color="secondary" text-color="accent" label="Sign up" />
-            </div>
-        </q-toolbar>
-    </div>
+        <div v-if="isLoggedIn" class="q-pa-x-sm q-gutter-x-lg">
+            <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px" />
+            <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses" />
+            <q-btn flat round dense :icon="ionNotifications">
+                <q-badge rounded color="red" floating transparent>
+                    2
+                </q-badge>
+            </q-btn>
+            <q-btn flat dense no-caps align="left" :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'"
+                style="min-width: 220px">
+                <q-avatar size="32px" color="orange" class="q-mr-md">
+                    {{ user!.name?.charAt(0).toUpperCase() }}
+                </q-avatar>
+                <div class="column align-left justify-start">
+                    <div class="text-left">{{ currentUser == UserType.C ? user!.name : (user as Provider)!.trading_name
+                        }}</div>
+                    <div v-if="currentUser == UserType.P" class="text-left text-caption">{{ user!.name }}</div>
+                </div>
+                <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" />
+            </q-btn>
+        </div>
+        <div v-else class="q-pa-sm q-gutter-md">
+            <q-btn flat color="secondary" label="Log in" @click="openLoginDialog" />
+            <q-btn to="/sign-up" unelevated color="secondary" text-color="accent" label="Sign up" />
+        </div>
+    </q-toolbar>
+    <q-dialog v-model="loginDialog">
+        <div>
+            <LoginForm :user-type="getLoginUserType()" :email="user?.email || ''" @post-action="loginSuccess"
+                @route-to-sign-up="signUp" />
+        </div>
+    </q-dialog>
 </template>
 
 <script setup lang="ts">
-import logoUrl from '@/assets/images/logo-temp.png'
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import CryptoService from '@/services/crypto.service';
+import type { Provider } from '@/interfaces/rest/Provider';
+import type { Customer } from '@/interfaces/rest/Customer';
+import { UserType } from '@/enums/enum';
+import { ionCar, ionChatbubbleEllipses, ionNotifications } from '@quasar/extras/ionicons-v6';
+import LoginForm from '@/components/forms/LoginForm.vue';
+import NavbarDropdown from '@/components/dropdown/NavbarDropdown.vue';
+
+const route = useRoute();
+const router = useRouter();
+const user = ref<Customer | Provider | null>(null);
+const currentUser = ref<UserType | null>(null);
+const loginDialog = ref<boolean>(false);
+const isLoggedIn = computed<boolean>(() => user.value != null);
+
+function getUserData() {
+    if (route.fullPath.includes('/provider')) {
+        const data = localStorage.getItem(import.meta.env.VITE_PRV_SESSION_KEY);
+        if (data != null) {
+            user.value = JSON.parse(CryptoService.decrypt(data));
+            currentUser.value = UserType.P;
+        }
+    } else {
+        const data = localStorage.getItem(import.meta.env.VITE_CUST_SESSION_KEY);
+        if (data != null) {
+            user.value = JSON.parse(CryptoService.decrypt(data));
+            currentUser.value = UserType.C;
+        }
+    }
+    console.log('user', user.value);
+}
+
+function getLoginUserType() {
+    return currentUser.value == null ? UserType.C : UserType.P;
+}
+
+function loginSuccess() {
+    loginDialog.value = false;
+
+    // if login provider, redirect to dashboard page
+    if (getLoginUserType() == UserType.P) {
+        router.push({ name: 'dashboard' });
+    }
+    getUserData();
+}
+
+function signUp() {
+    router.push({ name: 'sign-up' });
+}
+
+function openLoginDialog() {
+    loginDialog.value = true;
+}
+
+onMounted(() => {
+    getUserData();
+});
 </script>
+
+<style>
+.link {
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+</style>

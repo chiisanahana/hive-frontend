@@ -4,7 +4,7 @@
         <!-- <div class="q-gutter-md" > -->
         <q-file outlined v-model="file">
             <template v-slot:prepend>
-                <q-icon name="attach_file" />
+                <q-icon :name="ionAttach" />
             </template>
         </q-file>
         <!-- </div> -->
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import FileService from '@/services/file.service'
+import { ionAttach } from '@quasar/extras/ionicons-v6';
 
 const file = ref<any>(undefined);
 const fileUrl = ref<string>();

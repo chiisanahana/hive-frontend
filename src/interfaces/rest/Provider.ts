@@ -1,5 +1,5 @@
 export interface Provider {
-    provider_id: number;
+    id: number;
     name?: string;
     trading_name?: string;
     email: string;

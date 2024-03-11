@@ -22,7 +22,7 @@
         </div>
     </transition>
     <div class="q-pa-md row justify-end">
-        <q-btn round color="primary" icon="add" :to="{ name: 'add-car' }" />
+        <q-btn round color="primary" :icon="ionAdd" :to="{ name: 'add-car' }" />
     </div>
     <q-inner-loading :showing="visible">
         <q-spinner-gears size="50px" color="primary" />
@@ -39,6 +39,7 @@ import CarService from '@/services/car.service';
 import Header from '@/layouts/Header.vue';
 import Breadcrumb from '@/layouts/Breadcrumb.vue';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
+import { ionAdd } from '@quasar/extras/ionicons-v6';
 
 const breadcrumbItems: BreadcrumbItem[] = [
     { icon: 'home', ref: '/' },

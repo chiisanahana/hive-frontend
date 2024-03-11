@@ -1,0 +1,141 @@
+<template>
+    <div class="row q-pa-md items-center justify-end fixed-full">
+        <!-- Logo -->
+        <a class="logo link fixed-top-left" href="/">
+            <img />
+            <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
+        </a>
+
+        <!-- Form -->
+        <div class="col-4 fixed-bottom">
+            <img :src="imgUrl" width="300px" />
+        </div>
+        <div class="column col-8 items-center">
+            <q-form @submit="submit" class="form shadow-2">
+                <p class="text-h5 text-bold text-center q-mt-sm">Sign Up</p>
+
+                <div class="column field q-gutter-y-sm">
+                    <label class="field-label">Email</label>
+                    <q-input outlined dense debunce="500" v-model="form.email" placeholder="Enter your email"
+                        autocomplete="on" lazy-rules :rules="[
+                val => val && val.length > 0 || 'Email is required',
+                val => isValidEmail(val.trim()) || 'Email is not valid',
+                val => isEmailAvail(val.trim())
+            ]">
+                        <template v-slot:prepend>
+                            <q-icon :name="ionMail" />
+                        </template>
+                    </q-input>
+                </div>
+
+                <div class="column field q-gutter-y-sm">
+                    <label class="field-label">Password</label>
+                    <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
+                        placeholder="Enter your password" autocomplete="on" lazy-rules :rules="[
+                val => val && val.length > 0 || 'Password is required',
+                val => val.length >= 8 || 'Password is too short'
+            ]">
+                        <template v-slot:prepend>
+                            <q-icon :name="ionLockClosed" />
+                        </template>
+                        <template v-slot:append>
+                            <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                @click="isPwd = !isPwd" />
+                        </template>
+                    </q-input>
+                </div>
+
+                <div class="column items-center q-mt-md q-gutter-y-lg">
+                    <q-btn class="full-width q-pa-sm" label="Sign Up" type="submit" color="primary" />
+                    <p>Already have an account? <a class="link text-accent" href="/provider/login">Sign In</a></p>
+                </div>
+            </q-form>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import type { UserAuth } from '@/interfaces/UserAuth';
+import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar, QSpinnerGears } from 'quasar';
+import UserService from '@/services/user.service';
+import { UserType, Message } from '@/enums/enum';
+import { ionLockClosed, ionMail } from '@quasar/extras/ionicons-v6';
+import imgUrl from '@/assets/images/vector-register-prv.svg'
+
+const router = useRouter();
+const quasar = useQuasar();
+const form: UserAuth = reactive({
+    email: '',
+    password: ''
+});
+const isPwd = ref<boolean>(true);
+
+function isValidEmail(email: string) {
+    const regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+    return regex.test(email);
+};
+
+function isEmailAvail(email: string) {
+    return UserService.isEmailExists(email, UserType.C)
+        .then((response: any) => {
+            console.log('is email available: ', !response.data);
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(!response.data as boolean || Message.EMAIL_EXISTS);
+                }, 500);
+            })
+        })
+        .catch((error) => {
+            console.error(error);
+            return new Promise((resolve, reject) => {
+                resolve(false || Message.INTERNAL_SERVER_ERROR);
+            })
+        });
+}
+
+function submit() {
+    quasar.loading.show({ spinner: QSpinnerGears });
+    console.log('form', form);
+    form.email = form.email.trim();
+
+    UserService.register(form, UserType.P)
+        .then((response) => {
+            console.log(response);
+            UserService.storeUser(response.data, UserType.P);
+            quasar.loading.hide();
+            router.push({ name: 'home' });
+        })
+        .catch((error) => {
+            quasar.loading.hide();
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        });
+}
+</script>
+
+<style>
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #ffffff;
+    padding: 30px;
+    width: 400px;
+    border-radius: 20px;
+}
+
+.link {
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.field-label {
+    font-weight: 600;
+}
+</style>

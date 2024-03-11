@@ -6,6 +6,7 @@ export interface Car {
   provider_id?: number;
   provider?: Provider;
   brand: string;
+  car_type: string;
   year: number;
   color: string;
   seat: number;
@@ -13,8 +14,9 @@ export interface Car {
   transmission: string;
   price: number;
   deposit: number;
-  description?: string;
+  description: string;
   status: string;
+  rating: number;
   created_datetime: string;
   updated_datetime?: string;
   updated_by?: number;

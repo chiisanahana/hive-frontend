@@ -1,7 +1,4 @@
 <template>
-    <!-- <h1>Oops</h1>
-    <h3>Page Not Found</h3> -->
-
     <div id="notfound">
         <div class="notfound">
             <div class="notfound-404">

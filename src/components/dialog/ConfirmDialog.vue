@@ -2,7 +2,7 @@
     <q-dialog persistent>
         <q-card>
             <q-card-section class="row items-center">
-                <q-avatar icon="warning" color="warning" text-color="white" />
+                <q-avatar :icon="ionWarning" color="warning" text-color="white" />
                 <span class="q-ml-sm">{{ message }}</span>
             </q-card-section>
             <q-card-actions align="right">
@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import { ionWarning } from '@quasar/extras/ionicons-v6';
+
 const props = withDefaults(defineProps<{
     message: string
     actionBtnTitle: string

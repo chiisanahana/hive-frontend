@@ -6,7 +6,7 @@
                     <q-card-section>
                         <q-input outlined dense v-model="form.location" label="Choose your Location">
                             <template v-slot:prepend>
-                                <q-icon name="place" />
+                                <q-icon :name="ionLocation" />
                             </template>
                         </q-input>
                     </q-card-section>
@@ -15,7 +15,7 @@
                         <div class="date-input">
                             <q-input outlined dense v-model="form.startDate" mask="date" label="Pick-up Date">
                                 <template v-slot:prepend>
-                                    <q-icon name="event" class="cursor-pointer">
+                                    <q-icon :name="ionCalendar" class="cursor-pointer">
                                         <q-popup-proxy ref="dateProxy" cover transition-show="scale"
                                             transition-hide="scale">
                                             <q-date v-model="form.startDate" @update:model-value="dateProxy.hide()">
@@ -34,7 +34,7 @@
                         <div class="date-input">
                             <q-input outlined dense v-model="form.endDate" mask="date" label="Return Date">
                                 <template v-slot:prepend>
-                                    <q-icon name="event" class="cursor-pointer">
+                                    <q-icon :name="ionCalendar" class="cursor-pointer">
                                         <q-popup-proxy ref="dateProxy" cover transition-show="scale"
                                             transition-hide="scale">
                                             <q-date v-model="form.endDate" @update:model-value="dateProxy.hide()">
@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { date } from 'quasar'
+import { ionCalendar, ionLocation } from '@quasar/extras/ionicons-v6';
 
 const dateProxy = ref();
 const form: any = reactive({

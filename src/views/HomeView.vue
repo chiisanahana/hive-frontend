@@ -3,18 +3,22 @@
   <main>
     <h4>HiVe</h4>
     <p>promosipromosipromosi...</p>
-    
+
     <CarSearchForm @on-submit="onSubmit" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import Header from '@/layouts/Header.vue'
-import CarSearchForm from '@/components/forms/CarSearchForm.vue'
+import { ref, reactive, onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import Header from '@/layouts/Header.vue';
+import CarSearchForm from '@/components/forms/CarSearchForm.vue';
+import type { Customer } from '@/interfaces/rest/Customer';
 
 const router = useRouter();
+const quasar = useQuasar();
+const user = ref<Customer>();
 
 const form: any = reactive({
   location: '',
@@ -28,6 +32,10 @@ function onSubmit() {
     router.push({ name: "cars" });
   }
 }
+
+onBeforeMount(() => {
+  quasar.loading.hide();
+});
 </script>
 
 <style>

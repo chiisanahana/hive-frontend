@@ -40,8 +40,8 @@ import { useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
 import CarService from '@/services/car.service';
 import CryptoService from '@/services/crypto.service';
-import Header from '@/layouts/Header.vue'
-import CarSearchForm from '@/components/forms/CarSearchForm.vue'
+import Header from '@/layouts/Header.vue';
+import CarSearchForm from '@/components/forms/CarSearchForm.vue';
 
 const router = useRouter();
 const cars = ref<Car[]>([]);
