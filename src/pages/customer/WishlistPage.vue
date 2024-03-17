@@ -19,9 +19,15 @@
                             <!-- <q-card-section> -->
                         <q-card-actions vertical class="justify-center">
                             <div class="text-h6">{{ wishlist.car.brand }}</div>
-                            <div class="text-subtitle2">{{ wishlist.car.provider.city }}, {{ wishlist.car.provider.province }}</div>
+                            <div class="text-subtitle2">
+                                <q-icon :name="ionLocation" />
+                                {{ wishlist.car.provider.city }}, {{ wishlist.car.provider.province }}
+                            </div>
                             <q-card-section horizontal class="justify-around">
-                                <div class="text-subtitle2">{{ changeDateFormat(wishlist.start_date) }}</div>
+                                <div class="text-subtitle2">
+                                    <q-icon :name="ionCalendar" />
+                                    {{ changeDateFormat(wishlist.start_date) }}
+                                </div>
                                 <div class="text-subtitle2">~</div>
                                 <div class="text-subtitle2">{{ changeDateFormat(wishlist.end_date) }}</div>
                             </q-card-section>
@@ -48,7 +54,8 @@ import { useRouter } from 'vue-router'
 import type { Wishlist } from '@/interfaces/rest/Wishlist';
 import WishlistService from '@/services/wishlist.service';
 import CryptoService from '@/services/crypto.service';
-import Header from '@/layouts/Header.vue'
+import Header from '@/layouts/Header.vue';
+import { ionLocation, ionCalendar } from '@quasar/extras/ionicons-v6';
 
 const router = useRouter();
 const wishlists = ref<Wishlist[]>([]);
@@ -142,7 +149,7 @@ onMounted(() => {
     visible.value = true
     getWishlists();
 })
-</script>@/interfaces/rest/Wishlist
+</script>
 
 <style>
 
