@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('@/pages/customer/CarDetails.vue'),
     },
     {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: () => import('@/pages/customer/WishlistPage.vue'),
+    },
+    {
       path: '/provider',
       name: 'dashboard',
       component: () => import('@/pages/provider/DashboardPage.vue'),
