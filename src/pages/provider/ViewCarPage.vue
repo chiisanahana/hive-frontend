@@ -1,5 +1,4 @@
 <template>
-    <Header />
     <Breadcrumb :items="breadcrumbItems" />
 
     <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">

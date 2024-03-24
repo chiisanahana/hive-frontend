@@ -1,37 +1,41 @@
 <template>
-    <q-toolbar class="bg-primary text-white">
-        <a class="link" href="/">
-            <img />
-            <p class="text-h6 text-bold text-white">HIVE LOGO</p>
-        </a>
-        <q-space />
-
-        <div v-if="isLoggedIn" class="q-pa-x-sm q-gutter-x-lg">
-            <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px" />
-            <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses" />
-            <q-btn flat round dense :icon="ionNotifications">
-                <q-badge rounded color="red" floating transparent>
-                    2
-                </q-badge>
-            </q-btn>
-            <q-btn flat dense no-caps align="left" :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'"
-                style="min-width: 220px">
-                <q-avatar size="32px" color="orange" class="q-mr-md">
-                    {{ user!.name?.charAt(0).toUpperCase() }}
-                </q-avatar>
-                <div class="column align-left justify-start">
-                    <div class="text-left">{{ currentUser == UserType.C ? user!.name : (user as Provider)!.trading_name
-                        }}</div>
-                    <div v-if="currentUser == UserType.P" class="text-left text-caption">{{ user!.name }}</div>
-                </div>
-                <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" />
-            </q-btn>
-        </div>
-        <div v-else class="q-pa-sm q-gutter-md">
-            <q-btn flat color="secondary" label="Log in" @click="openLoginDialog" />
-            <q-btn to="/sign-up" unelevated color="secondary" text-color="accent" label="Sign up" />
-        </div>
-    </q-toolbar>
+    <q-header>
+        <q-toolbar class="bg-white text-primary">
+            <a class="link cursor-pointer" href="/">
+                <img />
+                <p class="text-h6 text-bold text-primary">HIVE LOGO</p>
+            </a>
+            <q-space />
+    
+            <div v-if="isLoggedIn" class="q-pa-x-sm q-gutter-x-lg">
+                <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px">
+                    <WishlistDropdown :customerId="user!.id" />
+                </q-btn>
+                <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses" />
+                <q-btn flat round dense :icon="ionNotifications">
+                    <q-badge rounded color="red" floating transparent>
+                        2
+                    </q-badge>
+                </q-btn>
+                <q-btn flat dense no-caps align="left" :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'"
+                    style="min-width: 220px">
+                    <q-avatar size="32px" color="orange" class="q-mr-md text-white">
+                        {{ user!.name?.charAt(0).toUpperCase() }}
+                    </q-avatar>
+                    <div class="column align-left justify-start">
+                        <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as Provider)!.trading_name
+                            }}</div>
+                        <div v-if="currentUser == UserType.P" class="text-left text-caption">{{ user!.name }}</div>
+                    </div>
+                    <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" />
+                </q-btn>
+            </div>
+            <div v-else class="q-pa-sm q-gutter-md">
+                <q-btn unelevated color="secondary" text-color="accent" label="Log in" @click="openLoginDialog" />
+                <q-btn unelevated color="primary" label="Sign up" to="/sign-up" />
+            </div>
+        </q-toolbar>
+    </q-header>
     <q-dialog v-model="loginDialog">
         <div>
             <LoginForm :user-type="getLoginUserType()" :email="user?.email || ''" @post-action="loginSuccess"
@@ -50,6 +54,7 @@ import { UserType } from '@/enums/enum';
 import { ionCar, ionChatbubbleEllipses, ionNotifications } from '@quasar/extras/ionicons-v6';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import NavbarDropdown from '@/components/dropdown/NavbarDropdown.vue';
+import WishlistDropdown from '@/components/dropdown/WishlistDropdown.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -72,7 +77,7 @@ function getUserData() {
             currentUser.value = UserType.C;
         }
     }
-    console.log('user', user.value);
+    // console.log('user', user.value);
 }
 
 function getLoginUserType() {
@@ -102,10 +107,9 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .link {
     text-decoration: none;
     font-weight: 500;
-    cursor: pointer;
 }
 </style>

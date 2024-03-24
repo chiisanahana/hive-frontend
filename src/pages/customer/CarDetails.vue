@@ -1,45 +1,286 @@
 <template>
-    <Header />
-    <h4>Car Details</h4>
-    <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-        <p>{{ car }}</p>
-    </transition>
-    <q-inner-loading :showing="visible">
-        <q-spinner-gears size="50px" color="primary" />
-    </q-inner-loading>
+    <div class="row q-pa-md q-gutter-md">
+        <div class="col-7 q-gutter-y-md">
+            <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack"
+                no-caps />
+            <q-card flat>
+                <q-card-section horizontal>
+                    <q-card-section class="col-8">
+                        <CarCarousel />
+                    </q-card-section>
+                    <q-card-section>
+                        <div class="text-h6 text-bold">{{ car?.brand }}</div>
+                        <div class="text-body1 q-mb-md">{{ car?.vehicle_no }}</div>
+                        <div class="row">
+                            <div class="text-body1">{{ formatAmount(car?.price) }}</div>
+                            <span class="text-body1 text-blue-grey-4 q-ml-sm">/day</span>
+                        </div>
+                        <div class="text-body1">
+                            {{ car?.deposit! > 0 ? 'Deposit ' + formatAmount(car?.deposit) : 'No deposit' }}
+                        </div>
+                    </q-card-section>
+                </q-card-section>
+                <q-card-section>
+                    <div class="text-body1 text-bold q-mb-sm">Car Info</div>
+                    <div class="row q-gutter-x-md">
+                        <CarInfoIcon :icon="ionCarSport" :text="'Car Type'" :value="car?.car_type" />
+                        <CarInfoIcon :icon="ionCalendarClear" :text="'Year'" :value="car?.year" />
+                        <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Seats'" :value="car?.seat" />
+                        <CarInfoIcon :icon="ionColorPalette" :text="'Color'" :value="car?.color" />
+                        <CarInfoIcon :icon="ionSpeedometer" :text="'Fuel'" :value="getCarFuel()" />
+                        <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmission'"
+                            :value="car?.transmission" />
+                        <q-space />
+                        <div class="rating-box column q-pa-md">
+                            <div class="row items-center q-mb-sm">
+                                <q-icon name="r_star" size="sm" color="warning" class="q-mr-sm" />
+                                <span class="text-bold">{{ car?.rating }}</span>
+                            </div>
+                            <div>Rented {{ car?.order_count }} times</div>
+                        </div>
+                    </div>
+                </q-card-section>
+                <q-separator inset />
+                <q-card-section>
+                    <div class="text-body1 text-bold q-mb-sm">Description</div>
+                    <div class="text-body1">{{ car?.description }}</div>
+                </q-card-section>
+            </q-card>
+        </div>
+        <div class="col q-gutter-y-md">
+            <ProviderInfoCard :provider="car?.provider" @go-to-chat="goToChat" />
+            <q-card flat>
+                <RentDetailsCardSec :editable="true" :rentDetails="rentDetails" v-model:pickupAddress="pickupAddress"
+                    v-model:returnAddress="returnAddress" />
+
+                <BillingSumCardSec :startDate="rentDetails?.startDate!" :endDate="rentDetails?.endDate!"
+                    :price="car?.price!" :deposit="car?.deposit!" />
+
+                <q-card-actions align="right">
+                    <q-btn unelevated color="secondary" text-color="accent" label="Add to wishlist"
+                        @click="addToWishlist" />
+                    <q-btn color="primary" label="Book now" style="min-width: 140px;" :disabled="!isValidInput"
+                        @click="bookNow" />
+                </q-card-actions>
+            </q-card>
+        </div>
+    </div>
+    <q-dialog v-model="loginDialog">
+        <div>
+            <LoginForm :user-type="UserType.C" @post-action="loginSuccess" @route-to-sign-up="signUp" />
+        </div>
+    </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRoute, useRouter } from "vue-router"
-import type { Car } from "@/interfaces/rest/Car";
-import CarService from "@/services/car.service";
+import { ref, onMounted, onBeforeMount, computed } from 'vue';
+import { useQuasar, QSpinnerGears } from 'quasar';
+import { useRoute, useRouter } from 'vue-router'
+import type { Car } from '@/interfaces/rest/Car';
+import type { RentDetails } from '@/interfaces/RentDetails';
+import { Message, UserType } from '@/enums/enum';
+import CarService from '@/services/car.service';
 import CryptoService from '@/services/crypto.service';
-import Header from '@/layouts/Header.vue'
+import UserService from '@/services/user.service';
+import WishlistService from '@/services/wishlist.service';
+import OrderService from '@/services/order.service';
+import { formatAmount } from '@/composables/formatter';
+import { calcRentPrice } from '@/composables/calculator';
+import Header from '@/layouts/Header.vue';
+import CarCarousel from '@/components/ui-block/CarCarousel.vue';
+import CarInfoIcon from '@/components/ui-block/CarInfoIcon.vue';
+import ProviderInfoCard from '@/components/cards/ProviderInfoCard.vue';
+import RentDetailsCardSec from '@/components/cards/RentDetailsCardSec.vue';
+import BillingSumCardSec from '@/components/cards/BillingSumCardSec.vue';
+import LoginForm from '@/components/forms/LoginForm.vue';
+import { ionChevronBack, ionCarSport, ionCalendarClear, ionColorPalette, ionSpeedometer } from '@quasar/extras/ionicons-v6';
+import autoTransmission from '@/assets/icons/auto_transmission.svg';
+import chairAlt from '@/assets/icons/chair_alt.svg';
+import PaymentService from '@/services/payment.service';
 
 const route = useRoute();
-// const router = useRouter();
+const router = useRouter();
+const quasar = useQuasar();
 const car = ref<Car>();
-const visible = ref<boolean>(false);
+const rentDetails = ref<RentDetails>();
+const rentPrice = ref<number>(0);
+const loginDialog = ref<boolean>(false);
+const pickupAddress = ref<string>('');
+const returnAddress = ref<string>('');
+const isValidInput = computed(() => pickupAddress.value !== '' && returnAddress.value !== '');
+
+function goBack() {
+    router.go(-1);
+}
+
+function goToChat() {
+    // TODO: push chat data here
+    // TODO: navigate here
+}
 
 function getCar(carId: number) {
     CarService.get(carId).then((response: any) => {
-        console.log(response);
-        visible.value = false;
+        // console.log(response);
+        quasar.loading.hide();
+
         car.value = response.data;
+        rentPrice.value = calcRentPrice(
+            rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!, car.value?.deposit!);
     }).catch((e: Error) => {
         console.error(e);
     });
 }
 
-onMounted(() => {
-    visible.value = true
-    const carId = route.query.cid;
-    console.log(carId);
-    if (typeof carId === 'string') {
-        const decryptedId = CryptoService.decrypt(carId);
-        console.log("get car data " + carId + " - " + decryptedId);
-        getCar(parseInt(decryptedId));
+function getCarFuel() {
+    switch (car?.value?.fuel) {
+        case '1':
+            return 'Gasoline';
+        case '2':
+            return 'Electric';
+        default:
+            return '';
     }
+}
+
+function setRentDetailsValue() {
+    if (rentDetails.value != undefined) {
+        rentDetails.value.pickupAddress = pickupAddress.value;
+        rentDetails.value.returnAddress = returnAddress.value;
+    }
+}
+
+function addToWishlist() {
+    if (!UserService.isLoggedIn(UserType.C)) {
+        loginDialog.value = true;
+        return;
+    }
+
+    quasar.loading.show({ spinner: QSpinnerGears })
+    setRentDetailsValue();
+    WishlistService.addWishlist(
+        car.value?.id!, UserService.getLoggedInCust().id, rentDetails.value!
+    ).then((response) => {
+        quasar.loading.hide();
+        quasar.notify({
+            color: 'primary',
+            position: 'bottom',
+            message: Message.WISHLIST_ADD_SUCCESS
+        });
+    }).catch((error) => {
+        quasar.loading.hide();
+        quasar.notify({
+            color: 'primary',
+            position: 'bottom',
+            message: Message.WISHLIST_EXISTS
+        });
+    });
+}
+
+function bookNow() {
+    if (!UserService.isLoggedIn(UserType.C)) {
+        loginDialog.value = true;
+        return;
+    }
+
+    quasar.bottomSheet({
+        class: 'payment-opt',
+        message: 'Select payment option',
+        actions: [
+            {
+                label: 'BCA Virtual Account',
+                img: '/src/assets/images/va.png',
+                id: 'va'
+            },
+            {
+                label: 'Credit Card',
+                img: '/src/assets/images/cc.png',
+                id: 'cc'
+            },
+        ]
+    }).onOk(action => {
+        quasar.loading.show({ spinner: QSpinnerGears });
+        setRentDetailsValue();
+        OrderService.createOrder(car.value?.id!, UserService.getLoggedInCust().id, rentDetails.value!)
+            .then((response) => {
+                // console.log(response.data)
+                PaymentService.initiatePayment(
+                    response.data.id,
+                    action.id == 'va' ? 'Virtual Account' : 'Credit Card',
+                    rentPrice.value
+                ).then((response) => {
+                    const encryptedId = CryptoService.encrypt(response.data.order_id);
+                    quasar.loading.hide();
+                    router.push({ name: 'payment', query: { oid: encryptedId } })
+                }).catch((error) => {
+                    console.log(error);
+                    quasar.loading.hide();
+                    quasar.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        message: Message.INTERNAL_SERVER_ERROR
+                    });
+                })
+            })
+            .catch((error) => {
+                quasar.loading.hide();
+                quasar.notify({
+                    color: 'negative',
+                    position: 'top-right',
+                    message: Message.INTERNAL_SERVER_ERROR
+                });
+            })
+    });
+}
+
+function loginSuccess() {
+    router.go(0);
+}
+
+function signUp() {
+    router.push({ name: 'sign-up' });
+}
+
+onBeforeMount(() => {
+    // load rent data
+    const data = localStorage.getItem(import.meta.env.VITE_SESSION_DATA);
+    if (data != null) {
+        rentDetails.value = JSON.parse(CryptoService.decrypt(data));
+        // console.log('rent data', rentDetails.value);
+    }
+
+    // load car data
+    const carId = route.query.cid;
+    // console.log(carId);
+    if (typeof carId === 'string') {
+        getCar(parseInt(CryptoService.decrypt(carId)));
+    }
+});
+
+onMounted(() => {
+    quasar.loading.show({ spinner: QSpinnerGears })
 })
-</script>@/interfaces/rest/Car
+</script>
+
+<style scoped>
+.rating-box {
+    background-color: #ECF1FF;
+    border-radius: 4px;
+}
+
+.billing-separator {
+    border: none;
+    border-top: 2px dashed #D1D1D1;
+    height: 3px;
+}
+</style>
+
+<style>
+.q-bottom-sheet--list img {
+    width: 42px;
+    height: auto;
+}
+
+.q-dialog__inner:has(.payment-opt) {
+    justify-content: end;
+}
+</style>

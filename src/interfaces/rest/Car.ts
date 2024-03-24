@@ -12,13 +12,17 @@ export interface Car {
   seat: number;
   vehicle_no: string;
   transmission: string;
+  fuel: string;
   price: number;
   deposit: number;
   description: string;
   status: string;
   rating: number;
+  count: number;
+  order_count: number;
   created_datetime: string;
   updated_datetime?: string;
   updated_by?: number;
+  isdelete: string;
   car_files: CarFile[] | [];
 }

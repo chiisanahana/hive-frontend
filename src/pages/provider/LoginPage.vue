@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="logo link fixed-top-left" href="/">
+        <a class="logo link cursor-pointer fixed-top-left" href="/">
             <img />
             <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
         </a>
@@ -28,7 +28,7 @@ function loginSuccess() {
 
 </script>
 
-<style>
+<style scoped>
 .form {
     display: flex;
     flex-direction: column;
@@ -42,7 +42,6 @@ function loginSuccess() {
 .link {
     text-decoration: none;
     font-weight: 500;
-    cursor: pointer;
 }
 
 .field-label {

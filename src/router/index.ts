@@ -18,6 +18,7 @@ const router = createRouter({
       path: '/sign-up',
       name: 'sign-up',
       component: () => import('@/pages/customer/RegisterPage.vue'),
+      props: { header: false }
     },
     {
       path: '/cars',
@@ -28,6 +29,31 @@ const router = createRouter({
       path: '/cars/details',
       name: 'car-details',
       component: () => import('@/pages/customer/CarDetails.vue'),
+    },
+    {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: () => import('@/pages/customer/WishlistPage.vue'),
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('@/pages/customer/PaymentPage.vue'),
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('@/pages/customer/HistoryPage.vue'),
+    },
+    {
+      path: '/history/details',
+      name: 'history-details',
+      component: () => import('@/pages/customer/HistoryDetailsPage.vue'),
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('@/pages/customer/AccountPage.vue'),
     },
     {
       path: '/provider',
@@ -66,8 +92,13 @@ const router = createRouter({
       component: () => import('@/pages/handler/PageLoggedOut.vue')
     },
     {
-      path: '/:catchAll(.*)*',
+      path: '/not-found',
+      name: 'not-found',
       component: () => import('@/pages/handler/PageNotFound.vue'),
+    },
+    {
+      path: '/:catchAll(.*)*',
+      redirect: { name: 'not-found' }
     }
   ],
 });

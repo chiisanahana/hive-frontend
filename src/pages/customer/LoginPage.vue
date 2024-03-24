@@ -1,6 +1,6 @@
 <template>
     <div class="row items-center justify-center fixed-full login-container">
-        <a class="logo link fixed-top-left" href="/">
+        <a class="logo link cursor-pointer fixed-top-left" href="/">
             <img />
             <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
         </a>
@@ -26,11 +26,16 @@ function signUp() {
 
 </script>
 
-<style>
+<style scoped>
 .login-container {
     background-image: url(/src/assets/images/splash-bg.svg);
     background-size: 600px;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.link {
+    text-decoration: none;
+    font-weight: 500;
 }
 </style>

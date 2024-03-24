@@ -18,7 +18,7 @@
 import imgUrl from '@/assets/images/vector-logout.svg'
 </script>
 
-<style>
+<style scoped>
 * {
     font-family: 'Maven Pro', sans-serif;
 }

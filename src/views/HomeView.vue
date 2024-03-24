@@ -1,10 +1,11 @@
 <template>
-  <Header />
   <main>
-    <h4>HiVe</h4>
+    <p>promosipromosipromosi...</p>
+    <p>promosipromosipromosi...</p>
+    <p>promosipromosipromosi...</p>
     <p>promosipromosipromosi...</p>
 
-    <CarSearchForm @on-submit="onSubmit" />
+    <CarSearchForm :routeTo="'cars'" />
   </main>
 </template>
 
@@ -12,7 +13,6 @@
 import { ref, reactive, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import Header from '@/layouts/Header.vue';
 import CarSearchForm from '@/components/forms/CarSearchForm.vue';
 import type { Customer } from '@/interfaces/rest/Customer';
 
@@ -26,19 +26,19 @@ const form: any = reactive({
   endDate: ''
 });
 
-function onSubmit() {
-  if (form.location.value !== '' && form.startDate.value !== '' && form.endDate.value !== '') {
-    console.log('form', form);
-    router.push({ name: "cars" });
-  }
-}
+// function onSubmit() {
+//   if (form.location.value !== '' && form.startDate.value !== '' && form.endDate.value !== '') {
+//     console.log('form', form);
+//     router.push({ name: "cars" });
+//   }
+// }
 
 onBeforeMount(() => {
   quasar.loading.hide();
 });
 </script>
 
-<style>
+<style scoped>
 .date-input {
   max-width: 300px;
 }

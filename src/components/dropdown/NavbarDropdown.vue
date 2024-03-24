@@ -1,17 +1,17 @@
 <template>
     <q-menu transition-show="jump-down" transition-hide="jump-up">
         <q-list style="width: 220px">
-            <q-item clickable v-close-popup>
+            <q-item clickable v-close-popup @click="goToAccount">
                 <q-item-section side>
                     <q-icon :name="ionPerson"></q-icon>
                 </q-item-section>
                 <q-item-section>Account</q-item-section>
             </q-item>
-            <q-item clickable v-close-popup>
+            <q-item v-if="type == UserType.C" clickable v-close-popup @click="goToHistory">
                 <q-item-section side>
-                    <q-icon :name="ionSettings"></q-icon>
+                    <q-icon name="history"></q-icon>
                 </q-item-section>
-                <q-item-section>Settings</q-item-section>
+                <q-item-section>History</q-item-section>
             </q-item>
             <q-item v-if="type == UserType.C" clickable v-close-popup @click="handleProviderAuth">
                 <q-item-section side>
@@ -40,14 +40,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
 import type { Customer } from '@/interfaces/rest/Customer';
 import type { Provider } from '@/interfaces/rest/Provider';
 import { UserType } from '@/enums/enum';
-import { ionLogOut, ionStorefront, ionSettings, ionPerson } from '@quasar/extras/ionicons-v6';
+import { ionLogOut, ionStorefront, ionPerson } from '@quasar/extras/ionicons-v6';
 
 const props = defineProps<{
     user: Customer | Provider;
@@ -68,15 +67,20 @@ function isProvider() {
     return false;
 }
 
+function goToAccount() {
+    router.push({ name: 'account' });
+}
+
+function goToHistory() {
+    router.push({ name: 'history' });
+}
+
 function handleProviderAuth() {
     if (!isProvider()) {
-        console.log('!isProvider');
         router.push({ name: 'sign-up-prv' })
     } else if (localStorage.getItem(import.meta.env.VITE_PRV_SESSION_KEY) != null) {
-        console.log('logged in provider');
         router.push({ name: 'dashboard' })
     } else {
-        console.log('emit opendialog');
         emit('openLoginDialog');
     }
 }

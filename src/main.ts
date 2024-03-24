@@ -1,11 +1,14 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { Quasar, Loading, Notify } from 'quasar';
+import { Quasar, Loading, Notify, BottomSheet } from 'quasar';
 import '@quasar/extras/material-icons/material-icons.css';
+import '@quasar/extras/material-icons-round/material-icons-round.css';
 import '@quasar/extras/ionicons-v6';
 import quasarIconSet from 'quasar/icon-set/svg-ionicons-v6';
 import '@/assets/styles/app.scss';
 import 'quasar/src/css/index.sass';
+import lottie from 'lottie-web';
+import { defineElement } from '@lordicon/element';
 
 import App from './App.vue';
 import router from './router';
@@ -16,10 +19,12 @@ app.use(createPinia());
 app.use(Quasar, {
     plugins: {
         Loading,
-        Notify
+        Notify,
+        BottomSheet
     },
     iconSet: quasarIconSet,
 });
 app.use(router);
+defineElement(lottie.loadAnimation);
 
 app.mount('#app');

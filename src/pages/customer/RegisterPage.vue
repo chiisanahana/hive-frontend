@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="logo link fixed-top-left" href="/">
+        <a class="logo link cursor-pointer fixed-top-left" href="/">
             <img />
             <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
         </a>
@@ -16,7 +16,7 @@
 
                 <div class="column field q-gutter-y-sm">
                     <label class="field-label">Email</label>
-                    <q-input outlined dense debunce="500" v-model="form.email" placeholder="Enter your email"
+                    <q-input outlined dense debounce="500" v-model="form.email" placeholder="Enter your email"
                         autocomplete="on" lazy-rules :rules="[
                 val => val && val.length > 0 || 'Email is required',
                 val => isValidEmail(val.trim()) || 'Email is not valid',
@@ -80,7 +80,7 @@ function isValidEmail(email: string) {
 function isEmailAvail(email: string) {
     return UserService.isEmailExists(email, UserType.C)
         .then((response: any) => {
-            console.log('is email available: ', !response.data);
+            // console.log('is email available: ', !response.data);
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(!response.data as boolean || Message.EMAIL_EXISTS);
@@ -97,15 +97,15 @@ function isEmailAvail(email: string) {
 
 function submit() {
     quasar.loading.show({ spinner: QSpinnerGears });
-    console.log('form', form);
+    // console.log('form', form);
     form.email = form.email.trim();
 
     UserService.register(form, UserType.C)
         .then((response) => {
-                console.log(response);
-                storeUserInfo(response.data);
-                quasar.loading.hide();
-                router.push({ name: 'home' });
+            // console.log(response);
+            storeUserInfo(response.data);
+            quasar.loading.hide();
+            router.push({ name: 'home' });
         })
         .catch((error) => {
             quasar.loading.hide();
@@ -122,10 +122,9 @@ function storeUserInfo(data: any) {
     customer.is_provider = false;
     UserService.storeUser(customer, UserType.C);
 }
-
 </script>
 
-<style>
+<style scoped>
 .form {
     display: flex;
     flex-direction: column;
@@ -139,7 +138,6 @@ function storeUserInfo(data: any) {
 .link {
     text-decoration: none;
     font-weight: 500;
-    cursor: pointer;
 }
 
 .field-label {

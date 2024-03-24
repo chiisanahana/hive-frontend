@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 * {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;

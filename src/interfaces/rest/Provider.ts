@@ -1,5 +1,6 @@
 export interface Provider {
     id: number;
+    profile_picture?: string;
     name?: string;
     trading_name?: string;
     email: string;

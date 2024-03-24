@@ -1,5 +1,4 @@
 <template>
-    <Header />
     <Breadcrumb :items="breadcrumbItems" />
 
     <div class="q-ma-md">
@@ -14,7 +13,6 @@ import type { BreadcrumbItem } from '@/interfaces/BreadcrumbItem';
 import type { Car } from '@/interfaces/rest/Car';
 import { ref, onMounted } from 'vue'
 import { useCarStore } from '@/stores/car';
-import Header from '@/layouts/Header.vue';
 import Breadcrumb from '@/layouts/Breadcrumb.vue';
 import CarDataForm from '@/components/forms/CarDataForm.vue';
 
@@ -29,4 +27,4 @@ const car = ref<Car>();
 onMounted(() => {
     car.value = store.getCarToEdit;
 });
-</script>@/interfaces/rest/Car
+</script>

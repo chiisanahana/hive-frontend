@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center justify-end fixed-full">
         <!-- Logo -->
-        <a class="logo link fixed-top-left" href="/">
+        <a class="logo link cursor-pointer fixed-top-left" href="/">
             <img />
             <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
         </a>
@@ -80,7 +80,7 @@ function isValidEmail(email: string) {
 function isEmailAvail(email: string) {
     return UserService.isEmailExists(email, UserType.C)
         .then((response: any) => {
-            console.log('is email available: ', !response.data);
+            // console.log('is email available: ', !response.data);
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(!response.data as boolean || Message.EMAIL_EXISTS);
@@ -97,12 +97,12 @@ function isEmailAvail(email: string) {
 
 function submit() {
     quasar.loading.show({ spinner: QSpinnerGears });
-    console.log('form', form);
+    // console.log('form', form);
     form.email = form.email.trim();
 
     UserService.register(form, UserType.P)
         .then((response) => {
-            console.log(response);
+            // console.log(response);
             UserService.storeUser(response.data, UserType.P);
             quasar.loading.hide();
             router.push({ name: 'home' });
@@ -118,7 +118,7 @@ function submit() {
 }
 </script>
 
-<style>
+<style scoped>
 .form {
     display: flex;
     flex-direction: column;
@@ -132,7 +132,6 @@ function submit() {
 .link {
     text-decoration: none;
     font-weight: 500;
-    cursor: pointer;
 }
 
 .field-label {

@@ -45,6 +45,7 @@
 import { ref, reactive, onBeforeMount, onMounted } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
+import { isValidEmail } from '@/composables/validator';
 import type { UserAuth } from '@/interfaces/UserAuth';
 import { Message, UserType } from '@/enums/enum';
 import { ionLockClosed, ionMail, ionEyeOff, ionEye } from '@quasar/extras/ionicons-v6';
@@ -67,14 +68,9 @@ const form: UserAuth = reactive({
 const isPwd = ref<boolean>(true);
 const errMsg = ref<string>('');
 
-function isValidEmail(email: string) {
-    const regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
-    return regex.test(email);
-}
-
 function submit() {
     quasar.loading.show({ spinner: QSpinnerGears });
-    form.email = form.email.trim();
+    form.email = form.email.trim().toLowerCase();
 
     UserService.login(form, props.userType)
         .then((response) => {
@@ -101,7 +97,7 @@ function submit() {
 function storeUserInfo(data: any, type: UserType) {
     if (type == UserType.C) {
         let customer = data['customer'];
-        customer.is_provider = data['provider'] == null ? false : true ;
+        customer.is_provider = data['provider'] == null ? false : true;
         UserService.storeUser(customer, UserType.C);
     } else if (type == UserType.P) {
         UserService.storeUser(data, UserType.P);
@@ -119,7 +115,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .form {
     display: flex;
     flex-direction: column;
@@ -128,12 +124,6 @@ onMounted(() => {
     padding: 30px;
     width: 400px;
     border-radius: 20px;
-}
-
-.link {
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
 }
 
 .field-label {

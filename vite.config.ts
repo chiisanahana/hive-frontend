@@ -8,7 +8,12 @@ import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 export default defineConfig({
   plugins: [
     vue({
-      template: { transformAssetUrls }
+      template: {
+        transformAssetUrls,
+        compilerOptions: {
+          isCustomElement: (tag) => ['lord-icon'].includes(tag),
+        }
+      },
     }),
     quasar({
       sassVariables: 'src/assets/styles/quasar-variables.sass'

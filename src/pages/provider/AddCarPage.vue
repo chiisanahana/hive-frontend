@@ -1,5 +1,4 @@
 <template>
-    <Header />
     <Breadcrumb :items="breadcrumbItems" />
 
     <div class="q-ma-md">
@@ -9,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import Header from '@/layouts/Header.vue'
 import Breadcrumb from '@/layouts/Breadcrumb.vue'
 import CarDataForm from '@/components/forms/CarDataForm.vue'
 import type { BreadcrumbItem } from '@/interfaces/BreadcrumbItem';

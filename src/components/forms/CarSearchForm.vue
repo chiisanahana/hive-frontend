@@ -1,86 +1,204 @@
 <template>
-    <div class="row justify-center q-ma-md">
-        <q-card class="search-card q-pa-md">
-            <q-form @submit="$emit('onSubmit')">
-                <q-card-section horizontal class="justify-between">
-                    <q-card-section>
-                        <q-input outlined dense v-model="form.location" label="Choose your Location">
-                            <template v-slot:prepend>
-                                <q-icon :name="ionLocation" />
+    <div class="row justify-center">
+        <q-card class="q-pa-md">
+            <q-form @submit="submit">
+                <div class="row q-gutter-x-md">
+                    <div class="column drop-field">
+                        <label class="q-mb-xs row items-center">
+                            <q-icon :name="ionLocation" size="xs" class="q-mr-xs" />
+                            Location
+                        </label>
+                        <q-select outlined dense v-model="form.location" :options="locationsOpt!"
+                            :error="errors.location" hide-bottom-space>
+                            <template v-slot:no-option>
+                                <q-item>
+                                    <q-item-section class="text-grey">
+                                        No results
+                                    </q-item-section>
+                                </q-item>
                             </template>
+                        </q-select>
+                    </div>
+                    <div class="column date-field">
+                        <label class="q-mb-xs row items-center">
+                            <q-icon :name="ionCalendar" size="xs" class="q-mr-xs" />
+                            Pick-up Date
+                        </label>
+                        <q-input outlined dense v-model="form.startDate" placeholder="Pick-up date"
+                            :error="errors.startDate" hide-bottom-space :rules="['date']">
+                            <q-popup-proxy ref="dateProxy" cover transition-show="scale" transition-hide="scale">
+                                <q-date v-model="form.startDate" :options="validStartDate"
+                                    @update:model-value="dateProxy.hide()">
+                                    <div class="row items-center justify-end">
+                                        <q-btn v-close-popup label="Close" color="primary" flat />
+                                    </div>
+                                </q-date>
+                            </q-popup-proxy>
                         </q-input>
-                    </q-card-section>
-                    <q-separator vertical />
-                    <q-card-section>
-                        <div class="date-input">
-                            <q-input outlined dense v-model="form.startDate" mask="date" label="Pick-up Date">
-                                <template v-slot:prepend>
-                                    <q-icon :name="ionCalendar" class="cursor-pointer">
-                                        <q-popup-proxy ref="dateProxy" cover transition-show="scale"
-                                            transition-hide="scale">
-                                            <q-date v-model="form.startDate" @update:model-value="dateProxy.hide()">
-                                                <div class="row items-center justify-end">
-                                                    <q-btn v-close-popup label="Close" color="primary" flat />
-                                                </div>
-                                            </q-date>
-                                        </q-popup-proxy>
-                                    </q-icon>
-                                </template>
-                            </q-input>
-                        </div>
-                    </q-card-section>
-                    <q-separator vertical />
-                    <q-card-section>
-                        <div class="date-input">
-                            <q-input outlined dense v-model="form.endDate" mask="date" label="Return Date">
-                                <template v-slot:prepend>
-                                    <q-icon :name="ionCalendar" class="cursor-pointer">
-                                        <q-popup-proxy ref="dateProxy" cover transition-show="scale"
-                                            transition-hide="scale">
-                                            <q-date v-model="form.endDate" @update:model-value="dateProxy.hide()">
-                                                <div class="row items-center justify-end">
-                                                    <q-btn v-close-popup label="Close" color="primary" flat />
-                                                </div>
-                                            </q-date>
-                                        </q-popup-proxy>
-                                    </q-icon>
-                                </template>
-                            </q-input>
-                        </div>
-                    </q-card-section>
-                    <q-card-section>
-                        <q-btn type="submit" unelevated color="primary" label="Search Car" />
-                    </q-card-section>
-                </q-card-section>
+                    </div>
+                    <div class="column time-field">
+                        <label class="q-mb-xs row items-center">
+                            <q-icon :name="ionTime" size="xs" class="q-mr-xs" />
+                            Pick-up Time
+                        </label>
+                        <q-input outlined dense v-model="form.startTime" placeholder="Pick-up time"
+                            :error="errors.startTime" hide-bottom-space :rules="[(val) => (val && val.length > 0)]">
+                            <q-popup-proxy ref="timeProxy" cover transition-show="scale" transition-hide="scale">
+                                <q-time v-model="form.startTime">
+                                    <div class="row items-center justify-end">
+                                        <q-btn v-close-popup label="Close" color="primary" flat />
+                                    </div>
+                                </q-time>
+                            </q-popup-proxy>
+                        </q-input>
+                    </div>
+                    <div class="column date-field">
+                        <label class="q-mb-xs row items-center">
+                            <q-icon :name="ionCalendar" size="xs" class="q-mr-xs" />
+                            Return Date
+                        </label>
+                        <q-input outlined dense v-model="form.endDate" placeholder="Return date" :error="errors.endDate"
+                            hide-bottom-space :rules="['date']">
+                            <q-popup-proxy ref="dateProxy" cover transition-show="scale" transition-hide="scale">
+                                <q-date v-model="form.endDate" :options="validEndDate"
+                                    @update:model-value="dateProxy.hide()">
+                                    <div class="row items-center justify-end">
+                                        <q-btn v-close-popup label="Close" color="primary" flat />
+                                    </div>
+                                </q-date>
+                            </q-popup-proxy>
+                        </q-input>
+                    </div>
+                    <div class="column time-field">
+                        <label class="q-mb-xs row items-center">
+                            <q-icon :name="ionTime" size="xs" class="q-mr-xs" />
+                            Return Time
+                        </label>
+                        <q-input outlined dense v-model="form.endTime" placeholder="Return time" :error="errors.endTime"
+                            hide-bottom-space :rules="[(val) => (val && val.length > 0)]">
+                            <q-popup-proxy ref="timeProxy" cover transition-show="scale" transition-hide="scale">
+                                <q-time v-model="form.endTime">
+                                    <div class="row items-center justify-end">
+                                        <q-btn v-close-popup label="Close" color="primary" flat />
+                                    </div>
+                                </q-time>
+                            </q-popup-proxy>
+                        </q-input>
+                    </div>
+                    <q-btn type="submit" unelevated color="primary" class="q-ml-lg" :icon="ionSearch" />
+                </div>
             </q-form>
         </q-card>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { date } from 'quasar'
-import { ionCalendar, ionLocation } from '@quasar/extras/ionicons-v6';
-
-const dateProxy = ref();
-const form: any = reactive({
-    location: '',
-    startDate: date.formatDate(new Date(), 'YYYY/MM/DD'),
-    endDate: date.formatDate(date.addToDate(new Date(), { days: 1 }), 'YYYY/MM/DD')
-});
-const emit = defineEmits<{
-    onSubmit: []
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
+import { date } from 'quasar';
+import CryptoService from '@/services/crypto.service';
+import UtilService from '@/services/util.service';
+import type { RentDetails } from '@/interfaces/RentDetails';
+import { ionCalendar, ionLocation, ionSearch, ionTime } from '@quasar/extras/ionicons-v6';
+const props = defineProps<{
+    formValue?: RentDetails;
+    routeTo?: string;
 }>();
 
-// function onSubmit() {
-//     if (form.location.value !== '' && form.startDate.value !== '' && form.endDate.value !== '') {
-//         console.log('form', form);
-//     }
-// }
+const router = useRouter();
+const dateProxy = ref();
+const form: RentDetails = reactive({
+    location: props.formValue?.location || 'Choose location',
+    startDate: props.formValue?.startDate || '',
+    startTime: props.formValue?.startTime || '',
+    endDate: props.formValue?.endDate || '',
+    endTime: props.formValue?.endTime || '',
+    pickupAddress: '',
+    returnAddress: ''
+});
+const errors: any = reactive({
+    location: false,
+    startDate: false,
+    startTime: false,
+    endDate: false,
+    endTime: false
+});
+const locationsOpt = ref<string[]>(['Choose location']);
+const isValidForm = ref<boolean>(true);
+
+function getLocationOptions() {
+    UtilService.getLocationList()
+        .then((response) => {
+            // console.log('location', response.data);
+            locationsOpt.value = locationsOpt.value.concat(response.data);
+        })
+        .catch((error) => {
+            console.error(error);
+            return [];
+        });
+}
+
+function getDateTime(date: string, time: string) {
+    return date.concat(' ').concat(time);
+}
+
+function validStartDate(startDate: any) {
+    return startDate >= date.formatDate(new Date(), 'YYYY/MM/DD');
+}
+
+function validEndDate(endDate: any) {
+    if (form.startDate != '') return endDate >= form.startDate;
+    return endDate >= date.formatDate(new Date(), 'YYYY/MM/DD');
+}
+
+function validateForm() {
+    reset();
+    if (form.location === 'Choose location') {
+        errors.location = true;
+        isValidForm.value = false;
+    }
+    if (form.startDate > form.endDate) {
+        errors.endDate = true;
+        isValidForm.value = false;
+    } else if (getDateTime(form.endDate, form.endTime) <= getDateTime(form.startDate, form.startTime)) {
+        errors.endTime = true;
+        isValidForm.value = false;
+    }
+}
+
+function reset() {
+    isValidForm.value = true;
+    errors.location = errors.startDate = errors.startTime = errors.endDate = errors.endTime = false;
+}
+
+function submit() {
+    validateForm();
+    if (isValidForm.value) {
+        const encryptedData = CryptoService.encrypt(JSON.stringify(form));
+        localStorage.setItem(import.meta.env.VITE_SESSION_DATA, encryptedData);
+        if (props.routeTo === '') {
+            router.go(0);
+        } else {
+            router.push({ name: props.routeTo });
+        }
+    }
+}
+
+onMounted(() => {
+    getLocationOptions();
+});
 </script>
 
-<style>
-.date-input {
-    max-width: 300px;
+<style scoped>
+.drop-field {
+    width: 220px;
+}
+
+.date-field {
+    max-width: 140px;
+}
+
+.time-field {
+    max-width: 120px;
 }
 </style>
