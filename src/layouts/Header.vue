@@ -6,7 +6,7 @@
                 <p class="text-h6 text-bold text-primary">HIVE LOGO</p>
             </a>
             <q-space />
-    
+
             <div v-if="isLoggedIn" class="q-pa-x-sm q-gutter-x-lg">
                 <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px">
                     <WishlistDropdown :customerId="user!.id" />
@@ -23,7 +23,8 @@
                         {{ user!.name?.charAt(0).toUpperCase() }}
                     </q-avatar>
                     <div class="column align-left justify-start">
-                        <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as Provider)!.trading_name
+                        <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as
+                Provider)!.trading_name
                             }}</div>
                         <div v-if="currentUser == UserType.P" class="text-left text-caption">{{ user!.name }}</div>
                     </div>
@@ -45,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CryptoService from '@/services/crypto.service';
 import type { Provider } from '@/interfaces/rest/Provider';
@@ -63,6 +64,10 @@ const currentUser = ref<UserType | null>(null);
 const loginDialog = ref<boolean>(false);
 const isLoggedIn = computed<boolean>(() => user.value != null);
 
+watch(
+    () => route.fullPath, async () => { getUserData(); }
+)
+
 function getUserData() {
     if (route.fullPath.includes('/provider')) {
         const data = localStorage.getItem(import.meta.env.VITE_PRV_SESSION_KEY);
@@ -77,7 +82,6 @@ function getUserData() {
             currentUser.value = UserType.C;
         }
     }
-    // console.log('user', user.value);
 }
 
 function getLoginUserType() {

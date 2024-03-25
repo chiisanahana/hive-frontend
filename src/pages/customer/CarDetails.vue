@@ -1,8 +1,7 @@
 <template>
     <div class="row q-pa-md q-gutter-md">
         <div class="col-7 q-gutter-y-md">
-            <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack"
-                no-caps />
+            <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
             <q-card flat>
                 <q-card-section horizontal>
                     <q-card-section class="col-8">
@@ -73,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount, computed } from 'vue';
+import { ref, watch, onMounted, onBeforeMount, computed } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
@@ -86,7 +85,6 @@ import WishlistService from '@/services/wishlist.service';
 import OrderService from '@/services/order.service';
 import { formatAmount } from '@/composables/formatter';
 import { calcRentPrice } from '@/composables/calculator';
-import Header from '@/layouts/Header.vue';
 import CarCarousel from '@/components/ui-block/CarCarousel.vue';
 import CarInfoIcon from '@/components/ui-block/CarInfoIcon.vue';
 import ProviderInfoCard from '@/components/cards/ProviderInfoCard.vue';
@@ -108,6 +106,13 @@ const loginDialog = ref<boolean>(false);
 const pickupAddress = ref<string>('');
 const returnAddress = ref<string>('');
 const isValidInput = computed(() => pickupAddress.value !== '' && returnAddress.value !== '');
+
+watch(
+    () => route.query.cid,
+    async newId => {
+        getCar(parseInt(CryptoService.decrypt(newId?.toString() || '')))
+    }
+)
 
 function goBack() {
     router.go(-1);
@@ -233,7 +238,7 @@ function bookNow() {
 }
 
 function loginSuccess() {
-    router.go(0);
+    // nothing to do
 }
 
 function signUp() {

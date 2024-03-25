@@ -35,7 +35,7 @@
             <q-btn class="full-width q-pa-sm" label="Login" type="submit" color="primary" />
             <p>
                 Don't have an account?
-                <a class="link text-accent" @click="$emit('routeToSignUp')">Sign Up</a>
+                <a class="link cursor-pointer text-accent" @click="$emit('routeToSignUp')">Sign Up</a>
             </p>
         </div>
     </q-form>
@@ -128,5 +128,10 @@ onMounted(() => {
 
 .field-label {
     font-weight: 600;
+}
+
+.link {
+    text-decoration: none;
+    font-weight: 500;
 }
 </style>

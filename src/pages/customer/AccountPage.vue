@@ -26,14 +26,15 @@
                         <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Name</div>
                         <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
                         <q-input v-else class="col-5" style="min-width: 200px;" outlined dense v-model="form.name"
-                            autocomplete="on" lazy-rules
-                            :rules="[(val) => (val && val.length > 0) || 'Name is required']" />
+                            autocomplete="on" lazy-rules :rules="[
+            (val) => (val && val.length > 0) || 'Name is required',
+            (val) => isValidName(val.trim()) || 'Name is not valid']" />
                     </div>
                     <div class="row items-center">
                         <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Email</div>
                         <div v-if="!isEdit" class="col"> {{ customer?.email }} </div>
-                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense debounce="500" v-model="form.email" autocomplete="on" lazy-rules
-                            :rules="[
+                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense debounce="500"
+                            v-model="form.email" autocomplete="on" lazy-rules :rules="[
             (val) => (val && val.length > 0) || 'Email is required',
             (val) => isValidEmail(val.trim()) || 'Email is not valid',
             (val) => isEmailAvail(val.trim())]" />
@@ -43,12 +44,13 @@
                         <div v-if="!isEdit" class="col">
                             {{ isHasPhoneNumber() ? customer?.phone_number : '-' }}
                         </div>
-                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense v-model="form.phone_number" lazy-rules
-                            :rules="[(val) => (val && val.length > 0) || 'Phone number is required']" />
+                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense
+                            v-model="form.phone_number" mask="##############" lazy-rules :rules="[
+            (val) => (val && val.length > 0) || 'Phone number is required',
+            (val) => val.length >= 10 || 'Phone number is not valid']" />
                     </div>
                     <div v-if="isEdit" class="row q-gutter-md q-mt-sm justify-end">
-                        <q-btn unelevated color="secondary" text-color="accent" label="Cancel"
-                            @click="resetForm" />
+                        <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="resetForm" />
                         <q-btn color="accent" label="Save Profile" :disable="!isValidInput" @click="updateData" />
                     </div>
                 </q-card-section>
@@ -61,7 +63,7 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
-import { isValidEmail } from '@/composables/validator';
+import { isValidEmail, isValidName } from '@/composables/validator';
 import type { Customer } from '@/interfaces/rest/Customer';
 import { Message, UserType } from '@/enums/enum';
 
@@ -145,7 +147,7 @@ function isDataCompleted() {
 function resetForm() {
     isEdit.value = false;
     if (customer.value != undefined) {
-        form.name = customer.value.name != customer.value.name?.toLowerCase() ? '' : customer.value?.name!;
+        form.name = customer.value.name != customer.value.name?.toLowerCase() ? customer.value?.name! : '';
         form.email = customer.value?.email;
         form.phone_number = isHasPhoneNumber() ? customer.value?.phone_number! : '';
     }

@@ -98,7 +98,8 @@ function isEmailAvail(email: string) {
 function submit() {
     quasar.loading.show({ spinner: QSpinnerGears });
     // console.log('form', form);
-    form.email = form.email.trim();
+    form.email = form.email.trim().toLowerCase();
+    form.password = form.password.trim();
 
     UserService.register(form, UserType.C)
         .then((response) => {

@@ -40,3 +40,7 @@ export function formatTimestampToDateDisplay(timestamp: string | undefined): str
     const date = timestamp.substring(0, 10);
     return formatDateDisplay(date);
 }
+
+export function formatNameCase(name: string) {
+    return name.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+}

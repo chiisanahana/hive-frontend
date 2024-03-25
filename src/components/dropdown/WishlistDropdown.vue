@@ -6,7 +6,7 @@
                 <div class="row items-center">
                     <span class="text-bold q-mr-sm">Wishlist</span>({{ wishlists.length }})
                     <q-space />
-                    <q-btn flat dense text-color="accent" label="View all" no-caps @click="goToWishlist" />
+                    <q-btn v-if="!isLoading && wishlists.length > 0" flat dense text-color="accent" label="View all" no-caps @click="goToWishlist" />
                 </div>
             </q-item-label>
             <q-scroll-area :style="{ height: height }">
@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import type { Wishlist } from '@/interfaces/rest/Wishlist';
 import WishlistService from '@/services/wishlist.service';
 import CryptoService from '@/services/crypto.service';
@@ -83,7 +83,6 @@ const props = defineProps<{
     customerId: number;
 }>();
 
-const route = useRoute();
 const router = useRouter();
 const wishlists = ref<Wishlist[]>([]);
 const height = ref<string>('48px');
@@ -113,12 +112,7 @@ function getWishlists() {
 }
 
 function viewCar(carId: number) {
-    console.log('id', carId);
     const encryptedId = CryptoService.encrypt(carId);
     router.push({ name: 'car-details', query: { cid: encryptedId } });
-
-    if (route.fullPath.includes('cars/details')) {
-        router.go(0);
-    }
 }
 </script>

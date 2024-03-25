@@ -9,13 +9,11 @@ class UserService {
         return http.post(`/${type}s/check-email`, { email: email.toLowerCase() });
     }
 
-    register(data: UserAuth, type: UserType): Promise<any> {
-        // console.log('register', data, type);
-        return http.post(`/${type}s/`, {
-            email: data.email.toLowerCase(),
-            password: data.password,
-            name: this._generateUsername(),
-        });
+    register(data: any, type: UserType): Promise<any> {
+        if (type == UserType.C) {
+            data.name = this._generateUsername();
+        }
+        return http.post(`/${type}s/`, data);
     }
 
     login(data: UserAuth, type: UserType): Promise<any> {

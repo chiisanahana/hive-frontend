@@ -79,7 +79,11 @@ function handleProviderAuth() {
     if (!isProvider()) {
         router.push({ name: 'sign-up-prv' })
     } else if (localStorage.getItem(import.meta.env.VITE_PRV_SESSION_KEY) != null) {
-        router.push({ name: 'dashboard' })
+        quasar.loading.show({ spinner: QSpinnerGears });
+        setTimeout(() => {
+            router.push({ name: 'dashboard' });
+            quasar.loading.hide();
+        }, 200);
     } else {
         emit('openLoginDialog');
     }
@@ -95,6 +99,10 @@ function logout() {
 }
 
 function backToMain() {
-    router.push({ name: 'home' });
+    quasar.loading.show({ spinner: QSpinnerGears });
+    setTimeout(() => {
+        router.push({ name: 'home' });
+        quasar.loading.hide();
+    }, 200);
 }
 </script>
