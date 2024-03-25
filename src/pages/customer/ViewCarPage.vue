@@ -157,25 +157,25 @@ watch(filter, async (newFilter, oldFilter) => {
 })
 
 function getCars() {
-    CarService.getAll().then((response: any) => {
-        console.log(response);
-        isLoading.value = false;
-        data.value = response.data;
-        cars.value = response.data.concat(response.data).concat(response.data);
-    }).catch((e: Error) => {
-        console.error(e);
-    });
+    // CarService.getAll().then((response: any) => {
+    //     console.log(response);
+    //     isLoading.value = false;
+    //     data.value = response.data;
+    //     cars.value = response.data.concat(response.data).concat(response.data);
+    // }).catch((e: Error) => {
+    //     console.error(e);
+    // });
 
-    // CarService.searchCar(rentDetails.value!)
-    //     .then((response: any) => {
-    //         // console.log(response);
-    //         isLoading.value = false;
-    //         data.value = response.data;
-    //         cars.value = data.value;
-    //     }).catch((e: Error) => {
-    //         isLoading.value = false;
-    //         console.error(e);
-    //     });
+    CarService.searchCar(rentDetails.value!)
+        .then((response: any) => {
+            // console.log(response);
+            isLoading.value = false;
+            data.value = response.data;
+            cars.value = data.value;
+        }).catch((e: Error) => {
+            isLoading.value = false;
+            console.error(e);
+        });
 }
 
 function priceFilter(cars: Car[]) {
