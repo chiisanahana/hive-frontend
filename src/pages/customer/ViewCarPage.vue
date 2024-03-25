@@ -1,8 +1,8 @@
 <template>
     <div class="row q-pa-md container">
-        <div class="col-auto q-mr-md" style="width: 270px;">
+        <div class="col-auto q-mr-md filter-container">
             <q-scroll-area class="fit">
-                <div class="q-pa-md filter-box ">
+                <div class="q-pa-md filter-box">
                     <div class="row">
                         <div class="row items-center q-mb-xs">
                             <q-icon name="filter_alt" class="q-mr-xs" size="xs" />
@@ -18,12 +18,14 @@
                                 <div class="row items-center q-gutter-sm q-mb-sm">
                                     <div class="col">
                                         <q-input debounce="500" dense standout="bg-white" v-model="filter.priceMin"
-                                            bg-color="secondary" input-class="text-font" placeholder="0" />
+                                            bg-color="secondary" input-class="text-font" placeholder="0"
+                                            mask="###.###.###.###" reverse-fill-mask unmasked-value />
                                     </div>
                                     <div class="col-auto">-</div>
                                     <div class="col">
                                         <q-input debounce="500" dense standout="bg-white" v-model="filter.priceMax"
-                                            bg-color="secondary" input-class="text-font" placeholder="9.999.999" />
+                                            bg-color="secondary" input-class="text-font" placeholder="9.999.999"
+                                            mask="###.###.###.###" reverse-fill-mask unmasked-value />
                                     </div>
                                 </div>
                             </q-card>
@@ -99,19 +101,21 @@
             </q-scroll-area>
         </div>
 
-        <div class="col q-gutter-y-md items-center">
-            <CarSearchForm :form-value="rentDetails" :route-to="''" />
+        <q-scroll-area class="col fit">
+            <div class="q-gutter-y-md items-center">
+                <CarSearchForm :form-value="rentDetails" :route-to="''" />
 
-            <div v-if="isLoading" class="row q-px-md q-gutter-md">
-                <CarCardSkeleton v-for="n in 8" :key="n" />
+                <div v-if="isLoading" class="row q-px-md q-gutter-md">
+                    <CarCardSkeleton v-for="n in 8" :key="n" />
+                </div>
+                <div v-else-if="cars.length == 0">
+                    Oops... No cars available
+                </div>
+                <div v-else class="row q-px-md q-gutter-md">
+                    <CarCard v-for="car in cars" :car="car" />
+                </div>
             </div>
-            <div v-else-if="cars.length == 0">
-                Oops... No cars available
-            </div>
-            <div v-else class="row q-px-md q-gutter-md">
-                <CarCard v-for="car in cars" :car="car" />
-            </div>
-        </div>
+        </q-scroll-area>
     </div>
 </template>
 
@@ -153,25 +157,25 @@ watch(filter, async (newFilter, oldFilter) => {
 })
 
 function getCars() {
-    // CarService.getAll().then((response: any) => {
-    //     console.log(response);
-    //     isLoading.value = false;
-    //     data.value = response.data;
-    //     cars.value = response.data;//.concat(response.data);
-    // }).catch((e: Error) => {
-    //     console.error(e);
-    // });
+    CarService.getAll().then((response: any) => {
+        console.log(response);
+        isLoading.value = false;
+        data.value = response.data;
+        cars.value = response.data.concat(response.data).concat(response.data);
+    }).catch((e: Error) => {
+        console.error(e);
+    });
 
-    CarService.searchCar(rentDetails.value!)
-        .then((response: any) => {
-            // console.log(response);
-            isLoading.value = false;
-            data.value = response.data;
-            cars.value = data.value;
-        }).catch((e: Error) => {
-            isLoading.value = false;
-            console.error(e);
-        });
+    // CarService.searchCar(rentDetails.value!)
+    //     .then((response: any) => {
+    //         // console.log(response);
+    //         isLoading.value = false;
+    //         data.value = response.data;
+    //         cars.value = data.value;
+    //     }).catch((e: Error) => {
+    //         isLoading.value = false;
+    //         console.error(e);
+    //     });
 }
 
 function priceFilter(cars: Car[]) {
@@ -247,6 +251,11 @@ onMounted(() => {
 .car-card {
     width: calc(100% / 4 - 16px);
     height: fit-content;
+}
+
+.filter-container {
+    width: 270px;
+    max-height: calc(100vh - 69px - 32px);
 }
 
 .filter-box {

@@ -1,9 +1,12 @@
 <template>
     <q-dialog persistent>
-        <q-card>
+        <q-card class="q-pa-md">
             <q-card-section class="row items-center">
-                <q-avatar :icon="ionWarning" color="warning" text-color="white" />
-                <span class="q-ml-sm">{{ message }}</span>
+                <q-avatar :icon="ionWarning" color="warning" text-color="white" class="q-mr-md" />
+                <div class="column q-gutter-sm">
+                    <span>{{ message }}</span>
+                    <span class="text-blue-grey-4">This action cannot be undone.</span>
+                </div>
             </q-card-section>
             <q-card-actions align="right">
                 <q-btn flat color="primary" v-close-popup>{{ cancelBtnTitle }}</q-btn>

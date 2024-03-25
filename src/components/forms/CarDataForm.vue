@@ -8,7 +8,8 @@
             </template>
         </q-file>
         <!-- </div> -->
-        <div>
+        <div class="q-gutter-md">
+            <q-btn unelevated label="Cancel" color="secondary" text-color="accent" />
             <q-btn label="Submit" type="submit" color="primary" />
         </div>
     </q-form>

@@ -76,6 +76,11 @@ const router = createRouter({
       component: () => import('@/pages/provider/ViewCarPage.vue'),
     },
     {
+      path: '/provider/cars/details',
+      name: 'view-car-details',
+      component: () => import('@/pages/provider/CarDetails.vue'),
+    },
+    {
       path: '/provider/cars/add',
       name: 'add-car',
       component: () => import('@/pages/provider/AddCarPage.vue'),
@@ -84,7 +89,11 @@ const router = createRouter({
       path: '/provider/cars/edit',
       name: 'edit-car',
       component: () => import('@/pages/provider/EditCarPage.vue'),
-      props: true,
+    },
+    {
+      path: '/provider/account',
+      name: 'provider-account',
+      component: () => import('@/pages/provider/AccountPage.vue'),
     },
     {
       path: '/logout',

@@ -1,6 +1,4 @@
 <template>
-    <Breadcrumb :items="breadcrumbItems" />
-
     <div class="q-ma-md">
         <p class="text-h4">Edit Car</p>
         <div>{{ car }}</div>
@@ -9,22 +7,34 @@
 </template>
 
 <script setup lang="ts">
-import type { BreadcrumbItem } from '@/interfaces/BreadcrumbItem';
+import { ref, onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
+import { useQuasar, QSpinnerGears } from 'quasar';
 import type { Car } from '@/interfaces/rest/Car';
-import { ref, onMounted } from 'vue'
-import { useCarStore } from '@/stores/car';
-import Breadcrumb from '@/layouts/Breadcrumb.vue';
+import CarService from '@/services/car.service';
+import CryptoService from '@/services/crypto.service';
 import CarDataForm from '@/components/forms/CarDataForm.vue';
 
-const breadcrumbItems: BreadcrumbItem[] = [
-    { icon: 'home', ref: '/' },
-    { label: 'Manage Cars', ref: '/manage-cars' },
-    { label: 'Edit Car' }
-]
-const store = useCarStore();
+const route = useRoute();
+const quasar = useQuasar();
 const car = ref<Car>();
 
-onMounted(() => {
-    car.value = store.getCarToEdit;
+function getCar(carId: number) {
+    quasar.loading.show({ spinner: QSpinnerGears });
+    CarService.get(carId).then((response: any) => {
+        car.value = response.data;
+        quasar.loading.hide();
+    }).catch((e: Error) => {
+        console.error(e);
+        quasar.loading.hide();
+    });
+}
+
+onBeforeMount(() => {
+    // load car data
+    const carId = route.query.cid;
+    if (typeof carId === 'string') {
+        getCar(parseInt(CryptoService.decrypt(carId)));
+    }
 });
 </script>

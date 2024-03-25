@@ -18,7 +18,7 @@ export interface Car {
   description: string;
   status: string;
   rating: number;
-  count: number;
+  click_count: number;
   order_count: number;
   created_datetime: string;
   updated_datetime?: string;

@@ -26,7 +26,9 @@
                         <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as
                 Provider)!.trading_name
                             }}</div>
-                        <div v-if="currentUser == UserType.P" class="text-left text-caption">{{ user!.name }}</div>
+                        <div v-if="currentUser == UserType.P" class="text-left text-caption text-blue-grey-4">
+                            {{ user!.name }}
+                        </div>
                     </div>
                     <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" />
                 </q-btn>

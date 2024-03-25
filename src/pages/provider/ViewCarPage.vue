@@ -1,84 +1,183 @@
 <template>
-    <Breadcrumb :items="breadcrumbItems" />
+    <div class="q-pa-md">
+        <q-card flat>
+            <q-card-section>
+                <q-table flat bordered :rows="cars" :columns="columns" row-key="id"
+                    :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
+                    class="text-font" :loading="isLoading" color="primary">
+                    <template v-slot:top>
+                        <div class="row col-12 items-center">
+                            <div class="text-h6">Car List</div>
+                            <q-space />
+                            <div class="row q-gutter-x-sm">
+                                <q-btn v-if="selected.length > 0" flat round class="rounded-borders" color="blue-grey-4"
+                                    :icon="ionTrash" @click="showConfirm = true" />
+                                <q-btn v-if="selected.length == 1" flat round class="rounded-borders" color="primary"
+                                    icon="edit" @click="editCar(selected[0].id)" />
+                                <q-btn round class="rounded-borders q-ml-lg" color="primary" :icon="ionAdd"
+                                    @click="addCar" />
+                            </div>
+                        </div>
+                    </template>
 
-    <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-        <div class="q-pa-md row q-gutter-md">
-            <q-card class="car-card col-3" v-for="car in cars" :key="car.id">
-                <img
-                    src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
-                <q-card-section>
-                    <div class="text-h6">{{ car.brand }}</div>
-                    <div class="text-subtitle2">{{ car.price }}</div>
-                </q-card-section>
-                <q-separator />
-                <q-card-actions>
-                    <q-btn flat @click="editCar(car)">Edit</q-btn>
-                    <q-btn flat @click="showConfirm = true; selectedCar = car.id">Delete</q-btn>
-                </q-card-actions>
-            </q-card>
-            <ConfirmDialog v-model="showConfirm" message="Are you sure want to delete this car?"
-                action-btn-title="Delete" @confirm-action="deleteCar(selectedCar!)" />
-        </div>
-    </transition>
-    <div class="q-pa-md row justify-end">
-        <q-btn round color="primary" :icon="ionAdd" :to="{ name: 'add-car' }" />
+                    <template v-slot:body="props">
+                        <q-tr :props="props" @click="onRowClick(props.row)">
+                            <q-td>
+                                <q-checkbox v-model="props.selected" color="primary" />
+                            </q-td>
+                            <q-td key="brand" :props="props">
+                                <div class="row">
+                                    <q-img class="rounded-borders q-mr-md" src="https://picsum.photos/500/300"
+                                        :ratio="16 / 9" width="100px" />
+                                    <div class="column">
+                                        <div class="text-bold q-mb-xs">
+                                            {{ props.row.brand }}
+                                            <q-badge align="top" color="secondary" text-color="accent">
+                                                {{ props.row.car_type }}
+                                            </q-badge>
+                                        </div>
+                                        <div class="text-blue-grey-4">{{ props.row.vehicle_no }}</div>
+                                    </div>
+                                </div>
+                            </q-td>
+                            <q-td key="statistic" :props="props">
+                                <div class="column items-center">
+                                    <div class="row items-center q-mb-xs">
+                                        <q-icon name="r_star" size="xs" color="warning" class="q-mr-xs" />
+                                        <span class="text-bold">{{ props.row.rating }}</span>
+                                    </div>
+                                    <div class="row items-center">
+                                        <div class="row items-center q-mr-md">
+                                            <q-icon :name="ionEye" color="blue-grey-4" class="q-mr-xs" size="xs" />
+                                            <span class="text-blue-grey-4">{{ props.row.click_count }}</span>
+                                        </div>
+                                        <div class="row items-center">
+                                            <q-icon :name="ionCheckmarkCircle" color="blue-grey-4" class="q-mr-xs"
+                                                size="xs" />
+                                            <span class="text-blue-grey-4">{{ props.row.order_count }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </q-td>
+                            <q-td key="price" :props="props">
+                                {{ formatAmount(props.row.price) }}
+                            </q-td>
+                            <q-td key="deposit" :props="props">
+                                {{ formatAmount(props.row.deposit) }}
+                            </q-td>
+                            <q-td key="status" :props="props">
+                                <q-toggle v-model="props.row.status" false-value="N" true-value="A"
+                                    @update:model-value="(val) => { toggleCarStatus(props.row.id, val) }" />
+                            </q-td>
+                        </q-tr>
+                    </template>
+                </q-table>
+            </q-card-section>
+        </q-card>
+        <ConfirmDialog v-model="showConfirm"
+            :message="selected.length > 1 ? 'Are you sure want to delete these cars?' : 'Are you sure want to delete this car?'"
+            action-btn-title="Delete" @confirm-action="deleteCars(selected)" />
     </div>
-    <q-inner-loading :showing="visible">
-        <q-spinner-gears size="50px" color="primary" />
-    </q-inner-loading>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import type { BreadcrumbItem } from '@/interfaces/BreadcrumbItem';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import type { QTableColumn } from 'quasar';
 import type { Car } from '@/interfaces/rest/Car';
-import { useCarStore } from '@/stores/car';
+import { formatAmount } from '@/composables/formatter';
 import CarService from '@/services/car.service';
-import Header from '@/layouts/Header.vue';
-import Breadcrumb from '@/layouts/Breadcrumb.vue';
+import UserService from '@/services/user.service';
+import CryptoService from '@/services/crypto.service';
+import { Message } from '@/enums/enum';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
-import { ionAdd } from '@quasar/extras/ionicons-v6';
+import { ionAdd, ionCheckmarkCircle, ionEye, ionTrash } from '@quasar/extras/ionicons-v6';
 
-const breadcrumbItems: BreadcrumbItem[] = [
-    { icon: 'home', ref: '/' },
-    { label: 'Manage Cars' }
-]
 const router = useRouter();
-const store = useCarStore();
+const quasar = useQuasar();
 const cars = ref<Car[]>([]);
-const visible = ref<boolean>(false);
+const isLoading = ref<boolean>(false);
+const selected = ref<any>([]);
 const showConfirm = ref<boolean>(false);
-const selectedCar = ref<number>();
+const columns: QTableColumn[] = [
+    { name: 'brand', align: 'left', label: 'Car Information', field: 'brand' },
+    { name: 'statistic', align: 'center', label: 'Statistics', field: 'rating', sortable: true },
+    { name: 'price', align: 'left', label: 'Price', field: 'price', sortable: true },
+    { name: 'deposit', align: 'left', label: 'Deposit', field: 'deposit', sortable: true },
+    { name: 'status', align: 'center', label: 'Active', field: 'status' }
+]
 
-function getCars() {
-    CarService.getAll().then((response: any) => {
-        console.log(response);
-        visible.value = false;
-        cars.value = response.data;
-    }).catch((e: Error) => {
-        console.error(e);
-    });
+function getSelectedString() {
+    return selected.value.length === 0 ? '' : `${selected.value.length} record${selected.value.length > 1 ? 's' : ''} selected of ${cars.value.length}`
 }
 
-function editCar(car: Car) {
-    console.log('Edit car with id ' + car.id);
-    store.setCarToEdit(car);
-    router.push({ name: 'edit-car' });
-};
+function onRowClick(row: any) {
+    console.log('row clicked', row.id);
+    const encryptedId = CryptoService.encrypt(row.id);
+    router.push({ name: 'view-car-details', query: { cid: encryptedId } })
+}
 
-function deleteCar(id: number) {
-    console.log('Delete car with id ' + id);
-    CarService.delete(id).then((response: any) => {
-        console.log(response);
-        getCars();
-    }).catch((e: Error) => {
-        console.error(e);
+function addCar() {
+    router.push({ name: 'add-car' });
+}
+
+function editCar(id: number) {
+    const encryptedId = CryptoService.encrypt(id);
+    router.push({ name: 'edit-car', query: { cid: encryptedId } });
+}
+
+function getCars() {
+    isLoading.value = true;
+    CarService.getByProviderId(UserService.getLoggedInPrv().id)
+        .then((response: any) => {
+            isLoading.value = false;
+            cars.value = response.data.filter((car: any) => { return car.isdelete == '0' });
+        }).catch((e: Error) => {
+            console.error(e);
+            isLoading.value = false;
+        });
+}
+
+function toggleCarStatus(rowId: number, value: any) {
+    isLoading.value = true;
+    CarService.updateCarStatus(rowId, value)
+        .then((response) => {
+            cars.value.map((car) => { if (car.id == rowId) car.status = response.data.status });
+            isLoading.value = false;
+        }).catch((error) => {
+            // revert
+            cars.value.map((car) => { if (car.id == rowId) car.status = value == 'A' ? 'N' : 'A' });
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+            isLoading.value = false;
+        });
+}
+
+function deleteCars(cars: Car[]) {
+    isLoading.value = true;
+    cars.forEach((car: Car) => {
+        console.log('Delete car with id ' + car.id);
+        CarService.deleteCar(car.id)
+            .then((response: any) => {
+                selected.value = [];
+                isLoading.value = false;
+                getCars();
+            }).catch((error) => {
+                quasar.notify({
+                    color: 'negative',
+                    position: 'top-right',
+                    message: Message.INTERNAL_SERVER_ERROR
+                });
+                isLoading.value = false;
+            });
     });
 }
 
 onMounted(() => {
-    visible.value = true
     getCars();
 })
 </script>

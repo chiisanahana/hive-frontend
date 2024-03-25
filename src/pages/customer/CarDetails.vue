@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeMount, computed } from 'vue';
+import { ref, watch, onBeforeMount, computed } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
@@ -124,15 +124,16 @@ function goToChat() {
 }
 
 function getCar(carId: number) {
+    quasar.loading.show({ spinner: QSpinnerGears });
     CarService.get(carId).then((response: any) => {
         // console.log(response);
-        quasar.loading.hide();
-
         car.value = response.data;
         rentPrice.value = calcRentPrice(
             rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!, car.value?.deposit!);
+        quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
+        quasar.loading.hide();
     });
 }
 
@@ -250,20 +251,14 @@ onBeforeMount(() => {
     const data = localStorage.getItem(import.meta.env.VITE_SESSION_DATA);
     if (data != null) {
         rentDetails.value = JSON.parse(CryptoService.decrypt(data));
-        // console.log('rent data', rentDetails.value);
     }
 
     // load car data
     const carId = route.query.cid;
-    // console.log(carId);
     if (typeof carId === 'string') {
         getCar(parseInt(CryptoService.decrypt(carId)));
     }
 });
-
-onMounted(() => {
-    quasar.loading.show({ spinner: QSpinnerGears })
-})
 </script>
 
 <style scoped>

@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
 import type { Customer } from '@/interfaces/rest/Customer';
@@ -57,6 +57,7 @@ const emit = defineEmits<{
     openLoginDialog: []
 }>();
 
+const route = useRoute();
 const router = useRouter();
 const quasar = useQuasar();
 
@@ -68,7 +69,8 @@ function isProvider() {
 }
 
 function goToAccount() {
-    router.push({ name: 'account' });
+    if (route.fullPath.includes('provider')) router.push({ name: 'provider-account' });
+    else router.push({ name: 'account' });
 }
 
 function goToHistory() {
