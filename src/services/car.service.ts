@@ -1,6 +1,7 @@
 import http from '@/http-common';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import { formatTimestampBackend } from '@/composables/formatter';
+import type { Car } from '@/interfaces/rest/Car';
 
 class CarService {
   get(id: number): Promise<any> {
@@ -26,6 +27,14 @@ class CarService {
       province: location[1],
       city: location[0]
     });
+  }
+
+  addCar(car: Car): Promise<any> {
+    return http.post('/cars/', car);
+  }
+
+  updateCar(car: Car): Promise<any> {
+    return http.put(`/cars/${car.id}/`, car);
   }
 
   updateCarStatus(id: number, status: string): Promise<any> {

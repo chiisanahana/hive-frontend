@@ -161,7 +161,7 @@ function deleteCars(cars: Car[]) {
     isLoading.value = true;
     cars.forEach((car: Car) => {
         console.log('Delete car with id ' + car.id);
-        CarService.deleteCar(car.id)
+        CarService.deleteCar(car.id!)
             .then((response: any) => {
                 selected.value = [];
                 isLoading.value = false;

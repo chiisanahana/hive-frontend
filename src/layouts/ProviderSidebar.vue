@@ -19,7 +19,8 @@
                 <q-expansion-item :icon="ionCar" label="Cars" :expand-icon="ionChevronDown"
                     :header-class="isActive('cars') ? 'text-accent' : ''" default-opened>
                     <q-list>
-                        <q-item dense clickable :active="isActive('cars/add')" active-class="text-accent" @click="goToAddCar">
+                        <q-item dense clickable :active="isActive('cars/add')" active-class="text-accent"
+                            @click="goToAddCar">
                             <q-item-section class="child-menu">Add cars</q-item-section>
                         </q-item>
                     </q-list>
@@ -30,19 +31,23 @@
                         </q-item>
                     </q-list>
                 </q-expansion-item>
-                <q-expansion-item :icon="ionReader" label="Orders" :expand-icon="ionChevronDown" default-opened>
+                <q-expansion-item :icon="ionReader" label="Orders" :expand-icon="ionChevronDown"
+                    :header-class="isActive('orders') ? 'text-accent' : ''" default-opened>
                     <q-list>
-                        <q-item dense clickable :active="isActive('orders')" active-class="text-accent">
+                        <q-item dense clickable :active="isActive('orders', false, 'status', 'pending')"
+                            active-class="text-accent" @click="goToManageOrders('pending')">
                             <q-item-section class="child-menu">Pending approval</q-item-section>
                         </q-item>
                     </q-list>
                     <q-list>
-                        <q-item dense clickable :active="isActive('orders')" active-class="text-accent">
+                        <q-item dense clickable :active="isActive('orders', false, 'status', 'ongoing')"
+                            active-class="text-accent" @click="goToManageOrders('ongoing')">
                             <q-item-section class="child-menu">Ongoing</q-item-section>
                         </q-item>
                     </q-list>
                     <q-list>
-                        <q-item dense clickable :active="isActive('orders')" active-class="text-accent">
+                        <q-item dense clickable :active="isActive('orders', false, 'status', 'completed')"
+                            active-class="text-accent" @click="goToManageOrders('completed')">
                             <q-item-section class="child-menu">Completed</q-item-section>
                         </q-item>
                     </q-list>
@@ -62,11 +67,13 @@ import { ref } from 'vue';
 const route = useRoute();
 const router = useRouter();
 
-function isActive(path: string, fullPath?: boolean) {
+function isActive(path: string, fullPath?: boolean, queryKey?: string, queryVal?: string) {
     if (fullPath)
         return route.fullPath == '/provider/' + path;
-    if (path == '') 
+    if (path == '')
         return route.fullPath == '/provider';
+    if (queryKey)
+        return route.query[queryKey] == queryVal;
     return route.fullPath.includes(path);
 }
 
@@ -84,6 +91,10 @@ function goToManageCars() {
 
 function goToAddCar() {
     router.push({ name: 'add-car' });
+}
+
+function goToManageOrders(param: string) {
+    router.push({ name: 'view-orders', query: { status: param } });
 }
 
 </script>

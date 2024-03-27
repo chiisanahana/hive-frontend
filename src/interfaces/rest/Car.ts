@@ -2,7 +2,7 @@ import type { CarFile } from "./CarFile";
 import type { Provider } from "./Provider";
 
 export interface Car {
-  id: number;
+  id?: number;
   provider_id?: number;
   provider?: Provider;
   brand: string;
@@ -17,12 +17,12 @@ export interface Car {
   deposit: number;
   description: string;
   status: string;
-  rating: number;
-  click_count: number;
-  order_count: number;
-  created_datetime: string;
+  rating?: number;
+  click_count?: number;
+  order_count?: number;
+  created_datetime?: string;
   updated_datetime?: string;
   updated_by?: number;
-  isdelete: string;
+  isdelete?: string;
   car_files: CarFile[] | [];
 }

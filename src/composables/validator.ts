@@ -6,3 +6,8 @@ export function isValidEmail(email: string) {
 export function isValidName(name: string) {
     return /^[A-Za-z\s]*$/.test(name);
 }
+
+export function isValidPrice(price: string) {
+    const regex = /^0+(?:\.0+)?$/;
+    return !regex.test(price);
+}

@@ -1,8 +1,11 @@
 <template>
-    <div class="q-ma-md">
-        <p class="text-h4">Edit Car</p>
-        <div>{{ car }}</div>
-        <CarDataForm></CarDataForm>
+    <div class="q-pa-md">
+        <q-card flat>
+            <q-card-section>
+                <div class="text-h6 q-mb-xl">Edit Car</div>
+                <CarDataForm v-if="car" :car="car" :is-edit="true"></CarDataForm>
+            </q-card-section>
+        </q-card>
     </div>
 </template>
 
@@ -17,7 +20,7 @@ import CarDataForm from '@/components/forms/CarDataForm.vue';
 
 const route = useRoute();
 const quasar = useQuasar();
-const car = ref<Car>();
+const car = ref<Car | undefined>(undefined);
 
 function getCar(carId: number) {
     quasar.loading.show({ spinner: QSpinnerGears });

@@ -35,8 +35,12 @@ class OrderService {
         });
     }
 
-    rateOrder(orderId: number, rate: number): Promise<any> {
-        return http.post('/orders/rate', { id: orderId, rating: rate });
+    updateOrderStatus(id: number, status: string): Promise<any> {
+        return http.put(`/orders/${id}/`, { status: status });
+    }
+
+    rateOrder(id: number, rate: number): Promise<any> {
+        return http.post('/orders/rate', { id: id, rating: rate });
     }
 }
 

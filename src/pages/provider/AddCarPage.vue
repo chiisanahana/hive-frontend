@@ -1,7 +1,11 @@
 <template>
-    <div class="q-ma-md">
-        <p class="text-h4">Add Car</p>
-        <CarDataForm></CarDataForm>
+    <div class="q-pa-md">
+        <q-card flat>
+            <q-card-section>
+                <div class="text-h6 q-mb-xl">Add Car</div>
+                <CarDataForm></CarDataForm>
+            </q-card-section>
+        </q-card>
     </div>
 </template>
 
