@@ -1,5 +1,6 @@
 <template>
-    <q-card flat bordered v-ripple class="cursor-pointer q-mb-md" @click="viewCar">
+    <q-card flat bordered :v-ripple="!isExpired()" :class="isExpired() ? 'q-mb-md disabled' : 'cursor-pointer'"
+        @click="viewCar">
         <q-card-section class="q-pa-sm">
             <div class="row">
                 <div class="column justify-center q-mr-lg">
@@ -48,6 +49,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { date } from 'quasar';
 import type { Wishlist } from '@/interfaces/rest/Wishlist';
 import CryptoService from '@/services/crypto.service';
 import { formatAmount, formatDateDisplay, formatTimeDisplay, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
@@ -64,9 +66,16 @@ function getLocation() {
     return props?.wishlist?.car?.provider?.city + ', ' + props?.wishlist?.car?.provider?.province;
 }
 
+function isExpired() {
+    // console.log(props.wishlist?.id! + '-' + (date.getDateDiff(Date.parse(props.wishlist?.start_date!), new Date(), 'hours') < 0))
+    return date.getDateDiff(Date.parse(props.wishlist?.start_date!), new Date(), 'hours') < 0;
+}
+
 function viewCar() {
-    const encryptedId = CryptoService.encrypt(props.wishlist?.car?.id);
-    router.push({ name: 'car-details', query: { cid: encryptedId } });
+    if (!isExpired()) {
+        const encryptedId = CryptoService.encrypt(props.wishlist?.car?.id);
+        router.push({ name: 'car-details', query: { cid: encryptedId } });
+    }
 }
 
 onMounted(() => {

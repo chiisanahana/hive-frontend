@@ -13,8 +13,8 @@
                 <q-resize-observer @resize="onResize"></q-resize-observer>
                 <WishlistDropdownSkeleton v-if="isLoading" />
 
-                <q-item clickable v-else-if="wishlists.length > 0" v-for="wishlist in wishlists"
-                    @click="viewCar(wishlist.car!.id)">
+                <q-item :clickable="!isExpired(wishlist)" v-else-if="wishlists.length > 0" v-for="wishlist in wishlists"
+                    @click="viewCar(wishlist.car?.id!)" :class="isExpired(wishlist)? 'disabled' : ''">
                     <q-item-section thumbnail class="q-ml-none">
                         <img
                             src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068">
@@ -71,6 +71,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { date } from 'quasar';
 import type { Wishlist } from '@/interfaces/rest/Wishlist';
 import WishlistService from '@/services/wishlist.service';
 import CryptoService from '@/services/crypto.service';
@@ -109,6 +110,10 @@ function getWishlists() {
             console.error(e);
             isLoading.value = false;
         });
+}
+
+function isExpired(wishlist: Wishlist) {
+    return date.getDateDiff(Date.parse(wishlist?.start_date!), new Date(), 'hours') < 0;
 }
 
 function viewCar(carId: number) {
