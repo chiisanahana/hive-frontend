@@ -21,7 +21,7 @@
                 <div class="row q-mb-lg self-top">
                     <div class="col-3 q-pt-sm">Car Photos</div>
                     <div class="col">
-                        <q-uploader label="Main photo" color="primary" :factory="factoryFn" square flat bordered
+                        <q-uploader label="Main photo" color="primary" square flat bordered
                             style="max-width: 300px" />
                     </div>
                     <!-- <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.brand" lazy-rules
@@ -167,13 +167,13 @@ function clearLeadingZeros(str: string) {
 //     })
 // });
 
-function factoryFn(file: File) {
-    // console.log(file);
-    FileService.uploadFile(file).then((response) => {
-        console.log(response);
-        fileUrl.value.push(response.id);
-    });
-}
+// function factoryFn(file: File) {
+//     // console.log(file);
+//     FileService.uploadFile(file).then((response) => {
+//         console.log(response);
+//         fileUrl.value.push(response.id);
+//     });
+// }
 
 function onSubmit() {
     quasar.loading.show({ spinner: QSpinnerGears });
