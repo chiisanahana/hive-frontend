@@ -27,7 +27,7 @@
                             </q-td>
                             <q-td key="brand" :props="props">
                                 <div class="row">
-                                    <q-img class="rounded-borders q-mr-md" src="https://picsum.photos/500/300"
+                                    <q-img class="rounded-borders q-mr-md" :src="getCarImg(props.row.car_files[0] || null)"
                                         :ratio="16 / 9" width="100px" />
                                     <div class="column">
                                         <div class="text-bold q-mb-xs">
@@ -90,6 +90,7 @@ import { formatAmount } from '@/composables/formatter';
 import CarService from '@/services/car.service';
 import UserService from '@/services/user.service';
 import CryptoService from '@/services/crypto.service';
+import { getCarImg } from '@/composables/getter';
 import { Message } from '@/enums/enum';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
 import { ionAdd, ionCheckmarkCircle, ionEye, ionTrash } from '@quasar/extras/ionicons-v6';

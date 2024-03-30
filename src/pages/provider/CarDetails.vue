@@ -3,7 +3,7 @@
         <q-card flat>
             <q-card-section horizontal>
                 <q-card-section class="col-8">
-                    <CarCarousel />
+                    <CarCarousel v-if="car != undefined" :photos="car.car_files" />
                 </q-card-section>
                 <q-card-section>
                     <div class="text-h6 text-bold">{{ car?.brand }}</div>
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount, computed } from 'vue';
+import { ref, watch, onBeforeMount } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
@@ -72,10 +72,8 @@ const quasar = useQuasar();
 const car = ref<Car>();
 const rentDetails = ref<RentDetails>();
 const rentPrice = ref<number>(0);
-const loginDialog = ref<boolean>(false);
 const pickupAddress = ref<string>('');
 const returnAddress = ref<string>('');
-const isValidInput = computed(() => pickupAddress.value !== '' && returnAddress.value !== '');
 
 watch(
     () => route.query.cid,
@@ -110,13 +108,6 @@ function getCarFuel() {
             return 'Electric';
         default:
             return '';
-    }
-}
-
-function setRentDetailsValue() {
-    if (rentDetails.value != undefined) {
-        rentDetails.value.pickupAddress = pickupAddress.value;
-        rentDetails.value.returnAddress = returnAddress.value;
     }
 }
 

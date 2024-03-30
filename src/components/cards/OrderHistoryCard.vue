@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="column justify-center q-mr-lg">
                     <img width="120px" class="rounded-borders"
-                        src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
+                        :src="getCarImg(props.order?.car?.car_files[0] || null)" />
 
                 </div>
                 <div class="column q-gutter-sm">
@@ -38,8 +38,10 @@
             </div>
             <q-card-actions align="right">
                 <q-btn flat text-color="accent" label="View details" no-caps @click="viewDetails" />
-                <q-btn v-if="!isRated" unelevated color="secondary" text-color="accent" label="Rate"
-                    style="min-width: 140px;" @click="ratingDialog = true" />
+                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="secondary" text-color="accent"
+                    label="Rate" style="min-width: 140px;" @click="ratingDialog = true" />
+                <q-btn v-else-if="['0', '1'].includes(props.order?.status!)" unelevated color="secondary"
+                    text-color="accent" label="Cancel" style="min-width: 140px;" />
             </q-card-actions>
         </q-card-section>
     </q-card>
@@ -50,7 +52,7 @@
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { Order } from '@/interfaces/rest/Order';
-import { getOrderStatus } from '@/composables/getter';
+import { getCarImg, getOrderStatus } from '@/composables/getter';
 import { formatAmount, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
 import { ionCalendar, ionLocation } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff } from '@/composables/calculator';

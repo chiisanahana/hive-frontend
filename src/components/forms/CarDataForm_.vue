@@ -21,9 +21,13 @@
                 <div class="row q-mb-lg self-top">
                     <div class="col-3 q-pt-sm">Car Photos</div>
                     <div class="col">
-                        <q-uploader class="car-photos" color="primary" square flat bordered :factory="uploadFactory"
-                            :filter="checkFileType" send-raw multiple auto-upload style="width: 100%;" />
+                        <!-- <q-uploader label="Main photo" color="primary" square flat bordered style="max-width: 300px"
+                            @added="addPhoto" /> -->
+                        <q-file style="max-width: 300px" v-model="filesImages" outlined
+                            multiple accept=".jpg, .jpeg, .png" @rejected="onRejected" />
                     </div>
+                    <!-- <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.brand" lazy-rules
+                        :rules="[(val) => (val && val.length > 0) || 'Car photos is required']" /> -->
                 </div>
                 <div class="row">
                     <div class="col-3 q-pt-sm">Year</div>
@@ -84,8 +88,7 @@
                 <div class="row">
                     <div class="col-3 q-pt-sm">Deposit</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.deposit" prefix="Rp"
-                        @update:model-value="() => { clearLeadingZeros(form.deposit) }" placeholder="Input rent deposit"
-                        mask="###.###.###.###" reverse-fill-mask unmasked-value />
+                        placeholder="Input rent deposit" />
                 </div>
             </q-card-section>
             <q-card-section>
@@ -116,14 +119,14 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CarService from '@/services/car.service';
-import CarFileService from '@/services/car.file.service';
 import UserService from '@/services/user.service';
 import FileService from '@/services/file.service';
 import type { Car } from '@/interfaces/rest/Car';
-import type { CarFile } from '@/interfaces/rest/CarFile';
 import { isValidPrice } from '@/composables/validator';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
 import { Message } from '@/enums/enum';
+import fileService from '@/services/file.service';
+import type { CarFile } from '@/interfaces/rest/CarFile';
 
 const props = defineProps<{
     car?: Car,
@@ -131,6 +134,10 @@ const props = defineProps<{
 }>();
 const router = useRouter();
 const quasar = useQuasar();
+// const file = ref<any>(undefined);
+const selectedFile = ref<File>(new File([''], ''));
+const filesImages = ref(null);
+const fileUrl = ref<string[]>([]);
 const showConfirm = ref<boolean>(false);
 const form: any = reactive({
     provider_id: props.car?.provider_id || '',
@@ -147,7 +154,7 @@ const form: any = reactive({
     description: props.car?.description || '',
     status: props.car?.status || 'A'
 });
-const photos = ref<CarFile[]>([]);
+const file_ids = ref<string[]>([]);
 const carTypeOpt = ref<string[]>([
     'Choose category',
     'Sedan',
@@ -155,31 +162,91 @@ const carTypeOpt = ref<string[]>([
     'Sport'
 ]);
 
+const emit = defineEmits<{
+    (e: 'uploaded', arg: URL): void
+}>()
+
+function onRejected (rejectedEntries:any) {
+    console.log(`${rejectedEntries.length} file(s) did not pass validation constraints`);
+}
+
 function clearLeadingZeros(str: string) {
     form.price = form.price.replace(/^0+(?=\d)/, '');
     console.log('price', form.price)
     // return str.replace(/^0+(?=\d)/, '');
 }
 
-function checkFileType(files: any) {
-    return files.filter((file: File) => ['image/png', 'image/jpg', 'image/jpeg'].includes(file.type));
-}
-
-function uploadFactory(file: any): Promise<Object> {
-    console.log('file', file);
+function uploadFactory(file: any) {
+    // let vm = this,
+    //     data = new FormData();
     return new Promise((resolve, reject) => {
-        FileService.uploadFile(file[0]).then((response) => {
+        //     this.$axios.post('/upload', data, {
+        //         headers: { 'Content-Type': 'multipart/form-data' }
+        //     })
+        //         .then(response => {
+        //             resolve(file);
+        //         })
+        //         .catch(error => reject(error))
+        // });
+        FileService.uploadFile(selectedFile.value).then((response) => {
             console.log('response', response);
-            photos.value.push({
-                file_path: response.$id,
-                file_type: response.mimeType.split('/')[1]
-            });
-            resolve({
-                url: import.meta.env.VITE_Q_UPLOAD_URL
-            });
+            // resolve(response.data);
+            resolve(`https://cloud.appwrite.io/v1/storage/buckets/65e38f60cf5a571e4c30/files`);
+            // resolve(null);
         })
     });
 }
+
+// function addPhoto(files: readonly any[]) {
+//     console.log(files);
+//     selectedFile.value = files[0];
+//     console.log(selectedFile.value);
+//     uploadFile();
+// }
+
+// function uploadFile() {
+//     // FileService.uploadFile(selectedFile.value).then((response) => {
+//     //     console.log(response.data);
+//     //     console.log(response.data.$id);
+//     //     file_ids.value.push(response.data.$id);
+//     // })
+//     let fd = new FormData();
+//     fd.append('file', selectedFile.value)
+//     doUpload(fd).then((url) => {
+//         console.log('url', url)
+//         emit('uploaded', url)
+//     })
+
+// }
+
+// function doUpload(data: FormData): Promise<any> {
+//     return new Promise((resolve, reject) => {
+//         //     axios({ url: `${apiURL}api/v1/fileupload`, method: 'POST', data })
+//         //         .then((resp: any) => {
+//         //             resolve(resp.data)
+//         //         })
+//         FileService.uploadFile(selectedFile.value).then((response) => {
+//             console.log(response);
+//             // resolve(response.data);
+//             // resolve(`https://cloud.appwrite.io/v1/storage/buckets/65e38f60cf5a571e4c30/files`);
+//             resolve(null);
+//         })
+//     })
+// }
+
+// onMounted(() => {
+//     FileService.getFiles().then((response: any) => {
+//         console.log(response);
+//     })
+// });
+
+// function factoryFn(file: File) {
+//     // console.log(file);
+//     FileService.uploadFile(file).then((response) => {
+//         console.log(response);
+//         fileUrl.value.push(response.id);
+//     });
+// }
 
 function onSubmit() {
     quasar.loading.show({ spinner: QSpinnerGears });
@@ -206,12 +273,6 @@ function onSubmit() {
 
     } else {
         CarService.addCar(form).then((response) => {
-            // insert photos
-            photos.value.forEach(photo => {
-                photo.car_id = response.data.id;
-                CarFileService.addCarPhoto(photo);
-            });
-
             quasar.loading.hide();
             router.push({ name: 'view-cars' });
             quasar.notify({
@@ -219,7 +280,6 @@ function onSubmit() {
                 position: 'top-right',
                 message: Message.CAR_ADD_SUCCESS
             });
-
         }).catch((error) => {
             quasar.loading.hide();
             quasar.notify({
@@ -231,30 +291,31 @@ function onSubmit() {
     }
 }
 
+// console.log(file.value);
+
+// const url = FileService.getFile('65e39e5e16b0ad1b1b96');
+// fileUrl.value = url.href;
+
+// FileService.uploadFile(file.value).then((response: any) => {
+//     console.log(response);
+
+// {
+// "$id": "65e39e5e16b0ad1b1b96",
+// "bucketId": "65e38f60cf5a571e4c30",
+// "$createdAt": "2024-03-02T21:47:10.348+00:00",
+// "$updatedAt": "2024-03-02T21:47:10.348+00:00",
+// "$permissions": [],
+// "name": "KJ_icon4_06.png",
+// "signature": "29cbc823fd62366e720fb3a9d14dd99e",
+// "mimeType": "image/png",
+// "sizeOriginal": 64593,
+// "chunksTotal": 1,
+// "chunksUploaded": 1
+// }
+// })
+// }
+
 function cancel() {
     router.push({ name: 'view-cars' });
 }
 </script>
-
-<style scoped>
-.img-container {
-    border: 1px solid #FFFFFF;
-    padding: 2px;
-    border-radius: 4px;
-}
-</style>
-
-<style>
-.q-uploader.car-photos .q-uploader__list {
-    display: flex;
-    flex-wrap: wrap;
-    padding-top: 0;
-    padding-left: 0;
-}
-
-.q-uploader.car-photos .q-uploader__file {
-    width: 45%;
-    margin-top: 8px;
-    margin-left: 8px;
-}
-</style>

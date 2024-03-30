@@ -1,8 +1,6 @@
 <template>
     <q-card v-ripple class="car-card col-md-3 col-sm-6 cursor-pointer relative-position" @click="viewCar">
-        <q-img
-            src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068"
-            :ratio="16 / 9" />
+        <q-img v-if="car != undefined && car.car_files.length > 0" :src="getCarImg(car.car_files[0] || null)" :ratio="16 / 9" />
         <q-card-section>
             <div class="text-body1 text-bold">{{ car?.brand }}</div>
             <div class="row">
@@ -40,6 +38,7 @@ import { useRouter } from 'vue-router';
 import type { Car } from '@/interfaces/rest/Car';
 import CryptoService from '@/services/crypto.service';
 import { formatAmount } from '@/composables/formatter';
+import { getCarImg } from '@/composables/getter';
 import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';
 

@@ -12,10 +12,12 @@
                     <div class="row q-gutter-x-sm buttons">
                         <q-btn outline :color="filter == '' ? 'accent' : 'blue-grey-4'" label="All" no-caps
                             @click="resetFilter" />
-                        <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Completed"
-                            no-caps @click="filterOrders('completed')" />
+                        <q-btn outline :color="filter == 'payment-pending' ? 'accent' : 'blue-grey-4'"
+                            label="Payment Pending" no-caps @click="filterOrders('payment-pending')" />
                         <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Ongoing" no-caps
                             @click="filterOrders('ongoing')" />
+                        <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Completed"
+                            no-caps @click="filterOrders('completed')" />
                         <q-btn outline :color="filter == 'cancelled' ? 'accent' : 'blue-grey-4'" label="Cancelled"
                             no-caps @click="filterOrders('cancelled')" />
                     </div>
@@ -70,14 +72,19 @@ function getOrders() {
 function filterOrders(key: string) {
     filter.value = key;
     switch (key) {
-        case 'completed':
-            orders.value = data.value.filter((order: any) => {
-                return order.status == '4';
+        case 'payment-pending':
+            orders.value = data.value!.filter((order: any) => {
+                return order.status == '0';
             })
             break;
         case 'ongoing':
             orders.value = data.value!.filter((order: any) => {
-                return ['0', '1', '2', '3'].includes(order.status);
+                return ['1', '2', '3'].includes(order.status);
+            })
+            break;
+        case 'completed':
+            orders.value = data.value.filter((order: any) => {
+                return order.status == '4';
             })
             break;
         case 'cancelled':

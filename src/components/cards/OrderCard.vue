@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="column justify-center q-mr-lg">
                     <img width="120px" class="rounded-borders"
-                        src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
+                        :src="getCarImg(props.order?.car?.car_files[0] || null)" />
 
                 </div>
                 <div class="column q-gutter-xs">
@@ -68,7 +68,7 @@ import type { Order } from '@/interfaces/rest/Order';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTime } from '@/composables/formatter';
 import { ionCalendar, ionLocation, ionTime } from '@quasar/extras/ionicons-v6';
 import { calcRentPrice } from '@/composables/calculator';
-import { getOrderStatus } from '@/composables/getter';
+import { getCarImg, getOrderStatus } from '@/composables/getter';
 import { Message } from '@/enums/enum';
 
 const props = defineProps<{

@@ -82,7 +82,7 @@ function goToDashboard() {
 }
 
 function goToChat() {
-
+    router.push({ name: 'chat' });
 }
 
 function goToManageCars() {

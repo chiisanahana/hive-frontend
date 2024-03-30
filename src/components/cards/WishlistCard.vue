@@ -1,11 +1,11 @@
 <template>
-    <q-card flat bordered :v-ripple="!isExpired()" :class="isExpired() ? 'q-mb-md disabled' : 'cursor-pointer'"
+    <q-card flat bordered :v-ripple="!isExpired()" :class="isExpired() ? 'q-mb-md disabled' : 'q-mb-md cursor-pointer'"
         @click="viewCar">
         <q-card-section class="q-pa-sm">
             <div class="row">
                 <div class="column justify-center q-mr-lg">
                     <img width="120px" class="rounded-borders"
-                        src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068" />
+                        :src="getCarImg(props.wishlist?.car?.car_files[0] || null)" />
 
                 </div>
                 <div class="column q-gutter-xs">
@@ -55,6 +55,7 @@ import CryptoService from '@/services/crypto.service';
 import { formatAmount, formatDateDisplay, formatTimeDisplay, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
 import { ionCalendar, ionLocation, ionTime } from '@quasar/extras/ionicons-v6';
 import { calcRentPrice } from '@/composables/calculator';
+import { getCarImg } from '@/composables/getter';
 
 const props = defineProps<{
     wishlist: Wishlist | undefined

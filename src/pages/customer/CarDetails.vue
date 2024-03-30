@@ -5,7 +5,7 @@
             <q-card flat>
                 <q-card-section horizontal>
                     <q-card-section class="col-8">
-                        <CarCarousel />
+                        <CarCarousel v-if="car != undefined" :photos="car.car_files" />
                     </q-card-section>
                     <q-card-section>
                         <div class="text-h6 text-bold">{{ car?.brand }}</div>

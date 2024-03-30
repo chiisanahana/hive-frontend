@@ -6,7 +6,8 @@
                 <div class="row items-center">
                     <span class="text-bold q-mr-sm">Wishlist</span>({{ wishlists.length }})
                     <q-space />
-                    <q-btn v-if="!isLoading && wishlists.length > 0" flat dense text-color="accent" label="View all" no-caps @click="goToWishlist" />
+                    <q-btn v-if="!isLoading && wishlists.length > 0" flat dense text-color="accent" label="View all"
+                        no-caps @click="goToWishlist" />
                 </div>
             </q-item-label>
             <q-scroll-area :style="{ height: height }">
@@ -14,10 +15,9 @@
                 <WishlistDropdownSkeleton v-if="isLoading" />
 
                 <q-item :clickable="!isExpired(wishlist)" v-else-if="wishlists.length > 0" v-for="wishlist in wishlists"
-                    @click="viewCar(wishlist.car?.id!)" :class="isExpired(wishlist)? 'disabled' : ''">
+                    @click="viewCar(wishlist.car?.id!)" :class="isExpired(wishlist) ? 'disabled' : ''">
                     <q-item-section thumbnail class="q-ml-none">
-                        <img
-                            src="https://daihatsu.co.id/cdn-cgi/image/width=720/https://cms-headless.daihatsu.co.id/assets/bf37106f-5b63-422e-bd34-97d85b5ef068">
+                        <img :src="getCarImg(wishlist.car?.car_files[0] || null)" />
                     </q-item-section>
 
                     <q-item-section>
@@ -79,6 +79,7 @@ import { formatAmount, formatDateDisplay, formatTimeDisplay } from '@/composable
 import { ionCalendar, ionLocation, ionTime } from '@quasar/extras/ionicons-v6';
 import WishlistDropdownSkeleton from '@/components/skeleton/WishlistDropdownSkeleton.vue';
 import { calcRentPrice } from '@/composables/calculator';
+import { getCarImg } from '@/composables/getter';
 
 const props = defineProps<{
     customerId: number;
@@ -103,7 +104,6 @@ function getWishlists() {
     height.value = '48px';
     WishlistService.getByCustomerId(props.customerId)
         .then((response: any) => {
-            // console.log(response);
             isLoading.value = false;
             wishlists.value = response.data;
         }).catch((e: Error) => {

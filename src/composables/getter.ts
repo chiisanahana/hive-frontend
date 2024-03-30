@@ -1,3 +1,6 @@
+import type { CarFile } from "@/interfaces/rest/CarFile";
+import FileService from "@/services/file.service";
+
 export function getOrderStatus(status: string): string {
     switch (status) {
         case '0':
@@ -18,4 +21,11 @@ export function getOrderStatus(status: string): string {
         default:
             return '';
     }
+}
+
+export function getCarImg(img: CarFile | null): string {
+    if (img != null) {
+        return FileService.getFile(img.file_path).href;
+    }
+    return '';
 }
