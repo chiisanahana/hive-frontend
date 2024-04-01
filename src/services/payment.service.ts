@@ -25,6 +25,12 @@ class PaymentService {
             status: 'IN'
         });
     }
+
+    completePayment(paymentId: number): Promise<any> {
+        return http.put(`/payments/${paymentId}/`, {
+            status: 'PA'
+        })
+    }
 }
 
 export default new PaymentService();

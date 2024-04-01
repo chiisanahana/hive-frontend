@@ -1,4 +1,6 @@
 import type { CarFile } from "@/interfaces/rest/CarFile";
+import type { Customer } from "@/interfaces/rest/Customer";
+import type { Provider } from "@/interfaces/rest/Provider";
 import FileService from "@/services/file.service";
 
 export function getOrderStatus(status: string): string {
@@ -26,6 +28,13 @@ export function getOrderStatus(status: string): string {
 export function getCarImg(img: CarFile | null): string {
     if (img != null) {
         return FileService.getFile(img.file_path).href;
+    }
+    return '';
+}
+
+export function getProfPict(user: Customer | Provider | undefined): string {
+    if (user != undefined && user.profile_picture != undefined) {
+        return FileService.getFile(user.profile_picture).href;
     }
     return '';
 }

@@ -53,6 +53,8 @@
                     style="min-width: 140px;" @click="setStatus('6')" />
                 <q-btn v-if="props.order.status == '1'" unelevated color="accent" label="Approve"
                     style="min-width: 140px;" @click="setStatus('2')" />
+                <q-btn v-else-if="props.order.status == '2'" unelevated color="accent" label="Complete"
+                    style="min-width: 140px;" @click="setStatus('4')" />
             </q-card-actions>
         </q-card-section>
     </q-card>

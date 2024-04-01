@@ -28,11 +28,11 @@ class ChatService {
         });
     }
 
-    getChatsByRoom(roomId: number) {
-        return http.get('/chats/', {
-            params: { chat_room_id: roomId }
-        })
-    }
+    // getChatsByRoom(roomId: number) {
+    //     return http.get('/chats/', {
+    //         params: { chat_room_id: roomId }
+    //     })
+    // }
 
     sendChat(chat: Chat): Promise<any> {
         return http.post('/chats/', chat);

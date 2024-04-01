@@ -15,9 +15,9 @@
 
             <q-card-section horizontal>
                 <q-card-section class="col-auto" style="min-width: 300px">
-                    <q-card flat bordered class="q-pa-md" style="min-width: 300px">
+                    <!-- <q-card flat bordered class="q-pa-md" style="min-width: 300px">
                         Profile pict
-                    </q-card>
+                    </q-card> -->
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
                         label="Change your password" no-caps />
                 </q-card-section>

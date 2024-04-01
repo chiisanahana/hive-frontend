@@ -1,9 +1,8 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="logo link cursor-pointer fixed-top-left" href="/">
-            <img />
-            <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
+        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+            <img :src="logo" height="44px" />
         </a>
 
         <!-- Form -->
@@ -62,7 +61,8 @@ import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
 import { UserType, Message } from '@/enums/enum';
 import { ionLockClosed, ionMail } from '@quasar/extras/ionicons-v6';
-import imgUrl from '@/assets/images/vector-register.svg'
+import imgUrl from '@/assets/images/vector-register.svg';
+import logo from '@/assets/images/logo.png';
 
 const router = useRouter();
 const quasar = useQuasar();

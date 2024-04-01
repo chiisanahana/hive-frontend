@@ -6,8 +6,7 @@ class UtilService {
     }
 
     generateInvoice(): string {
-        // TODO: add logic
-        return 'INVOICE001';
+        return (Math.random().toString(36).slice(2)).toUpperCase();
     }
 }
 

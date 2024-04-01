@@ -1,9 +1,8 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="logo link cursor-pointer fixed-top-left" href="/">
-            <img />
-            <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
+        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+            <img :src="logo" height="44px" />
         </a>
         <div class="column col-6 items-center">
             <img :src="imgUrl" width="300px" />
@@ -19,6 +18,7 @@ import { useRouter } from 'vue-router';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import { UserType } from '@/enums/enum';
 import imgUrl from '@/assets/images/vector-register-prv.svg';
+import logo from '@/assets/images/logo.png';
 
 const router = useRouter();
 

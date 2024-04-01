@@ -1,8 +1,7 @@
 <template>
     <div class="row items-center justify-center fixed-full login-container">
-        <a class="logo link cursor-pointer fixed-top-left" href="/">
-            <img />
-            <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
+        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+            <img :src="logo" height="44px" />
         </a>
 
         <LoginForm :user-type="UserType.C" @post-action="loginSuccess" @route-to-sign-up="signUp" />
@@ -13,6 +12,7 @@
 import { useRouter } from 'vue-router';
 import LoginForm from '@/components/forms/LoginForm.vue';
 import { UserType } from '@/enums/enum';
+import logo from '@/assets/images/logo.png';
 
 const router = useRouter();
 

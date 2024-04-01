@@ -24,8 +24,12 @@ const noHeader = ref<string[]>([
     '/logout',
     '/not-found'
 ]);
+const noDrawer = ref<string[]>([
+    '/provider/login',
+    '/provider/sign-up',
+])
 const useHeader = computed(() => !noHeader.value.includes(route.fullPath));
-const usePrvDrawer = computed(() => route.fullPath.includes('provider'));
+const usePrvDrawer = computed(() => route.fullPath.includes('provider') && !noDrawer.value.includes(route.fullPath));
 </script>
 
 <style>

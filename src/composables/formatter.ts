@@ -35,6 +35,11 @@ export function formatTimestampToTime(timestamp: string | undefined): string {
     return timestamp.substring(11, 16);
 }
 
+export function formatTimestampToTimeFull(timestamp: string | undefined): string {
+    if (timestamp == undefined) return '';
+    return timestamp.substring(11, 19);
+}
+
 export function formatTimestampToDateDisplay(timestamp: string | undefined): string {
     if (timestamp == undefined) return '';
     const date = timestamp.substring(0, 10);
@@ -43,4 +48,14 @@ export function formatTimestampToDateDisplay(timestamp: string | undefined): str
 
 export function formatNameCase(name: string) {
     return name.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+}
+
+export function formatChatTime(datetime: string | undefined) {
+    if (datetime == undefined) return '';
+    const now = formatTimestampToDate(new Date().toISOString());
+    const mdate = formatTimestampToDate(datetime);
+    if (now == mdate) {
+        return formatTimestampToTime(datetime);
+    }
+    return date.formatDate(datetime, 'D MMM');
 }

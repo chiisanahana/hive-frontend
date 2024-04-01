@@ -1,9 +1,8 @@
 <template>
     <div class="row q-pa-md items-center justify-end fixed-full">
         <!-- Logo -->
-        <a class="logo link cursor-pointer fixed-top-left" href="/">
-            <img />
-            <p class="text-h6 text-bold text-accent">HIVE LOGO</p>
+        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+            <img :src="logo" height="44px" />
         </a>
 
         <!-- Form -->
@@ -19,6 +18,7 @@
 <script setup lang="ts">
 import imgUrl from '@/assets/images/vector-register-prv.svg';
 import ProviderRegistrationForm from '@/components/forms/ProviderRegistrationForm.vue';
+import logo from '@/assets/images/logo.png';
 </script>
 
 <style scoped>

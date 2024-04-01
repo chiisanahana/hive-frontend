@@ -42,7 +42,7 @@
                 <q-separator inset />
                 <q-card-section>
                     <div class="text-body1 text-bold q-mb-sm">Description</div>
-                    <div class="text-body1">{{ car?.description }}</div>
+                    <div class="text-body1" style="white-space: pre">{{ car?.description }}</div>
                 </q-card-section>
             </q-card>
         </div>
@@ -77,12 +77,14 @@ import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
 import type { RentDetails } from '@/interfaces/RentDetails';
+import type { ChatRoom } from '@/interfaces/rest/ChatRoom';
 import { Message, UserType } from '@/enums/enum';
 import CarService from '@/services/car.service';
 import CryptoService from '@/services/crypto.service';
 import UserService from '@/services/user.service';
 import WishlistService from '@/services/wishlist.service';
 import OrderService from '@/services/order.service';
+import ChatService from '@/services/chat.service';
 import { formatAmount } from '@/composables/formatter';
 import { calcRentPrice } from '@/composables/calculator';
 import CarCarousel from '@/components/ui-block/CarCarousel.vue';
@@ -95,6 +97,7 @@ import { ionChevronBack, ionCarSport, ionCalendarClear, ionColorPalette, ionSpee
 import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';
 import PaymentService from '@/services/payment.service';
+import { useChatStore } from '@/stores/chat';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,6 +109,7 @@ const loginDialog = ref<boolean>(false);
 const pickupAddress = ref<string>('');
 const returnAddress = ref<string>('');
 const isValidInput = computed(() => pickupAddress.value !== '' && returnAddress.value !== '');
+const chatStore = useChatStore();
 
 watch(
     () => route.query.cid,
@@ -119,8 +123,23 @@ function goBack() {
 }
 
 function goToChat() {
-    // TODO: push chat data here
-    // TODO: navigate here
+    quasar.loading.show({ spinner: QSpinnerGears });
+    if (car.value != undefined && car.value.provider != undefined) {
+        ChatService.createOrGetRoom(UserService.getLoggedInCust().id, car.value.provider.id)
+            .then((response) => {
+                chatStore.setCurrentRoom(response.data as ChatRoom);
+                quasar.loading.hide();
+                router.push({ name: 'chat' });
+            })
+            .catch((error) => {
+                quasar.loading.hide();
+                quasar.notify({
+                    color: 'negative',
+                    position: 'top-right',
+                    message: Message.INTERNAL_SERVER_ERROR
+                });
+            });
+    }
 }
 
 function getCar(carId: number) {
@@ -197,11 +216,11 @@ function bookNow() {
                 img: '/src/assets/images/va.png',
                 id: 'va'
             },
-            {
-                label: 'Credit Card',
-                img: '/src/assets/images/cc.png',
-                id: 'cc'
-            },
+            // {
+            //     label: 'Credit Card',
+            //     img: '/src/assets/images/cc.png',
+            //     id: 'cc'
+            // },
         ]
     }).onOk(action => {
         quasar.loading.show({ spinner: QSpinnerGears });

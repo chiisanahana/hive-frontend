@@ -234,7 +234,7 @@ onMounted(() => {
 
 <style scoped>
 .container {
-    height: calc(100vh - 69px);
+    height: calc(100vh - 70px);
 }
 
 .car-card {
@@ -244,7 +244,7 @@ onMounted(() => {
 
 .filter-container {
     width: 270px;
-    max-height: calc(100vh - 69px - 32px);
+    max-height: calc(100vh - 70px - 32px);
 }
 
 .filter-box {

@@ -31,18 +31,9 @@
             </q-card>
         </div>
         <div class="col-7">
-            <q-card flat>
-                <q-card-section>
-                    <img :src="order?.payments[0].payment_method == 'Virtual Account' ? va : cc"
-                        class="payment-method" />
-                    <div class="text-h6 text-center text-positive">Please finish your payment</div>
-
-                    <q-card-actions align="right" class="q-mt-xl">
-                        <q-btn unelevated color="secondary" text-color="accent" label="Explore cars" to="cars" />
-                        <q-btn color="primary" label="View history" style="min-width: 140px;" to="history" />
-                    </q-card-actions>
-                </q-card-section>
-            </q-card>
+            <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
+                :order="order" />
+            
         </div>
     </div>
 </template>
@@ -56,9 +47,9 @@ import OrderService from '@/services/order.service';
 import { formatTimestampToDate, formatTimestampToTime, formatTimestampToDateDisplay } from '@/composables/formatter';
 import RentDetailsCardSec from '@/components/cards/RentDetailsCardSec.vue';
 import BillingSumCardSec from '@/components/cards/BillingSumCardSec.vue';
+import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import { ionLocation } from '@quasar/extras/ionicons-v6';
-import va from '@/assets/images/va.png';
 import cc from '@/assets/images/cc.png';
 import type { Order } from '@/interfaces/rest/Order';
 
@@ -97,9 +88,3 @@ onBeforeMount(() => {
     }
 });
 </script>
-
-<style scoped>
-.payment-method {
-    width: 48px;
-}
-</style>

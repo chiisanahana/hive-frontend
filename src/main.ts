@@ -9,6 +9,7 @@ import '@/assets/styles/app.scss';
 import 'quasar/src/css/index.sass';
 import lottie from 'lottie-web';
 import { defineElement } from '@lordicon/element';
+import VueCountdown from '@chenfengyuan/vue-countdown';
 
 import App from './App.vue';
 import router from './router';
@@ -25,6 +26,7 @@ app.use(Quasar, {
     iconSet: quasarIconSet,
 });
 app.use(router);
+app.component(VueCountdown.name, VueCountdown);
 defineElement(lottie.loadAnimation);
 
 app.mount('#app');

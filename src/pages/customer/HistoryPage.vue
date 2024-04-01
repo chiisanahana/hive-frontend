@@ -39,8 +39,10 @@ import { onMounted, ref } from 'vue';
 import UserService from '@/services/user.service';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
+import PaymentService from '@/services/payment.service';
 import HistoryCardSkeleton from '@/components/skeleton/HistoryCardSkeleton.vue';
 import OrderHistoryCard from '@/components/cards/OrderHistoryCard.vue';
+import { calcTimeDiff } from '@/composables/calculator';
 
 const data = ref<Order[]>([]);
 const orders = ref<Order[]>([]);
@@ -51,17 +53,20 @@ function getOrders() {
     isLoading.value = true;
     OrderService.getByCustomerId(UserService.getLoggedInCust().id)
         .then((response) => {
+            // console.log(response.data);
             data.value = response.data.filter((order: any) => {
+                // dummy workaround to complete payment
+                handleCompletePayment(order);
                 // just make sure to show only sucessful order with payment initiated
                 return order.payments.length > 0;
             });
+            // console.log(data.value)
             data.value.sort((order1: any, order2: any) => {
                 return order1.id - order2.id;
             })
             orders.value = data.value;
             filter.value = '';
             isLoading.value = false;
-            // console.log(orders.value);
         })
         .catch((error) => {
             console.log(error);
@@ -101,6 +106,22 @@ function filterOrders(key: string) {
 function resetFilter() {
     filter.value = '';
     orders.value = data.value;
+}
+
+// **notes: this is just quick workaround
+function handleCompletePayment(order: Order) {
+    if (order.payments.length == 0 || order.payments[0].status != 'IN' ||
+        order.payments[0].payment_method != 'Virtual Account') {
+        return;
+    }
+
+    const payment = order.payments[0];
+    const diff = calcTimeDiff(payment.transaction_datetime!, new Date().toISOString());
+    if (diff > 10) {
+        PaymentService.completePayment(payment.id!).then((response) => {
+            OrderService.updateOrderStatus(order.id!, '1');
+        });
+    }
 }
 
 onMounted(() => {

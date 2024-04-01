@@ -6,6 +6,7 @@ export interface Customer {
   license_card?: string;
   phone_number?: string;
   status?: string;
+  profile_picture?: string;
   created_datetime: string;
   updated_datetime?: string;
   approved_datetime?: string;

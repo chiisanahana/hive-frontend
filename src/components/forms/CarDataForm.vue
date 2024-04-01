@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CarService from '@/services/car.service';
@@ -147,10 +147,11 @@ const form: any = reactive({
     description: props.car?.description || '',
     status: props.car?.status || 'A'
 });
-const photos = ref<CarFile[]>([]);
+const photos = ref<CarFile[]>(props.car?.car_files || []);
 const carTypeOpt = ref<string[]>([
     'Choose category',
     'Sedan',
+    'SUV',
     'MPV',
     'Sport'
 ]);
@@ -234,6 +235,13 @@ function onSubmit() {
 function cancel() {
     router.push({ name: 'view-cars' });
 }
+
+onMounted(() => {
+    if (props.isEdit) {
+        // repush images
+        
+    }
+});
 </script>
 
 <style scoped>

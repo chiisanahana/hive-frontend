@@ -28,7 +28,7 @@ class OrderService {
             car_id: carId,
             customer_id: customerId,
             start_datetime: formatTimestampBackend(rentDetails.startDate, rentDetails.startTime),
-            end_datetime: formatTimestampBackend(rentDetails.startDate, rentDetails.endTime),
+            end_datetime: formatTimestampBackend(rentDetails.endDate, rentDetails.endTime),
             pickup_location: rentDetails.pickupAddress,
             return_location: rentDetails.returnAddress,
             status: 0

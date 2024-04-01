@@ -1,9 +1,8 @@
 <template>
     <q-header>
         <q-toolbar class="bg-white text-primary">
-            <a class="link cursor-pointer" href="/">
-                <img />
-                <p class="text-h6 text-bold text-primary">HIVE LOGO</p>
+            <a class="q-pa-sm row link cursor-pointer" href="/">
+                <img :src="logo" height="44px" />
             </a>
             <q-space />
 
@@ -11,20 +10,26 @@
                 <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px">
                     <WishlistDropdown :customerId="user!.id" />
                 </q-btn>
-                <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses" />
+                <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses">
+                    <ChatDropdown :customerId="user!.id" />
+                </q-btn>
                 <q-btn flat round dense :icon="ionNotifications">
-                    <q-badge rounded color="red" floating transparent>
+                    <NotifDropdown :customerId="user!.id" />
+                    <!-- <q-badge rounded color="red" floating transparent>
                         2
-                    </q-badge>
+                    </q-badge> -->
                 </q-btn>
                 <q-btn flat dense no-caps align="left" :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'"
                     style="min-width: 220px">
-                    <q-avatar size="32px" color="orange" class="q-mr-md text-white">
+                    <q-avatar v-if="user?.profile_picture != null" class="q-mr-md">
+                        <img :src="getProfPict(user)">
+                    </q-avatar>
+                    <q-avatar v-else color="orange" class="q-mr-md text-white">
                         {{ user!.name?.charAt(0).toUpperCase() }}
                     </q-avatar>
                     <div class="column align-left justify-start">
                         <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as
-                Provider)!.trading_name
+                    Provider)!.trading_name
                             }}</div>
                         <div v-if="currentUser == UserType.P" class="text-left text-caption text-blue-grey-4">
                             {{ user!.name }}
@@ -58,6 +63,10 @@ import { ionCar, ionChatbubbleEllipses, ionNotifications } from '@quasar/extras/
 import LoginForm from '@/components/forms/LoginForm.vue';
 import NavbarDropdown from '@/components/dropdown/NavbarDropdown.vue';
 import WishlistDropdown from '@/components/dropdown/WishlistDropdown.vue';
+import ChatDropdown from '@/components/dropdown/ChatDropdown.vue';
+import NotifDropdown from '@/components/dropdown/NotifDropdown.vue';
+import { getProfPict } from '@/composables/getter';
+import logo from '@/assets/images/logo.png';
 
 const route = useRoute();
 const router = useRouter();
