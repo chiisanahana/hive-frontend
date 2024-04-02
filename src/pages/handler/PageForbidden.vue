@@ -9,10 +9,19 @@
             </div>
             <h2>Access Denied</h2>
             <p>We are sorry, but you do not have access to this page or resource.</p>
-            <a href="/">Back To Homepage</a>
+            <a @click="goToHome">Back To Homepage</a>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToHome() {
+    router.push({ name: 'home' });
+}
+</script>
 
 <style scoped>
 * {

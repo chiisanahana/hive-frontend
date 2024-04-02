@@ -5,11 +5,21 @@
                 <h1>404</h1>
             </div>
             <h2>We are sorry, Page not found!</h2>
-            <p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.</p>
-            <a href="/">Back To Homepage</a>
+            <p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.
+            </p>
+            <a @click="goToHome">Back To Homepage</a>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToHome() {
+    router.push({ name: 'home' });
+}
+</script>
 
 <style scoped>
 * {

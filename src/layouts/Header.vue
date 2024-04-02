@@ -1,7 +1,7 @@
 <template>
     <q-header>
         <q-toolbar class="bg-white text-primary">
-            <a class="q-pa-sm row link cursor-pointer" href="/">
+            <a class="q-pa-sm row link cursor-pointer" @click="goToHome">
                 <img :src="logo" height="44px" />
             </a>
             <q-space />
@@ -115,6 +115,10 @@ function signUp() {
 
 function openLoginDialog() {
     loginDialog.value = true;
+}
+
+function goToHome() {
+    router.push({ name: 'home' });
 }
 
 onMounted(() => {

@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+        <a class="q-ma-md link cursor-pointer fixed-top-left" @click="goToHome">
             <img :src="logo" height="44px" />
         </a>
 
@@ -17,10 +17,10 @@
                     <label class="field-label">Email</label>
                     <q-input outlined dense debounce="500" v-model="form.email" placeholder="Enter your email"
                         autocomplete="on" lazy-rules :rules="[
-                val => val && val.length > 0 || 'Email is required',
-                val => isValidEmail(val.trim()) || 'Email is not valid',
-                val => isEmailAvail(val.trim())
-            ]">
+            val => val && val.length > 0 || 'Email is required',
+            val => isValidEmail(val.trim()) || 'Email is not valid',
+            val => isEmailAvail(val.trim())
+        ]">
                         <template v-slot:prepend>
                             <q-icon :name="ionMail" />
                         </template>
@@ -31,9 +31,9 @@
                     <label class="field-label">Password</label>
                     <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
                         placeholder="Enter your password" autocomplete="on" lazy-rules :rules="[
-                val => val && val.length > 0 || 'Password is required',
-                val => val.length >= 8 || 'Password is too short'
-            ]">
+            val => val && val.length > 0 || 'Password is required',
+            val => val.length >= 8 || 'Password is too short'
+        ]">
                         <template v-slot:prepend>
                             <q-icon :name="ionLockClosed" />
                         </template>
@@ -46,7 +46,7 @@
 
                 <div class="column items-center q-mt-md q-gutter-y-lg">
                     <q-btn class="full-width q-pa-sm" label="Sign Up" type="submit" color="primary" />
-                    <p>Already have an account? <a class="link text-accent" href="/login">Sign In</a></p>
+                    <p>Already have an account? <a class="link text-accent" @click="goToLogin">Sign In</a></p>
                 </div>
             </q-form>
         </div>
@@ -122,6 +122,14 @@ function storeUserInfo(data: any) {
     let customer = data;
     customer.is_provider = false;
     UserService.storeUser(customer, UserType.C);
+}
+
+function goToLogin() {
+    router.push({ name: 'login' });
+}
+
+function goToHome() {
+    router.push({ name: 'home' });
 }
 </script>
 

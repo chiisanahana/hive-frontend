@@ -117,7 +117,7 @@ function handleCompletePayment(order: Order) {
 
     const payment = order.payments[0];
     const diff = calcTimeDiff(payment.transaction_datetime!, new Date().toISOString());
-    if (diff > 10) {
+    if (diff > 1) {
         PaymentService.completePayment(payment.id!).then((response) => {
             OrderService.updateOrderStatus(order.id!, '1');
         });

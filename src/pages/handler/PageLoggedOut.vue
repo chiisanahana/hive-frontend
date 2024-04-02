@@ -7,15 +7,25 @@
             <h2>You have been logged out</h2>
             <p>Thank you for using HiVe!</p>
             <div class="q-gutter-md q-mt-lg">
-                <a class="secondary" href="/login">Login with Another Account</a>
-                <a class="primary" href="/">Back To Homepage</a>
+                <a class="secondary" @click="goToLogin">Login with Another Account</a>
+                <a class="primary" @click="goToHome">Back To Homepage</a>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import imgUrl from '@/assets/images/vector-logout.svg'
+import imgUrl from '@/assets/images/vector-logout.svg';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToLogin() {
+    router.push({ name: 'login' });
+}
+
+function goToHome() {
+    router.push({ name: 'home' });
+}
 </script>
 
 <style scoped>

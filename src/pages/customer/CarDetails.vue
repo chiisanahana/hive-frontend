@@ -42,7 +42,7 @@
                 <q-separator inset />
                 <q-card-section>
                     <div class="text-body1 text-bold q-mb-sm">Description</div>
-                    <div class="text-body1" style="white-space: pre">{{ car?.description }}</div>
+                    <div class="text-body1" style="white-space: pre-wrap">{{ car?.description }}</div>
                 </q-card-section>
             </q-card>
         </div>

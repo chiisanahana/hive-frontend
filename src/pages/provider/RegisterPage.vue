@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center justify-end fixed-full">
         <!-- Logo -->
-        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+        <a class="q-ma-md link cursor-pointer fixed-top-left" @click="goToHome">
             <img :src="logo" height="44px" />
         </a>
 
@@ -19,6 +19,12 @@
 import imgUrl from '@/assets/images/vector-register-prv.svg';
 import ProviderRegistrationForm from '@/components/forms/ProviderRegistrationForm.vue';
 import logo from '@/assets/images/logo.png';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToHome() {
+    router.push({ name: 'home' });
+}
 </script>
 
 <style scoped>

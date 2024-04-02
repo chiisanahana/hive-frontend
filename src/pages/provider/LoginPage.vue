@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md items-center fixed-full">
         <!-- Logo -->
-        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+        <a class="q-ma-md link cursor-pointer fixed-top-left" @click="goToHome">
             <img :src="logo" height="44px" />
         </a>
         <div class="column col-6 items-center">
@@ -26,6 +26,9 @@ function loginSuccess() {
     router.push({ name: 'dashboard' });
 }
 
+function goToHome() {
+    router.push({ name: 'home' });
+}
 </script>
 
 <style scoped>

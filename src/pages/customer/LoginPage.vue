@@ -1,6 +1,6 @@
 <template>
     <div class="row items-center justify-center fixed-full login-container">
-        <a class="q-ma-md link cursor-pointer fixed-top-left" href="/">
+        <a class="q-ma-md link cursor-pointer fixed-top-left" @click="goToHome">
             <img :src="logo" height="44px" />
         </a>
 
@@ -22,6 +22,10 @@ function loginSuccess() {
 
 function signUp() {
     router.push({ name: 'sign-up' });
+}
+
+function goToHome() {
+    router.push({ name: 'home' });
 }
 
 </script>
