@@ -114,7 +114,7 @@ function getSelectedString() {
 }
 
 function onRowClick(row: any) {
-    console.log('row clicked', row.id);
+    // console.log('row clicked', row.id);
     const encryptedId = CryptoService.encrypt(row.id);
     router.push({ name: 'view-car-details', query: { cid: encryptedId } })
 }
@@ -161,7 +161,7 @@ function toggleCarStatus(rowId: number, value: any) {
 function deleteCars(cars: Car[]) {
     isLoading.value = true;
     cars.forEach((car: Car) => {
-        console.log('Delete car with id ' + car.id);
+        // console.log('Delete car with id ' + car.id);
         CarService.deleteCar(car.id!)
             .then((response: any) => {
                 selected.value = [];

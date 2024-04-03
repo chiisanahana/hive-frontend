@@ -158,7 +158,7 @@ const carTypeOpt = ref<string[]>([
 
 function clearLeadingZeros(str: string) {
     form.price = form.price.replace(/^0+(?=\d)/, '');
-    console.log('price', form.price)
+    // console.log('price', form.price)
     // return str.replace(/^0+(?=\d)/, '');
 }
 
@@ -167,10 +167,10 @@ function checkFileType(files: any) {
 }
 
 function uploadFactory(file: any): Promise<Object> {
-    console.log('file', file);
+    // console.log('file', file);
     return new Promise((resolve, reject) => {
         FileService.uploadFile(file[0]).then((response) => {
-            console.log('response', response);
+            // console.log('response', response);
             photos.value.push({
                 file_path: response.$id,
                 file_type: response.mimeType.split('/')[1]
@@ -186,7 +186,7 @@ function onSubmit() {
     quasar.loading.show({ spinner: QSpinnerGears });
     form.provider_id = UserService.getLoggedInPrv().id;
 
-    console.log('form', form);
+    // console.log('form', form);
     if (props.isEdit) {
         CarService.updateCar(form).then((response) => {
             quasar.loading.hide();

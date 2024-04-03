@@ -90,7 +90,7 @@ function updateData() {
 
     UserService.updateProfile(customer.value?.id!, form, UserType.P)
         .then((response) => {
-            console.log('updated', response.data);
+            // console.log('updated', response.data);
             customer.value = response.data;
             UserService.storeUser(customer.value, UserType.P);
             quasar.loading.hide();

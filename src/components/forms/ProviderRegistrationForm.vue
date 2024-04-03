@@ -201,10 +201,10 @@ function submit() {
     form.city = form.city.trim();
     form.address = form.address.trim();
 
-    console.log('submit', form);
+    // console.log('submit', form);
     UserService.register(form, UserType.P)
         .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
             UserService.storeUser(response.data, UserType.P);
 
             // set cust info if same as provider
