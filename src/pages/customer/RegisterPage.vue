@@ -46,7 +46,7 @@
 
                 <div class="column items-center q-mt-md q-gutter-y-lg">
                     <q-btn class="full-width q-pa-sm" label="Sign Up" type="submit" color="primary" />
-                    <p>Already have an account? <a class="link text-accent" @click="goToLogin">Sign In</a></p>
+                    <p>Already have an account? <a class="link cursor-pointer text-accent" @click="goToLogin">Sign In</a></p>
                 </div>
             </q-form>
         </div>

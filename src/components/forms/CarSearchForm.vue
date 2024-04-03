@@ -109,10 +109,10 @@ const router = useRouter();
 const dateProxy = ref();
 const form: RentDetails = reactive({
     location: props.formValue?.location || 'Choose location',
-    startDate: props.formValue?.startDate || '',
-    startTime: props.formValue?.startTime || '',
-    endDate: props.formValue?.endDate || '',
-    endTime: props.formValue?.endTime || '',
+    startDate: props.formValue?.startDate || getNowDate(),
+    startTime: props.formValue?.startTime || getNowTime(),
+    endDate: props.formValue?.endDate || getTomorrow(),
+    endTime: props.formValue?.endTime || getNowTime(),
     pickupAddress: '',
     returnAddress: ''
 });
@@ -125,6 +125,18 @@ const errors: any = reactive({
 });
 const locationsOpt = ref<string[]>(['Choose location']);
 const isValidForm = ref<boolean>(true);
+
+function getNowDate() {
+    return date.formatDate(new Date(), 'YYYY/MM/DD');
+}
+
+function getTomorrow() {
+    return date.formatDate(date.addToDate(new Date(), { days: 1 }), 'YYYY/MM/DD');
+}
+
+function getNowTime() {
+    return date.formatDate(new Date(), 'HH:mm');
+}
 
 function getLocationOptions() {
     UtilService.getLocationList()
@@ -143,12 +155,12 @@ function getDateTime(date: string, time: string) {
 }
 
 function validStartDate(startDate: any) {
-    return startDate >= date.formatDate(new Date(), 'YYYY/MM/DD');
+    return startDate >= getNowDate();
 }
 
 function validEndDate(endDate: any) {
     if (form.startDate != '') return endDate >= form.startDate;
-    return endDate >= date.formatDate(new Date(), 'YYYY/MM/DD');
+    return endDate >= getNowDate();
 }
 
 function validateForm() {
@@ -191,7 +203,7 @@ onMounted(() => {
 
 <style scoped>
 .drop-field {
-    width: 220px;
+    width: 240px;
 }
 
 .date-field {
