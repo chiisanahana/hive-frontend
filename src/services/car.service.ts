@@ -19,13 +19,11 @@ class CarService {
   }
 
   searchCar(rentDetails: RentDetails): Promise<any> {
-    const location: string[] = rentDetails.location.split(', ');
-
     return http.post('/customer/check-schedule', {
       start_date: formatTimestampBackend(rentDetails.startDate, '00:00:00'),
       end_date: formatTimestampBackend(rentDetails.endDate, '23:59:59'),
-      province: location[1],
-      city: location[0]
+      province: rentDetails.province,
+      city: rentDetails.city
     });
   }
 

@@ -7,6 +7,7 @@ export interface Provider {
     address?: string;
     city?: string;
     province?: string;
+    bank_code?: string;
     bank_account_number?: string;
     bank_account_name?: string;
     id_card?: string;

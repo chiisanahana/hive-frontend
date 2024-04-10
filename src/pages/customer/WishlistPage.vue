@@ -1,38 +1,40 @@
 <template>
-    <div class="row q-pa-md q-gutter-md justify-center">
-        <q-card flat class="col-9">
-            <q-card-section>
-                <div class="text-h6">Wishlist</div>
-            </q-card-section>
-
-            <q-card-section>
-                <div class="row items-center q-mb-md">
-                    <q-checkbox toggle-indeterminate class="q-mr-md" v-model="selectAll" color="primary"
-                        @click="toggleAllItems" />
-                    <div>
-                        <span class="text-bold" style="line-height: 42px;">Select All</span>
-                        ({{ wishlists.length }})
+    <div class="row q-pa-md q-col-gutter-md justify-center">
+        <div class="col-xs-12 col-md-9">
+            <q-card flat>
+                <q-card-section>
+                    <div class="text-h6">Wishlist</div>
+                </q-card-section>
+    
+                <q-card-section>
+                    <div class="row items-center q-mb-md">
+                        <q-checkbox toggle-indeterminate class="q-mr-md" v-model="selectAll" color="primary"
+                            @click="toggleAllItems" />
+                        <div>
+                            <span class="text-bold" style="line-height: 42px;">Select All</span>
+                            ({{ wishlists.length }})
+                        </div>
+                        <q-btn v-if="selected.length > 0" flat round size="sm" class="rounded-borders q-ml-md"
+                            color="blue-grey-4" :icon="ionTrash" @click="showConfirm = true" />
                     </div>
-                    <q-btn v-if="selected.length > 0" flat round size="sm" class="rounded-borders q-ml-md"
-                        color="blue-grey-4" :icon="ionTrash" @click="showConfirm = true" />
-                </div>
-                <div v-if="isLoading" v-for="n in 4" :key="n" class="row">
-                    <div class="col-auto q-mr-md">
-                        <q-skeleton class="q-ma-sm" width="22px" height="22px" />
+                    <div v-if="isLoading" v-for="n in 4" :key="n" class="row">
+                        <div class="col-auto q-mr-md">
+                            <q-skeleton class="q-ma-sm" width="22px" height="22px" />
+                        </div>
+                        <WishlistCardSkeleton class="col" />
                     </div>
-                    <WishlistCardSkeleton class="col" />
-                </div>
-                <div v-else-if="wishlists.length == 0" class="q-pa-lg text-center text-blue-grey-4">
-                    You have no wishlist
-                </div>
-                <div v-else v-for="wishlist in wishlists" class="row">
-                    <div class="col-auto q-mr-md">
-                        <q-checkbox v-model="selected" :val="wishlist" color="primary" @click="updateToggle" />
+                    <div v-else-if="wishlists.length == 0" class="q-pa-lg text-center text-blue-grey-4">
+                        You have no wishlist
                     </div>
-                    <WishlistCard class="col" :wishlist="wishlist" />
-                </div>
-            </q-card-section>
-        </q-card>
+                    <div v-else v-for="wishlist in wishlists" class="row">
+                        <div class="col-auto q-mr-md">
+                            <q-checkbox v-model="selected" :val="wishlist" color="primary" @click="updateToggle" />
+                        </div>
+                        <WishlistCard class="col" :wishlist="wishlist" />
+                    </div>
+                </q-card-section>
+            </q-card>
+        </div>
     </div>
     <ConfirmDialog v-model="showConfirm"
         :message="selected.length > 1 ? 'Are you sure want to delete these items?' : 'Are you sure want to delete this item?'"

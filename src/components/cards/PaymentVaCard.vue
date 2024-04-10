@@ -42,8 +42,8 @@
             </q-card>
 
             <q-card-actions align="right" class="q-mt-xl">
-                <q-btn unelevated color="secondary" text-color="accent" label="Explore cars" to="cars" />
-                <q-btn color="primary" label="View history" style="min-width: 140px;" to="history" />
+                <q-btn unelevated color="secondary" text-color="accent" label="Explore cars" @click="goToCars" />
+                <q-btn color="primary" label="View history" style="min-width: 140px;" @click="goToHistory" />
             </q-card-actions>
         </q-card-section>
     </q-card>
@@ -54,8 +54,8 @@ import { onMounted, ref } from 'vue';
 import { useQuasar, date, copyToClipboard } from 'quasar';
 import type { Order } from '@/interfaces/rest/Order';
 import { ionCopy } from '@quasar/extras/ionicons-v6';
-import { calcRentPrice } from '@/composables/calculator';
-import { formatAmount, formatTimestampToDateDisplay } from '@/composables/formatter';
+import { formatAmount } from '@/composables/formatter';
+import router from '@/router';
 
 const props = defineProps<{
     order: Order
@@ -84,11 +84,17 @@ function copy(text: string) {
 
 function getRentPrice() {
     if (props.order.car != undefined) {
-        return calcRentPrice(
-            formatTimestampToDateDisplay(props.order.start_datetime),
-            formatTimestampToDateDisplay(props.order.end_datetime),
-            props.order.car.price as number, props.order.car.deposit as number);
+        return props.order.payments[0].amount as number;
     }
+    return 0;
+}
+
+function goToCars() {
+    router.push({ name: 'cars' });
+}
+
+function goToHistory() {
+    router.push({ name: 'history' });
 }
 
 onMounted(() => {

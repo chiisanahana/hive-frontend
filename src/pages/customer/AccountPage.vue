@@ -1,6 +1,6 @@
 <template>
-    <div class="row q-pa-md q-gutter-md justify-center">
-        <q-card flat :class="isEdit ? 'col-9' : 'col-9 q-pb-lg'">
+    <div class="row q-pa-md justify-center">
+        <q-card flat :class="isEdit ? 'col-xs-12 col-sm-9' : 'col-xs-12 col-sm-9 q-pb-lg'">
             <q-card-section>
                 <div class="row">
                     <div class="text-h6">Account Setting</div>

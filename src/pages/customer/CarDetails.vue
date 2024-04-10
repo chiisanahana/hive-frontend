@@ -1,5 +1,5 @@
 <template>
-    <div class="row q-pa-md q-gutter-md">
+    <div class="row q-pa-md q-col-gutter-md">
         <div class="col-7 q-gutter-y-md">
             <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
             <q-card flat>
@@ -52,8 +52,8 @@
                 <RentDetailsCardSec :editable="true" :rentDetails="rentDetails" v-model:pickupAddress="pickupAddress"
                     v-model:returnAddress="returnAddress" />
 
-                <BillingSumCardSec :startDate="rentDetails?.startDate!" :endDate="rentDetails?.endDate!"
-                    :price="car?.price!" :deposit="car?.deposit!" />
+                <BillingSumCardSec v-if="rentDetails != undefined" :startDate="rentDetails.startDate"
+                    :endDate="rentDetails.endDate" :price="car?.price!" :deposit="car?.deposit!" />
 
                 <q-card-actions align="right">
                     <q-btn unelevated color="secondary" text-color="accent" label="Add to wishlist"
@@ -86,7 +86,7 @@ import WishlistService from '@/services/wishlist.service';
 import OrderService from '@/services/order.service';
 import ChatService from '@/services/chat.service';
 import { formatAmount } from '@/composables/formatter';
-import { calcRentPrice } from '@/composables/calculator';
+import { calcRentBasePrice } from '@/composables/calculator';
 import CarCarousel from '@/components/ui-block/CarCarousel.vue';
 import CarInfoIcon from '@/components/ui-block/CarInfoIcon.vue';
 import ProviderInfoCard from '@/components/cards/ProviderInfoCard.vue';
@@ -104,6 +104,7 @@ const router = useRouter();
 const quasar = useQuasar();
 const car = ref<Car>();
 const rentDetails = ref<RentDetails>();
+const rentBasePrice = ref<number>(0);
 const rentPrice = ref<number>(0);
 const loginDialog = ref<boolean>(false);
 const pickupAddress = ref<string>('');
@@ -114,12 +115,14 @@ const chatStore = useChatStore();
 watch(
     () => route.query.cid,
     async newId => {
-        getCar(parseInt(CryptoService.decrypt(newId?.toString() || '')))
+        const isWishlist = route.query.w;
+        if (isWishlist) getCarFromWishlist(parseInt(CryptoService.decrypt(newId?.toString() || '')));
+        else getCar(parseInt(CryptoService.decrypt(newId?.toString() || '')));
     }
 )
 
 function goBack() {
-    router.go(-1);
+    router.push({ name: 'cars' });
 }
 
 function goToChat() {
@@ -147,8 +150,34 @@ function getCar(carId: number) {
     CarService.get(carId).then((response: any) => {
         // console.log(response);
         car.value = response.data;
-        rentPrice.value = calcRentPrice(
-            rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!, car.value?.deposit!);
+        rentBasePrice.value = calcRentBasePrice(rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!);
+        rentPrice.value = rentBasePrice.value + +car.value?.deposit!;
+        console.log('get', rentBasePrice.value, rentPrice.value);
+        quasar.loading.hide();
+    }).catch((e: Error) => {
+        console.error(e);
+        quasar.loading.hide();
+    });
+}
+
+function getCarFromWishlist(wishlistId: number) {
+    quasar.loading.show({ spinner: QSpinnerGears });
+    WishlistService.get(wishlistId).then((response: any) => {
+        car.value = response.data.car;
+        rentDetails.value = {
+            city: response.data.car.provider.city,
+            province: response.data.car.provider.province,
+            startDate: response.data.start_date,
+            startTime: response.data.start_time,
+            endDate: response.data.end_date,
+            endTime: response.data.end_time,
+            pickupAddress: '',
+            returnAddress: ''
+        } as RentDetails;
+        rentBasePrice.value = calcRentBasePrice(rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!);
+        rentPrice.value = rentBasePrice.value + +car.value?.deposit!;
+
+        console.log('get from wishlist', rentBasePrice.value, rentPrice.value);
         quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
@@ -225,28 +254,20 @@ function bookNow() {
     }).onOk(action => {
         quasar.loading.show({ spinner: QSpinnerGears });
         setRentDetailsValue();
-        OrderService.createOrder(car.value?.id!, UserService.getLoggedInCust().id, rentDetails.value!)
-            .then((response) => {
-                // console.log(response.data)
-                PaymentService.initiatePayment(
-                    response.data.id,
-                    action.id == 'va' ? 'Virtual Account' : 'Credit Card',
-                    rentPrice.value
-                ).then((response) => {
-                    const encryptedId = CryptoService.encrypt(response.data.order_id);
-                    quasar.loading.hide();
-                    router.push({ name: 'payment', query: { oid: encryptedId } })
-                }).catch((error) => {
-                    console.log(error);
-                    quasar.loading.hide();
-                    quasar.notify({
-                        color: 'negative',
-                        position: 'top-right',
-                        message: Message.INTERNAL_SERVER_ERROR
-                    });
-                })
-            })
-            .catch((error) => {
+        OrderService.createOrder(
+            car.value?.id!, UserService.getLoggedInCust().id, rentBasePrice.value, rentDetails.value!
+        ).then((response) => {
+            console.log('order created', response.data)
+            PaymentService.initiatePayment(
+                response.data.id,
+                action.id == 'va' ? 'Virtual Account' : 'Credit Card',
+                rentPrice.value,
+            ).then((response) => {
+                const encryptedId = CryptoService.encrypt(response.data.order_id);
+                quasar.loading.hide();
+                router.push({ name: 'payment', query: { oid: encryptedId } })
+            }).catch((error) => {
+                console.log(error);
                 quasar.loading.hide();
                 quasar.notify({
                     color: 'negative',
@@ -254,6 +275,14 @@ function bookNow() {
                     message: Message.INTERNAL_SERVER_ERROR
                 });
             })
+        }).catch((error) => {
+            quasar.loading.hide();
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        })
     });
 }
 
@@ -273,9 +302,11 @@ onBeforeMount(() => {
     }
 
     // load car data
-    const carId = route.query.cid;
-    if (typeof carId === 'string') {
-        getCar(parseInt(CryptoService.decrypt(carId)));
+    const id = route.query.cid;
+    const isWishlist = route.query.w;
+    if (typeof id === 'string') {
+        if (isWishlist) getCarFromWishlist(parseInt(CryptoService.decrypt(id)));
+        else getCar(parseInt(CryptoService.decrypt(id)));
     }
 });
 </script>

@@ -5,6 +5,10 @@ export function calcDateDiff(startDate: string, endDate: string): number {
     return dateDiff + 1;
 }
 
+export function calcRentBasePrice(startDate: string, endDate: string, basePrice: number): number {
+    return basePrice * calcDateDiff(startDate, endDate);
+}
+
 export function calcRentPrice(startDate: string, endDate: string, basePrice: number, deposit: number): number {
     return basePrice * calcDateDiff(startDate, endDate) + +deposit;
 }

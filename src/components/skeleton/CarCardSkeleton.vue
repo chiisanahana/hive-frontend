@@ -1,5 +1,5 @@
 <template>
-    <q-card v-ripple class="car-card col-md-3 col-sm-6">
+    <q-card v-ripple>
         <q-skeleton height="120px" />
         <q-card-section>
             <div><q-skeleton type="rect" /></div>

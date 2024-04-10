@@ -60,9 +60,8 @@ function submit() {
 }
 </script>
 
-<style>
+<style scoped>
 .form {
     width: 300px;
-    /* height: 250px; */
 }
 </style>

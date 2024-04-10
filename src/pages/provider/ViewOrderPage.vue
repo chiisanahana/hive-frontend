@@ -1,6 +1,6 @@
 <template>
-    <div class="row q-pa-md q-gutter-md justify-center">
-        <q-card flat class="col-9">
+    <div class="q-pa-md">
+        <q-card flat>
             <q-card-section>
                 <div class="text-h6">Manage Orders</div>
             </q-card-section>
@@ -26,7 +26,7 @@
                 <div v-else-if="orders.length == 0" class="q-pa-lg text-center text-blue-grey-4">
                     No order yet
                 </div>
-                <OrderCard v-else v-for="order in orders" :order="order" />
+                <OrderCard v-else v-for="order in orders" :order="order" @post-update="onOrderUpdated" />
             </q-card-section>
         </q-card>
     </div>
@@ -65,10 +65,6 @@ function getOrders() {
                 // also not to show payment pending
                 return order.payments.length > 0 && order.status != '0';
             });
-            data.value.sort((order1: any, order2: any) => {
-                return order1.id - order2.id;
-            })
-            // orders.value = data.value;
             filterOrders(filter.value);
             isLoading.value = false;
         })
@@ -110,6 +106,13 @@ function resetFilter() {
 
 function filterBtn(query: string) {
     router.push({ name: 'view-orders', query: { status: query } });
+}
+
+function onOrderUpdated(orderId: number, status: string) {
+    data.value.map((data) => {
+        if (data.id == orderId) data.status = status;
+    });
+    filterOrders(filter.value);
 }
 
 onMounted(() => {

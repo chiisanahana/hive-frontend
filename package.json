@@ -14,6 +14,7 @@
     "@chenfengyuan/vue-countdown": "^2.1.2",
     "@lordicon/element": "^1.6.0",
     "@quasar/extras": "^1.16.9",
+    "@vueuse/core": "^10.9.0",
     "appwrite": "^13.0.2",
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0",

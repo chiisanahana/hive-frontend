@@ -40,7 +40,7 @@
             <q-separator inset />
             <q-card-section>
                 <div class="text-body1 text-bold q-mb-sm">Description</div>
-                <div class="text-body1">{{ car?.description }}</div>
+                <div class="text-body1" style="white-space: pre-wrap">{{ car?.description }}</div>
             </q-card-section>
             <q-card-actions>
                 <q-btn unelevated color="secondary" :icon="ionChevronBack" label="Back" text-color="accent"
@@ -55,11 +55,9 @@ import { ref, watch, onBeforeMount } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
-import type { RentDetails } from '@/interfaces/RentDetails';
 import CarService from '@/services/car.service';
 import CryptoService from '@/services/crypto.service';
 import { formatAmount } from '@/composables/formatter';
-import { calcRentPrice } from '@/composables/calculator';
 import CarCarousel from '@/components/ui-block/CarCarousel.vue';
 import CarInfoIcon from '@/components/ui-block/CarInfoIcon.vue';
 import { ionChevronBack, ionCarSport, ionCalendarClear, ionColorPalette, ionSpeedometer } from '@quasar/extras/ionicons-v6';
@@ -70,10 +68,6 @@ const route = useRoute();
 const router = useRouter();
 const quasar = useQuasar();
 const car = ref<Car>();
-const rentDetails = ref<RentDetails>();
-const rentPrice = ref<number>(0);
-const pickupAddress = ref<string>('');
-const returnAddress = ref<string>('');
 
 watch(
     () => route.query.cid,
@@ -91,8 +85,6 @@ function getCar(carId: number) {
     CarService.get(carId).then((response: any) => {
         // console.log(response);
         car.value = response.data;
-        rentPrice.value = calcRentPrice(
-            rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!, car.value?.deposit!);
         quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
@@ -112,12 +104,6 @@ function getCarFuel() {
 }
 
 onBeforeMount(() => {
-    // load rent data
-    const data = localStorage.getItem(import.meta.env.VITE_SESSION_DATA);
-    if (data != null) {
-        rentDetails.value = JSON.parse(CryptoService.decrypt(data));
-    }
-
     // load car data
     const carId = route.query.cid;
     if (typeof carId === 'string') {

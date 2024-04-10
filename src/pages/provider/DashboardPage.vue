@@ -1,96 +1,122 @@
 <template>
     <div class="container q-pa-md">
         <div class="text-h6 text-white q-mb-lg">What's up today?</div>
-        <div v-if="isLoading" class="row q-gutter-md q-mb-lg">
-            <q-card class="col" v-for="i in 6">
-                <q-card-section>
-                    <q-skeleton type="rect" class="q-mb-md" />
-                    <q-skeleton type="rect" width="40px" />
-                </q-card-section>
-            </q-card>
+        <div v-if="isLoading" class="row q-col-gutter-md q-mb-lg">
+            <div class="col" v-for="i in 6">
+                <q-card>
+                    <q-card-section>
+                        <q-skeleton type="rect" class="q-mb-md" />
+                        <q-skeleton type="rect" width="40px" />
+                    </q-card-section>
+                </q-card>
+            </div>
         </div>
-        <div v-else class="row q-gutter-md q-mb-lg">
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">New order</div>
-                    <div class="text-h6">{{ pendingOrders.length }}</div>
-                </q-card-section>
-            </q-card>
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">Ongoing rent</div>
-                    <div class="text-h6">{{ ongoingOrders.length }}</div>
-                </q-card-section>
-            </q-card>
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">New chat</div>
-                    <div class="text-h6">{{ newChats.length }}</div>
-                </q-card-section>
-            </q-card>
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">Total cars</div>
-                    <div class="text-h6">{{ cars.length }}</div>
-                </q-card-section>
-            </q-card>
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">Inactive cars</div>
-                    <div class="text-h6">{{ inactiveCars.length }}</div>
-                </q-card-section>
-            </q-card>
-            <q-card class="col">
-                <q-card-section>
-                    <div class="text-blue-grey-4 q-mb-sm">Today's income</div>
-                    <div class="text-h6">{{ formatAmount(0) }}</div>
-                </q-card-section>
-            </q-card>
+        <div v-else class="row q-col-gutter-md q-mb-lg">
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">New order</div>
+                        <div class="text-h6">{{ pendingOrders.length }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">Ongoing rent</div>
+                        <div class="text-h6">{{ ongoingOrders.length }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">New chat</div>
+                        <div class="text-h6">{{ newChats.length }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">Total cars</div>
+                        <div class="text-h6">{{ cars.length }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">Inactive cars</div>
+                        <div class="text-h6">{{ inactiveCars.length }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <div class="col">
+                <q-card>
+                    <q-card-section>
+                        <div class="text-blue-grey-4 q-mb-sm">Today's income</div>
+                        <div class="text-h6">{{ formatAmount(0) }}</div>
+                    </q-card-section>
+                </q-card>
+            </div>
         </div>
         <q-card>
             <q-card-section>
                 <div class="text-bold">Your Statistics</div>
             </q-card-section>
-            <div v-if="isLoading" class="row q-pa-md q-gutter-md">
-                <q-card class="col" flat bordered v-for="i in 5">
-                    <q-card-section>
-                        <q-skeleton type="rect" class="q-mb-sm" />
-                        <q-skeleton type="rect" width="40px" />
-                    </q-card-section>
-                </q-card>
+            <div v-if="isLoading" class="row q-pa-md q-col-gutter-md">
+                <div class="col" v-for="i in 5">
+                    <q-card flat bordered>
+                        <q-card-section>
+                            <q-skeleton type="rect" class="q-mb-sm" />
+                            <q-skeleton type="rect" width="40px" />
+                        </q-card-section>
+                    </q-card>
+                </div>
             </div>
             <div v-else>
-                <q-card-section class="row q-pa-md q-gutter-md">
-                    <q-card class="col" flat bordered>
-                        <q-card-section>
-                            <div class="text-blue-grey-4 q-mb-sm"> Cars Viewed </div>
-                            <div class="text-body1 text-bold">0</div>
-                        </q-card-section>
-                    </q-card>
-                    <q-card class="col" flat bordered>
-                        <q-card-section>
-                            <div class="text-blue-grey-4 q-mb-sm"> Cars Rented </div>
-                            <div class="text-body1 text-bold">0</div>
-                        </q-card-section>
-                    </q-card>
-                    <q-card class="col" flat bordered>
-                        <q-card-section>
-                            <div class="text-blue-grey-4 q-mb-sm"> Rent Cancelled </div>
-                            <div class="text-body1 text-bold">0</div>
-                        </q-card-section>
-                    </q-card>
-                    <q-card class="col" flat bordered>
-                        <q-card-section>
-                            <div class="text-blue-grey-4 q-mb-sm"> Cars Damaged </div>
-                            <div class="text-body1 text-bold">0</div>
-                        </q-card-section>
-                    </q-card>
-                    <q-card class="col" flat bordered>
-                        <q-card-section>
-                            <div class="text-blue-grey-4 q-mb-sm"> Late Return </div>
-                            <div class="text-body1 text-bold">0</div>
-                        </q-card-section>
-                    </q-card>
+                <q-card-section class="row q-pa-md q-col-gutter-md">
+                    <div class="col">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="text-blue-grey-4 q-mb-sm"> Cars Viewed </div>
+                                <div class="text-body1 text-bold">0</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                    <div class="col">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="text-blue-grey-4 q-mb-sm"> Cars Rented </div>
+                                <div class="text-body1 text-bold">0</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                    <div class="col">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="text-blue-grey-4 q-mb-sm"> Rent Cancelled </div>
+                                <div class="text-body1 text-bold">0</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                    <div class="col">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="text-blue-grey-4 q-mb-sm"> Cars Damaged </div>
+                                <div class="text-body1 text-bold">0</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                    <div class="col">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="text-blue-grey-4 q-mb-sm"> Late Return </div>
+                                <div class="text-body1 text-bold">0</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
                 </q-card-section>
             </div>
         </q-card>

@@ -1,6 +1,15 @@
 <template>
-    <div class="row q-pa-md q-gutter-md justify-center">
-        <q-card flat :class="isEdit ? 'col-10' : 'col-10 q-pb-lg'">
+    <q-banner v-if="!isHasBankAccount(provider) && showBanner" dense class="bg-primary text-white">
+        <template v-slot:avatar>
+            <q-icon :name="ionWallet" color="white" />
+        </template>
+        Please fill in your bank account to withdraw.
+        <template v-slot:action>
+            <q-btn flat color="white" label="Dismiss" @click="showBanner = false" />
+        </template>
+    </q-banner>
+    <div class="row q-pa-md justify-center">
+        <q-card flat class="col-xs-12">
             <q-card-section>
                 <div class="row">
                     <div class="text-h6">Account Setting</div>
@@ -9,51 +18,125 @@
                         @click="isEdit = true" />
                 </div>
             </q-card-section>
-            <q-card-section v-if="!isDataCompleted()">
-                Complete your account info
-            </q-card-section>
 
-            <q-card-section horizontal>
-                <q-card-section class="col-auto" style="min-width: 300px">
+            <q-card-section class="row">
+                <div class="col-3">
                     <!-- <q-card flat bordered class="q-pa-md" style="min-width: 300px">
                         Profile pict
                     </q-card> -->
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
                         label="Change your password" no-caps />
-                </q-card-section>
-                <q-card-section class="col q-ml-lg" :class="isEdit ? 'q-gutter-y-xs' : 'q-gutter-y-lg'">
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-4 field-title' : 'col-3'">Name</div>
-                        <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
-                        <q-input v-else class="col-7" style="min-width: 200px;" outlined dense v-model="form.name"
-                            autocomplete="on" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Name is required',
-            (val) => isValidName(val.trim()) || 'Name is not valid']" />
-                    </div>
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-4 field-title' : 'col-3'">Email</div>
-                        <div v-if="!isEdit" class="col"> {{ customer?.email }} </div>
-                        <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
-                            v-model="form.email" autocomplete="on" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Email is required',
-            (val) => isValidEmail(val.trim()) || 'Email is not valid',
-            (val) => isEmailAvail(val.trim())]" />
-                    </div>
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-4 field-title' : 'col-3'">Phone number</div>
-                        <div v-if="!isEdit" class="col">
-                            {{ isHasPhoneNumber() ? customer?.phone_number : '-' }}
+                </div>
+                <div class="col-sm-1"></div>
+
+                <div class="col">
+                    <div class="q-mb-md">
+                        <div :class="isEdit ? 'text-bold' : 'text-bold q-mb-md'">Profile Information</div>
+                        <div :class="isEdit ? 'column' : 'column q-gutter-y-sm'">
+                            <div class="row items-center">
+                                <div class="col-xs-6 col-md-4 col-lg-3">Name</div>
+                                <div v-if="!isEdit" class="col">{{ provider?.name }}</div>
+                                <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
+                                    v-model="form.name" autocomplete="on" lazy-rules :rules="[
+                                        (val) => (val && val.length > 0) || 'Name is required',
+                                        (val) => isValidName(val.trim()) || 'Name is not valid']" hide-bottom-space />
+                            </div>
+                            <div class="row items-center">
+                                <div class="col-xs-6 col-md-4 col-lg-3">Branding name</div>
+                                <div v-if="!isEdit" class="col"> {{ provider?.trading_name }} </div>
+                                <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
+                                    v-model="form.trading_name" autocomplete="on" lazy-rules :rules="[
+                                        (val) => (val && val.length > 0) || 'Branding name is required']"
+                                    hide-bottom-space />
+                            </div>
+                            <div class="row items-center">
+                                <div class="col-xs-6 col-md-4 col-lg-3">Email</div>
+                                <div v-if="!isEdit" class="col"> {{ provider?.email }} </div>
+                                <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
+                                    v-model="form.email" autocomplete="on" lazy-rules :rules="[
+                                        (val) => (val && val.length > 0) || 'Email is required',
+                                        (val) => isValidEmail(val.trim()) || 'Email is not valid',
+                                        (val) => isEmailAvail(val.trim())]" hide-bottom-space />
+                            </div>
+                            <div class="row items-center">
+                                <div class="col-xs-6 col-md-4 col-lg-3">Phone number</div>
+                                <div v-if="!isEdit" class="col">
+                                    {{ provider?.phone_number }}
+                                </div>
+                                <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
+                                    v-model="form.phone_number" mask="##############" lazy-rules :rules="[
+                                        (val) => (val && val.length > 0) || 'Phone number is required',
+                                        (val) => val.length >= 10 || 'Phone number is not valid']" />
+                            </div>
                         </div>
-                        <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
-                            v-model="form.phone_number" mask="##############" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Phone number is required',
-            (val) => val.length >= 10 || 'Phone number is not valid']" />
                     </div>
+
+                    <div class="q-mb-lg">
+                        <div class="text-bold q-mb-sm">Address</div>
+                        <div :class="isEdit ? 'column' : 'column q-gutter-y-sm'">
+                            <div class="row items-center">
+                                <div v-if="!isEdit" class="col"> {{ provider?.address }} </div>
+                                <q-input v-else class="col-10" style="min-width: 200px;" outlined dense debounce="500"
+                                    v-model="form.address" autocomplete="on" lazy-rules :rules="[
+                                        (val) => (val && val.length > 0) || 'Address is required']"
+                                    hide-bottom-space />
+                            </div>
+                            <div class="row items-center">
+                                <div v-if="!isEdit" class="col">{{ provider?.city }}, {{ provider?.province }}</div>
+                                <div v-else class="col-10 row q-mt-sm">
+                                    <div class="col">
+                                        <q-select dense outlined v-model="selectedCity" :options="cityList"
+                                            @filter="getCityFilter" behavior="menu"
+                                            :disable="selectedProvince.value == ''"
+                                            :rules="[val => val && val.value != '' || 'City is required']"
+                                            hide-bottom-space />
+                                    </div>
+                                    <div class="col q-ml-sm">
+                                        <q-select dense outlined v-model="selectedProvince" :options="provinceList"
+                                            @update:model-value="cityList = []" behavior="menu"
+                                            :rules="[val => val && val.value != '' || 'Province is required']"
+                                            hide-bottom-space />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <BankAccountInfo v-if="!isEdit && provider != undefined" :provider="provider" />
+                        <div v-else>
+                            <div class="text-bold q-mb-sm">Bank Account</div>
+                            <div :class="isEdit ? 'column' : 'column q-col-gutter-y-sm'">
+                                <div class="row items-center">
+                                    
+                                    <div class="col-12 column">
+                                        <div class="row items-center">
+                                            <div class="col-3">Bank name</div>
+                                            <div class="col-7">
+                                                <q-select dense outlined v-model="selectedBank" :options="bankList"
+                                                    behavior="menu" hide-bottom-space />
+                                            </div>
+                                        </div>
+                                        <div class="row items-center">
+                                            <div class="col-3">Account number</div>
+                                            <q-input class="col-7" style="min-width: 200px;" outlined dense
+                                                debounce="500" v-model="bankAccount"
+                                                :disable="selectedBank.label == 'Select bank'" mask="#############"
+                                                lazy-rules :rules="[
+                                                    (val) => (val && val.length >= 10) || 'Account number is not valid',
+                                                    (val) => checkBankAccount(val)]" hide-bottom-space />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div v-if="isEdit" class="row q-gutter-md q-mt-sm justify-end">
                         <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="resetForm" />
                         <q-btn color="accent" label="Save Profile" :disable="!isValidInput" @click="updateData" />
                     </div>
-                </q-card-section>
+                </div>
             </q-card-section>
         </q-card>
     </div>
@@ -63,36 +146,120 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
-import { isValidEmail, isValidName } from '@/composables/validator';
-import type { Customer } from '@/interfaces/rest/Customer';
+import UtilService from '@/services/util.service';
+import { isHasBankAccount, isValidEmail, isValidName } from '@/composables/validator';
 import { Message, UserType } from '@/enums/enum';
+import type { Provider } from '@/interfaces/rest/Provider';
+import type { Option } from '@/interfaces/Option';
+import { ionWallet } from '@quasar/extras/ionicons-v6';
+import BankAccountInfo from '@/components/ui-block/BankAccountInfo.vue';
 
 const quasar = useQuasar();
-const customer = ref<Customer>();
+const provider = ref<Provider>();
 const isEdit = ref<boolean>(false);
-const isValidInput = computed(() => form.name !== '' && form.email !== '' && form.phone_number !== '');
+const showBanner = ref<boolean>(true);
+const isValidInput = computed(() => isDataCompleted());
 
 const form = reactive({
     name: '',
+    trading_name: '',
     email: '',
-    phone_number: ''
+    phone_number: '',
+    province: '',
+    city: '',
+    address: '',
+    bank_code: '',
+    bank_account_number: '',
+    bank_account_name: ''
 });
+const provinceList = ref<Option[]>([]);
+const cityList = ref<Option[]>([]);
+const bankList = ref<Option[]>([]);
+const selectedProvince = ref<Option>({ label: 'Select province', value: '' });
+const selectedCity = ref<Option>({ label: 'Select city', value: '' });
+const selectedBank = ref<Option>({ label: 'Select bank', value: '' });
+const bankAccount = ref<string>('');
+const bankName = ref<string>('');
 
-function getCustomer() {
+function getProvider() {
     quasar.loading.show({ spinner: QSpinnerGears });
-    customer.value = UserService.getLoggedInPrv();
+    provider.value = UserService.getLoggedInPrv();
+    if (isHasBankAccount(provider.value)) {
+        setBankName(provider.value?.bank_code!, provider.value?.bank_account_number!);
+    }
+    getProvince();
+    getBankList();
     resetForm();
     quasar.loading.hide();
+}
+
+function getProvince() {
+    UtilService.getProvinceList().then((response) => {
+        response.data.result.map((data: any) => {
+            provinceList.value.push({
+                value: data.id,
+                label: data.text
+            });
+            if (data.text == provider.value?.province) {
+                selectedProvince.value = { label: data.text, value: data.id };
+            }
+        });
+    }).catch((error) => {
+        quasar.notify({
+            color: 'negative',
+            position: 'top-right',
+            message: Message.INTERNAL_SERVER_ERROR
+        });
+    });
+}
+
+function getCityFilter(val: any, update: any) {
+    if (cityList.value.length > 0) {
+        update();
+        return;
+    }
+
+    UtilService.getCityList(parseInt(selectedProvince.value.value!))
+        .then((response) => {
+            update(() => {
+                response.data.result.map((data: any) => {
+                    cityList.value.push({
+                        value: data.id,
+                        label: data.text
+                    });
+                });
+            });
+        });
+}
+
+function getBankList() {
+    UtilService.getBankList().then((response) => {
+        response.data.data.map((data: any) => {
+            bankList.value.push({
+                value: data.kodeBank,
+                label: data.namaBank
+            });
+        });
+    }).catch((error) => {
+        quasar.notify({
+            color: 'negative',
+            position: 'top-right',
+            message: Message.INTERNAL_SERVER_ERROR
+        });
+    });
 }
 
 function updateData() {
     quasar.loading.show({ spinner: QSpinnerGears });
 
-    UserService.updateProfile(customer.value?.id!, form, UserType.P)
+    form.province = selectedProvince.value?.label;
+    form.city = selectedCity.value?.label.substring(selectedCity.value?.label.indexOf(' ') + 1);
+    console.log('form', form);
+    UserService.updateProfile(provider.value?.id!, form, UserType.P)
         .then((response) => {
-            // console.log('updated', response.data);
-            customer.value = response.data;
-            UserService.storeUser(customer.value, UserType.P);
+            console.log('updated', response.data);
+            provider.value = response.data;
+            UserService.storeUser(provider.value, UserType.P);
             quasar.loading.hide();
             resetForm();
             quasar.notify({
@@ -112,7 +279,7 @@ function updateData() {
 }
 
 function isEmailAvail(email: string) {
-    if (customer.value != undefined && email == customer.value.email) return true;
+    if (provider.value != undefined && email == provider.value.email) return true;
     return UserService.isEmailExists(email, UserType.P)
         .then((response: any) => {
             return new Promise((resolve, reject) => {
@@ -129,38 +296,65 @@ function isEmailAvail(email: string) {
         });
 }
 
-function isHasPhoneNumber() {
-    if (customer.value != undefined &&
-        customer.value.phone_number != null &&
-        customer.value.phone_number != '') return true;
-    return false;
+function checkBankAccount(bankNumber: string) {
+    return UtilService.getBankAccount(selectedBank.value.value!, bankNumber)
+        .then((response: any) => {
+            // console.log(response)
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (response.status) {
+                        form.bank_code = response.data.data.bankcode;
+                        form.bank_account_number = response.data.data.accountnumber;
+                        form.bank_account_name = response.data.data.accountname;
+                    }
+                    resolve(response.data.status as boolean || Message.INVALID_BANK_ACCOUNT);
+                }, 500);
+            })
+        })
+        .catch((error) => {
+            console.error(error);
+            return new Promise((resolve, reject) => {
+                resolve(false || Message.INTERNAL_SERVER_ERROR);
+            })
+        });
+}
+
+function setBankName(bankCode: string, accountNumber: string) {
+    UtilService.getBankAccount(bankCode, accountNumber).then((response) => {
+        bankName.value = response.data.bankname;
+    })
 }
 
 function isDataCompleted() {
-    // email is already filled, name can be still autogenerated
-    if (customer.value != undefined &&
-        customer.value.name != customer.value.name?.toLowerCase() &&
-        isHasPhoneNumber()) return true;
-    return false;
+    const isMainDataCompleted = form.name !== '' && form.trading_name !== '' &&
+        form.email !== '' && form.phone_number !== '' &&
+        form.address !== '' && form.city !== '' &&
+        form.province !== '';
+
+    if (selectedBank.value.label != 'Select bank' && form.bank_account_number == '') return false;
+    if (isMainDataCompleted && selectedBank.value.label == 'Select bank') return true;
+    return isMainDataCompleted && form.bank_account_number != '';
 }
 
 function resetForm() {
     isEdit.value = false;
-    if (customer.value != undefined) {
-        form.name = customer.value.name != customer.value.name?.toLowerCase() ? customer.value?.name! : '';
-        form.email = customer.value?.email;
-        form.phone_number = isHasPhoneNumber() ? customer.value?.phone_number! : '';
+    if (provider.value != undefined) {
+        form.name = provider.value?.name ? provider.value?.name : '';
+        form.trading_name = provider.value?.trading_name ? provider.value?.trading_name : '';
+        form.email = provider.value?.email;
+        form.phone_number = provider.value.phone_number ? provider.value.phone_number : '';
+        form.province = provider.value.province ? provider.value.province : '';
+        form.city = provider.value.city ? provider.value.city : '';
+        form.address = provider.value.address ? provider.value.address : '';
+        form.bank_code = isHasBankAccount(provider.value) ? provider.value.bank_code! : '';
+        form.bank_account_number = isHasBankAccount(provider.value) ? provider.value.bank_account_number! : '';
+        form.bank_account_name = isHasBankAccount(provider.value) ? provider.value.bank_account_name! : '';
+        selectedCity.value = { label: form.city };
+        selectedBank.value = { label: 'Select bank' };
     }
 }
 
 onMounted(() => {
-    getCustomer();
+    getProvider();
 });
 </script>
-
-<style scoped>
-.field-title {
-    line-height: 40px;
-    padding-bottom: 20px;
-}
-</style>

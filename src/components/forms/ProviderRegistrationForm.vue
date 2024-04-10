@@ -34,7 +34,6 @@
         ]">
                                 </q-input>
                             </div>
-
                             <div class="column">
                                 <label class="field-label q-mb-xs">Password</label>
                                 <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
@@ -96,16 +95,16 @@
                         <div class="column col-6 q-gutter-y-sm">
                             <div class="column">
                                 <label class="field-label q-mb-xs">Province</label>
-                                <q-input outlined dense v-model="form.province"
-                                    placeholder="Enter your province location" hide-bottom-space lazy-rules
-                                    :rules="[val => val && val.length > 0 || 'Province is required']">
-                                </q-input>
+                                <q-select dense outlined v-model="selectedProvince" :options="provinceList"
+                                    @update:model-value="cityList = []" behavior="menu"
+                                    :rules="[val => val && val.value != '' || 'Province is required']"
+                                    hide-bottom-space />
                             </div>
                             <div class="column">
                                 <label class="field-label q-mb-xs">City</label>
-                                <q-input outlined dense v-model="form.city" placeholder="Enter your city location"
-                                    hide-bottom-space lazy-rules
-                                    :rules="[(val) => (val && val.length > 0) || 'City is required']" />
+                                <q-select dense outlined v-model="selectedCity" :options="cityList"
+                                    @filter="getCityFilter" behavior="menu" :disable="selectedProvince.value == ''"
+                                    :rules="[val => val && val.value != '' || 'City is required']" hide-bottom-space />
                             </div>
                             <div class="column">
                                 <label class="field-label q-mb-xs">Address</label>
@@ -131,10 +130,12 @@ import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import UserService from '@/services/user.service';
+import UtilService from '@/services/util.service';
 import { UserType, Message } from '@/enums/enum';
 import { ionLocation, ionPerson, ionStorefront } from '@quasar/extras/ionicons-v6';
 import { isValidEmail, isValidName } from '@/composables/validator';
 import { formatNameCase } from '@/composables/formatter';
+import type { Option } from '@/interfaces/Option';
 
 const router = useRouter();
 const quasar = useQuasar();
@@ -151,6 +152,10 @@ const form: any = reactive({
 });
 const isPwd = ref<boolean>(true);
 const isEmailExists = ref<boolean>(false);
+const provinceList = ref<Option[]>([]);
+const cityList = ref<Option[]>([]);
+const selectedProvince = ref<Option>({ label: 'Select province', value: '' });
+const selectedCity = ref<Option>({ label: 'Select city', value: '' });
 
 function isEmailAvail(email: string) {
     return UserService.isEmailExists(email, UserType.P)
@@ -170,6 +175,42 @@ function isEmailAvail(email: string) {
         });
 }
 
+function getProvince() {
+    UtilService.getProvinceList().then((response) => {
+        response.data.result.map((data: any) => {
+            provinceList.value.push({
+                value: data.id,
+                label: data.text
+            });
+        });
+    }).catch((error) => {
+        quasar.notify({
+            color: 'negative',
+            position: 'top-right',
+            message: Message.INTERNAL_SERVER_ERROR
+        });
+    });
+}
+
+function getCityFilter(val: any, update: any) {
+    if (cityList.value.length > 0) {
+        update();
+        return;
+    }
+
+    UtilService.getCityList(parseInt(selectedProvince.value.value!))
+        .then((response) => {
+            update(() => {
+                response.data.result.map((data: any) => {
+                    cityList.value.push({
+                        value: data.id,
+                        label: data.text
+                    });
+                });
+            });
+        });
+}
+
 function validStepOne() {
     const email = form.email.trim();
     const password = form.password.trim();
@@ -184,10 +225,8 @@ function validStepTwo() {
 }
 
 function validStepThree() {
-    const province = form.province.trim();
-    const city = form.city.trim();
     const address = form.address.trim();
-    return province != '' && city != '' && address != '';
+    return selectedProvince.value.value != '' && selectedCity.value.value != '' && address != '';
 }
 
 function submit() {
@@ -197,8 +236,8 @@ function submit() {
     form.email = form.email.trim();
     form.password = form.password.trim();
     form.trading_name = form.trading_name.trim();
-    form.province = form.province.trim();
-    form.city = form.city.trim();
+    form.province = selectedProvince.value?.label;
+    form.city = selectedCity.value?.label.substring(selectedCity.value?.label.indexOf(' ') + 1);
     form.address = form.address.trim();
 
     // console.log('submit', form);
@@ -229,6 +268,7 @@ function submit() {
 
 onMounted(() => {
     form.email = UserService.getLoggedInCust().email;
+    getProvince();
 });
 </script>
 

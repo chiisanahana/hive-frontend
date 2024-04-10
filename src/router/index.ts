@@ -106,6 +106,11 @@ const router = createRouter({
       component: () => import('@/pages/provider/AccountPage.vue'),
     },
     {
+      path: '/provider/withdraw',
+      name: 'withdraw',
+      component: () => import('@/pages/provider/WithdrawPage.vue'),
+    },
+    {
       path: '/logout',
       name: 'logout',
       component: () => import('@/pages/handler/PageLoggedOut.vue')

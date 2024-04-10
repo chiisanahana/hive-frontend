@@ -74,11 +74,11 @@
                 <div class="row">
                     <div class="col-3 q-pt-sm">Price per day</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.price" prefix="Rp"
-                        @update:model-value="() => { clearLeadingZeros(form.price) }"
+                        @update:model-value="() => { form.price = clearLeadingZeros(form.price) }"
                         placeholder=" Input rent price per day" mask="###.###.###.###" reverse-fill-mask unmasked-value
                         lazy-rules :rules="[
         (val) => (val && val.length > 0) || 'Price per day is required',
-        (val) => (form.price > '0') || 'Price is not valid'
+        (val) => (parseInt(val) > 0) || 'Price is not valid'
     ]" />
                 </div>
                 <div class="row">
@@ -157,9 +157,9 @@ const carTypeOpt = ref<string[]>([
 ]);
 
 function clearLeadingZeros(str: string) {
-    form.price = form.price.replace(/^0+(?=\d)/, '');
+    // form.price = form.price.replace(/^0+(?=\d)/, '');
     // console.log('price', form.price)
-    // return str.replace(/^0+(?=\d)/, '');
+    return str.replace(/^0+(?=\d)/, '');
 }
 
 function checkFileType(files: any) {

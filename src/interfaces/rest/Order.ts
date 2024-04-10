@@ -13,6 +13,7 @@ export interface Order {
     pickup_location: string;
     return_location: string;
     status: string;
+    base_fee: string;
     transport_fee?: string;
     damage_fee?: string;
     late_fee?: string;

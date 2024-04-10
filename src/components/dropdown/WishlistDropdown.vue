@@ -15,7 +15,7 @@
                 <WishlistDropdownSkeleton v-if="isLoading" />
 
                 <q-item :clickable="!isExpired(wishlist)" v-else-if="wishlists.length > 0" v-for="wishlist in wishlists"
-                    @click="viewCar(wishlist.car?.id!)" :class="isExpired(wishlist) ? 'disabled' : ''">
+                    @click="viewCar(wishlist.id!)" :class="isExpired(wishlist) ? 'disabled' : ''">
                     <q-item-section thumbnail class="q-ml-none">
                         <img :src="getCarImg(wishlist.car?.car_files[0] || null)" />
                     </q-item-section>
@@ -116,8 +116,8 @@ function isExpired(wishlist: Wishlist) {
     return date.getDateDiff(Date.parse(wishlist?.start_date!), new Date(), 'hours') < 0;
 }
 
-function viewCar(carId: number) {
-    const encryptedId = CryptoService.encrypt(carId);
-    router.push({ name: 'car-details', query: { cid: encryptedId } });
+function viewCar(wishlistId: number) {
+    const encryptedId = CryptoService.encrypt(wishlistId);
+    router.push({ name: 'car-details', query: { cid: encryptedId, w: 'true' } });
 }
 </script>

@@ -19,8 +19,8 @@
                         2
                     </q-badge> -->
                 </q-btn>
-                <q-btn flat dense no-caps align="left" :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'"
-                    style="min-width: 220px">
+                <q-btn flat dense no-caps align="left" class="gt-xs"
+                    :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'" style="min-width: 220px" >
                     <q-avatar v-if="user?.profile_picture != null" class="q-mr-md">
                         <img :src="getProfPict(user)">
                     </q-avatar>
@@ -29,13 +29,24 @@
                     </q-avatar>
                     <div class="column align-left justify-start">
                         <div class="text-left text-font">{{ currentUser == UserType.C ? user!.name : (user as
-                    Provider)!.trading_name
+                            Provider)!.trading_name
                             }}</div>
                         <div v-if="currentUser == UserType.P" class="text-left text-caption text-blue-grey-4">
                             {{ user!.name }}
                         </div>
                     </div>
-                    <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" />
+                    <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog" @check-prv-update="getUserData" />
+                </q-btn>
+                <q-btn flat dense no-caps align="left" class="lt-sm q-ml-xs"
+                    :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'">
+                    <q-avatar v-if="user?.profile_picture != null">
+                        <img :src="getProfPict(user)">
+                    </q-avatar>
+                    <q-avatar v-else color="orange" class="text-white">
+                        {{ user!.name?.charAt(0).toUpperCase() }}
+                    </q-avatar>
+                    <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog"
+                        @check-prv-update="getUserData" />
                 </q-btn>
             </div>
             <div v-else class="q-pa-sm q-gutter-md">

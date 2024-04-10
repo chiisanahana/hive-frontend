@@ -82,6 +82,8 @@ function submit() {
             quasar.loading.hide();
             if (error.response && error.response.status == 401) {
                 errMsg.value = 'Login failed. Please check your email or password.';
+                form.email = '';
+                form.password = '';
             } else {
                 errMsg.value = Message.INTERNAL_SERVER_ERROR;
             }

@@ -23,7 +23,7 @@ class OrderService {
         });
     }
 
-    createOrder(carId: number, customerId: number, rentDetails: RentDetails): Promise<any> {
+    createOrder(carId: number, customerId: number, basePrice: number, rentDetails: RentDetails): Promise<any> {
         return http.post('/orders/', {
             car_id: carId,
             customer_id: customerId,
@@ -31,12 +31,17 @@ class OrderService {
             end_datetime: formatTimestampBackend(rentDetails.endDate, rentDetails.endTime),
             pickup_location: rentDetails.pickupAddress,
             return_location: rentDetails.returnAddress,
+            base_price: basePrice,
             status: 0
         });
     }
 
     updateOrderStatus(id: number, status: string): Promise<any> {
         return http.put(`/orders/${id}/`, { status: status });
+    }
+
+    completeOrder(orderId: number, providerId: number) {
+        return http.post(`/orders/complete/${orderId}`, { provider_id: providerId });
     }
 
     rateOrder(id: number, rate: number): Promise<any> {

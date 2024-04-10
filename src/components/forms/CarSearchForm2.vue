@@ -1,13 +1,15 @@
 <template>
+    <!-- <q-card class="q-py-md q-pl-md"> -->
     <q-card class="q-pa-md">
         <q-form @submit="submit">
-            <div class="row q-col-gutter-x-sm q-col-gutter-y-md">
-                <div class="col column drop-field">
+            <div class="row q-gutter-x-sm q-gutter-y-md">
+                <!-- <div class="col-xs-11 col-md-3 column drop-field"> -->
+                <div class="col-auto column drop-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionLocation" size="xs" class="q-mr-xs" />
                         Destination
                     </label>
-                    <q-select outlined dense v-model="selectedLocation" :options="locationsOpt!" behavior="menu"
+                    <q-select outlined dense v-model="selectedLocation" :options="locationsOpt!"
                         :error="errors.location" hide-bottom-space>
                         <template v-slot:option="scope">
                             <q-item v-bind="scope.itemProps">
@@ -26,6 +28,7 @@
                         </template>
                     </q-select>
                 </div>
+                <!-- <div class="col-xs-7 col-sm-7 col-md-2 column date-field"> -->
                 <div class="col-2 column date-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionCalendar" size="xs" class="q-mr-xs" />
@@ -43,6 +46,7 @@
                         </q-popup-proxy>
                     </q-input>
                 </div>
+                <!-- <div class="col-xs-4 col-sm-4 col-md-1 column time-field"> -->
                 <div class="col-1 column time-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionTime" size="xs" class="q-mr-xs" />
@@ -92,8 +96,8 @@
                         </q-popup-proxy>
                     </q-input>
                 </div>
-                <div class="row items-center q-ml-sm">
-                    <q-btn type="submit" unelevated flat round text-color="accent" :icon="ionSearch" />
+                <div class="row q-my-md q-ml-md q-gutter-y-md">
+                    <q-btn type="submit" unelevated round text-color="accent" :icon="ionSearch" />
                 </div>
             </div>
         </q-form>
@@ -230,6 +234,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* .drop-field {
+    min-width: 150px;
+}
+
+.date-field {
+    max-width: 140px;
+} 
+
+.time-field {
+    max-width: 120px;
+} */
 .drop-field {
     min-width: 160px;
 }

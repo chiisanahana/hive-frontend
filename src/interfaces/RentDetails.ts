@@ -1,5 +1,7 @@
 export interface RentDetails {
-    location: string;
+    // location: string;
+    city: string;
+    province: string;
     pickupAddress: string;
     returnAddress: string;
     startDate: string;

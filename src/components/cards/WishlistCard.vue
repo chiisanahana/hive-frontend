@@ -52,7 +52,7 @@ import { useRouter } from 'vue-router';
 import { date } from 'quasar';
 import type { Wishlist } from '@/interfaces/rest/Wishlist';
 import CryptoService from '@/services/crypto.service';
-import { formatAmount, formatDateDisplay, formatTimeDisplay, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
+import { formatAmount, formatDateDisplay, formatTimeDisplay } from '@/composables/formatter';
 import { ionCalendar, ionLocation, ionTime } from '@quasar/extras/ionicons-v6';
 import { calcRentPrice } from '@/composables/calculator';
 import { getCarImg } from '@/composables/getter';
@@ -74,8 +74,8 @@ function isExpired() {
 
 function viewCar() {
     if (!isExpired()) {
-        const encryptedId = CryptoService.encrypt(props.wishlist?.car?.id);
-        router.push({ name: 'car-details', query: { cid: encryptedId } });
+        const encryptedId = CryptoService.encrypt(props.wishlist?.id);
+        router.push({ name: 'car-details', query: { cid: encryptedId, w: 'true' } });
     }
 }
 

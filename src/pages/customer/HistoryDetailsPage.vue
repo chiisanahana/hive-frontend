@@ -1,5 +1,5 @@
 <template>
-    <div class="row q-pa-md q-gutter-md">
+    <div class="row q-pa-md q-col-gutter-md">
         <div class="col">
             <q-card flat>
                 <q-card-section>
@@ -16,7 +16,7 @@
                                 <div class="row items-center text-blue-grey-4">
                                     <q-icon :name="ionLocation" class="q-mr-sm" />
                                     {{ order?.car?.provider?.city }}, {{
-                                order?.car?.provider?.province }}
+                                        order?.car?.provider?.province }}
                                 </div>
                             </div>
                         </div>
@@ -31,10 +31,11 @@
             </q-card>
         </div>
         <div class="col-7">
-            <q-card flat>
+            <PaymentVaCard v-if="order != undefined && getPaymentMethod() == 'Virtual Account'" :order="order" />
+            <q-card flat v-else-if="getPaymentMethod() == 'Credit Card'">
                 <q-card-section>
-                    <img :src="order?.payments[0].payment_method == 'Virtual Account' ? va : cc"
-                        class="payment-method" />
+                    <!-- <img :src="order?.payments[0].payment_method == 'Virtual Account' ? va : cc"
+                        class="payment-method" /> -->
                     <div class="text-h6 text-center">Payment details</div>
 
                     <q-card-actions align="right" class="q-mt-xl">
@@ -60,6 +61,7 @@ import { ionLocation } from '@quasar/extras/ionicons-v6';
 import va from '@/assets/images/va.png';
 import cc from '@/assets/images/cc.png';
 import type { Order } from '@/interfaces/rest/Order';
+import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -75,7 +77,8 @@ function getOrderDetails(orderId: number) {
         order.value = response.data;
 
         rentDetails.value = {
-            location: '',
+            city: '',
+            province: '',
             pickupAddress: order.value?.pickup_location!,
             returnAddress: order.value?.return_location!,
             startDate: formatTimestampToDate(order.value?.start_datetime),
@@ -89,8 +92,14 @@ function getOrderDetails(orderId: number) {
     });
 }
 
+function getPaymentMethod() {
+    if (order.value != undefined) {
+        return order.value.payments[0].payment_method;
+    }
+}
+
 function back() {
-    router.go(-1);    
+    router.go(-1);
 }
 
 onBeforeMount(() => {

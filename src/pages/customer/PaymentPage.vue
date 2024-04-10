@@ -1,5 +1,5 @@
 <template>
-    <div class="row q-pa-md q-gutter-md">
+    <div class="row q-pa-md q-col-gutter-md">
         <div class="col">
             <q-card flat>
                 <q-card-section>
@@ -66,7 +66,8 @@ function getOrderDetails(orderId: number) {
         order.value = response.data;
 
         rentDetails.value = {
-            location: '',
+            city: '',
+            province: '',
             pickupAddress: order.value?.pickup_location!,
             returnAddress: order.value?.return_location!,
             startDate: formatTimestampToDate(order.value?.start_datetime),

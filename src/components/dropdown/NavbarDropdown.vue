@@ -1,5 +1,5 @@
 <template>
-    <q-menu transition-show="jump-down" transition-hide="jump-up">
+    <q-menu transition-show="jump-down" transition-hide="jump-up" @before-show="getUpdate">
         <q-list style="width: 220px">
             <q-item clickable v-close-popup @click="goToAccount">
                 <q-item-section side>
@@ -21,7 +21,16 @@
                     {{ isProvider() ? 'Owner Dashboard' : 'Be Our Provider' }}
                 </q-item-section>
             </q-item>
-            <q-item v-else clickable v-close-popup @click="backToMain">
+            <q-item v-if="type == UserType.P" clickable v-close-popup @click="goToWithdraw">
+                <q-item-section side>
+                    <q-icon :name="ionCash"></q-icon>
+                </q-item-section>
+                <q-item-section>
+                    <div>Balance</div>
+                    <div>{{ formatAmount((user as Provider).balance) }}</div>
+                </q-item-section>
+            </q-item>
+            <q-item v-if="type == UserType.P" clickable v-close-popup @click="backToMain">
                 <q-item-section>
                     Back To HiVe
                 </q-item-section>
@@ -46,7 +55,8 @@ import UserService from '@/services/user.service';
 import type { Customer } from '@/interfaces/rest/Customer';
 import type { Provider } from '@/interfaces/rest/Provider';
 import { UserType } from '@/enums/enum';
-import { ionLogOut, ionStorefront, ionPerson } from '@quasar/extras/ionicons-v6';
+import { ionLogOut, ionStorefront, ionPerson, ionCash } from '@quasar/extras/ionicons-v6';
+import { formatAmount } from '@/composables/formatter';
 
 const props = defineProps<{
     user: Customer | Provider;
@@ -54,12 +64,17 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    openLoginDialog: []
+    openLoginDialog: [],
+    checkPrvUpdate: []
 }>();
 
 const route = useRoute();
 const router = useRouter();
 const quasar = useQuasar();
+
+function getUpdate() {
+    if (props.type == UserType.P) emit('checkPrvUpdate');
+}
 
 function isProvider() {
     if (props.type == UserType.C && (props.user as Customer).is_provider) {
@@ -75,6 +90,10 @@ function goToAccount() {
 
 function goToHistory() {
     router.push({ name: 'history' });
+}
+
+function goToWithdraw() {
+    router.push({ name: 'withdraw' });
 }
 
 function handleProviderAuth() {

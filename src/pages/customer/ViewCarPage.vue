@@ -1,6 +1,6 @@
 <template>
     <div class="row q-pa-md container">
-        <div class="col-auto q-mr-md filter-container">
+        <div class="gt-xs col-auto q-mr-md filter-container">
             <q-scroll-area class="fit">
                 <div class="q-pa-md filter-box">
                     <div class="row">
@@ -102,17 +102,19 @@
         </div>
 
         <q-scroll-area class="col fit">
-            <div class="q-gutter-y-md items-center">
-                <CarSearchForm :form-value="rentDetails" :route-to="''" />
+            <CarSearchForm v-if="rentDetails != undefined" :form-value="rentDetails" :route-to="''" @search="getCars" />
 
-                <div v-if="isLoading" class="row q-px-md q-gutter-md">
-                    <CarCardSkeleton v-for="n in 8" :key="n" />
+            <div v-if="isLoading" class="row q-py-md q-col-gutter-md">
+                <div class="col-xs-6 col-md-3" v-for="n in 8" :key="n">
+                    <CarCardSkeleton />
                 </div>
-                <div v-else-if="cars.length == 0">
-                    Oops... No cars available
-                </div>
-                <div v-else class="row q-px-md q-gutter-md">
-                    <CarCard v-for="car in cars" :car="car" />
+            </div>
+            <div v-else-if="cars.length == 0" class="q-py-xl text-center">
+                Oops... No cars available
+            </div>
+            <div v-else class="row q-py-md q-col-gutter-md">
+                <div class="col-xs-6 col-md-3" v-for="car in cars">
+                    <CarCard :car="car" />
                 </div>
             </div>
         </q-scroll-area>
@@ -120,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, onBeforeMount, toRaw } from 'vue';
+import { ref, reactive, watch, onMounted, toRaw } from 'vue';
 import type { Car } from '@/interfaces/rest/Car';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import CarService from '@/services/car.service';
@@ -157,6 +159,12 @@ watch(filter, async (newFilter, oldFilter) => {
 })
 
 function getCars() {
+    const rentData = localStorage.getItem(import.meta.env.VITE_SESSION_DATA);
+    if (rentData != null) {
+        rentDetails.value = JSON.parse(CryptoService.decrypt(rentData));
+    }
+
+    isLoading.value = true;
     CarService.searchCar(rentDetails.value!)
         .then((response: any) => {
             isLoading.value = false;
@@ -220,26 +228,14 @@ function resetFilter() {
     cars.value = data.value;
 }
 
-onBeforeMount(() => {
-    const data = localStorage.getItem(import.meta.env.VITE_SESSION_DATA);
-    if (data != null) {
-        rentDetails.value = JSON.parse(CryptoService.decrypt(data));
-    }
-});
-
 onMounted(() => {
     getCars();
-})
+});
 </script>
 
 <style scoped>
 .container {
     height: calc(100vh - 70px);
-}
-
-.car-card {
-    width: calc(100% / 4 - 16px);
-    height: fit-content;
 }
 
 .filter-container {

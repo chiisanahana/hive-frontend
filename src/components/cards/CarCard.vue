@@ -1,5 +1,5 @@
 <template>
-    <q-card v-ripple class="car-card col-md-3 col-sm-6 cursor-pointer relative-position" @click="viewCar">
+    <q-card v-ripple class="cursor-pointer relative-position full-height" @click="viewCar">
         <q-img v-if="car != undefined && car.car_files.length > 0" :src="getCarImg(car.car_files[0] || null)" :ratio="16 / 9" />
         <q-card-section>
             <div class="text-body1 text-bold">{{ car?.brand }}</div>

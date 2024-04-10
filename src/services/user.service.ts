@@ -4,6 +4,10 @@ import type { UserAuth } from '@/interfaces/UserAuth';
 import CryptoService from '@/services/crypto.service';
 
 class UserService {
+    get(userId: number, type: UserType): Promise<any> {
+        return http.get(`/${type}s/${userId}/`);
+    }
+
     isEmailExists(email: string, type: UserType): Promise<any> {
         // console.log('checking ' + type + ' email ' + email);
         return http.post(`/${type}s/check-email`, { email: email.toLowerCase() });
@@ -63,11 +67,11 @@ class UserService {
     }
 
     logout(type: UserType): void {
-        if (type == UserType.C) {
-            localStorage.removeItem(import.meta.env.VITE_CUST_SESSION_KEY);
-        } else if (type == UserType.P) {
-            localStorage.removeItem(import.meta.env.VITE_PRV_SESSION_KEY);
-        }
+        // if (type == UserType.C) {
+        localStorage.removeItem(import.meta.env.VITE_CUST_SESSION_KEY);
+        // } else if (type == UserType.P) {
+        localStorage.removeItem(import.meta.env.VITE_PRV_SESSION_KEY);
+        // }
     }
 
     private _generateUsername() {
