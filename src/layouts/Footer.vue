@@ -25,7 +25,7 @@
     </q-footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import logo from '@/assets/images/logo-white.png';
 import { ionLogoInstagram, ionLogoWhatsapp } from '@quasar/extras/ionicons-v6';
 </script>
