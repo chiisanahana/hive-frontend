@@ -27,17 +27,17 @@
                         <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
                         <q-input v-else class="col-5" style="min-width: 200px;" outlined dense v-model="form.name"
                             autocomplete="on" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Name is required',
-            (val) => isValidName(val.trim()) || 'Name is not valid']" />
+                                (val) => (val && val.length > 0) || 'Name is required',
+                                (val) => isValidName(val.trim()) || 'Name is not valid']" />
                     </div>
                     <div class="row items-center">
                         <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Email</div>
                         <div v-if="!isEdit" class="col"> {{ customer?.email }} </div>
                         <q-input v-else class="col-5" style="min-width: 200px;" outlined dense debounce="500"
                             v-model="form.email" autocomplete="on" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Email is required',
-            (val) => isValidEmail(val.trim()) || 'Email is not valid',
-            (val) => isEmailAvail(val.trim())]" />
+                                (val) => (val && val.length > 0) || 'Email is required',
+                                (val) => isValidEmail(val.trim()) || 'Email is not valid',
+                                (val) => isEmailAvail(val.trim())]" />
                     </div>
                     <div class="row items-center">
                         <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Phone number</div>
@@ -46,8 +46,8 @@
                         </div>
                         <q-input v-else class="col-5" style="min-width: 200px;" outlined dense
                             v-model="form.phone_number" mask="##############" lazy-rules :rules="[
-            (val) => (val && val.length > 0) || 'Phone number is required',
-            (val) => val.length >= 10 || 'Phone number is not valid']" />
+                                (val) => (val && val.length > 0) || 'Phone number is required',
+                                (val) => val.length >= 10 || 'Phone number is not valid']" />
                     </div>
                     <div v-if="isEdit" class="row q-gutter-md q-mt-sm justify-end">
                         <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="resetForm" />
@@ -66,11 +66,13 @@ import UserService from '@/services/user.service';
 import { isValidEmail, isValidName } from '@/composables/validator';
 import type { Customer } from '@/interfaces/rest/Customer';
 import { Message, UserType } from '@/enums/enum';
+import { useCustomerStore } from '@/stores/customer';
 
 const quasar = useQuasar();
 const customer = ref<Customer>();
 const isEdit = ref<boolean>(false);
 const isValidInput = computed(() => form.name !== '' && form.email !== '' && form.phone_number !== '');
+const customerStore = useCustomerStore();
 
 const form = reactive({
     name: '',
@@ -80,7 +82,8 @@ const form = reactive({
 
 function getCustomer() {
     quasar.loading.show({ spinner: QSpinnerGears });
-    customer.value = UserService.getLoggedInCust();
+    // customer.value = UserService.getLoggedInCust();
+    customer.value = customerStore.getLoggedInUser;
     resetForm();
     quasar.loading.hide();
 }
@@ -88,11 +91,14 @@ function getCustomer() {
 function updateData() {
     quasar.loading.show({ spinner: QSpinnerGears });
 
+    const isProvider = customer.value?.is_provider;
     UserService.updateProfile(customer.value?.id!, form, UserType.C)
         .then((response) => {
             // console.log('updated', response.data);
             customer.value = response.data;
+            customer.value!.is_provider = isProvider;
             UserService.storeUser(customer.value, UserType.C);
+            customerStore.setLoggedInUser(customer.value!);
             quasar.loading.hide();
             resetForm();
             quasar.notify({

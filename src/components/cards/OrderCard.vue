@@ -72,6 +72,7 @@ import { getCarImg, getOrderStatus } from '@/composables/getter';
 import { Message, UserType } from '@/enums/enum';
 import type { Payment } from '@/interfaces/rest/Payment';
 import UserService from '@/services/user.service';
+import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
     order: Order
@@ -84,6 +85,7 @@ const router = useRouter();
 const quasar = useQuasar();
 const payments = ref<Payment[]>([]);
 const totalPrice = ref<number>(0);
+const providerStore = useProviderStore();
 
 function getLocation() {
     return props.order.car?.provider?.city + ', ' + props.order.car?.provider?.province;
@@ -93,7 +95,7 @@ function setStatus(status: string) {
     quasar.loading.show({ spinner: QSpinnerGears });
     OrderService.updateOrderStatus(props.order.id!, status)
         .then((response) => {
-            console.log(response.data)
+            // console.log(response.data)
             quasar.notify({
                 color: 'positive',
                 position: 'top-right',
@@ -118,6 +120,7 @@ function handleCompleteOrder() {
             UserService.get(UserService.getLoggedInPrv().id, UserType.P)
                 .then((response) => {
                     UserService.storeUser(response.data, UserType.P);
+                    providerStore.setLoggedInUser(response.data);
                     quasar.notify({
                         color: 'positive',
                         position: 'top-right',

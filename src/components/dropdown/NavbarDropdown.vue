@@ -1,5 +1,5 @@
 <template>
-    <q-menu transition-show="jump-down" transition-hide="jump-up" @before-show="getUpdate">
+    <q-menu transition-show="jump-down" transition-hide="jump-up">
         <q-list style="width: 220px">
             <q-item clickable v-close-popup @click="goToAccount">
                 <q-item-section side>
@@ -27,7 +27,7 @@
                 </q-item-section>
                 <q-item-section>
                     <div>Balance</div>
-                    <div>{{ formatAmount((user as Provider).balance) }}</div>
+                    <div>{{ formatAmount(providerStore.getLoggedInUser.balance) }}</div>
                 </q-item-section>
             </q-item>
             <q-item v-if="type == UserType.P" clickable v-close-popup @click="backToMain">
@@ -57,6 +57,8 @@ import type { Provider } from '@/interfaces/rest/Provider';
 import { UserType } from '@/enums/enum';
 import { ionLogOut, ionStorefront, ionPerson, ionCash } from '@quasar/extras/ionicons-v6';
 import { formatAmount } from '@/composables/formatter';
+import { useCustomerStore } from '@/stores/customer';
+import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
     user: Customer | Provider;
@@ -64,17 +66,14 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    openLoginDialog: [],
-    checkPrvUpdate: []
+    openLoginDialog: []
 }>();
 
 const route = useRoute();
 const router = useRouter();
 const quasar = useQuasar();
-
-function getUpdate() {
-    if (props.type == UserType.P) emit('checkPrvUpdate');
-}
+const customerStore = useCustomerStore();
+const providerStore = useProviderStore();
 
 function isProvider() {
     if (props.type == UserType.C && (props.user as Customer).is_provider) {
@@ -113,6 +112,8 @@ function handleProviderAuth() {
 function logout() {
     quasar.loading.show({ spinner: QSpinnerGears });
     setTimeout(() => {
+        customerStore.logout();
+        providerStore.logout();
         UserService.logout(props.type);
         router.push({ name: 'logout' });
         quasar.loading.hide();

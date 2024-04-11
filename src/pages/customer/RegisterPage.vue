@@ -63,6 +63,7 @@ import { UserType, Message } from '@/enums/enum';
 import { ionLockClosed, ionMail } from '@quasar/extras/ionicons-v6';
 import imgUrl from '@/assets/images/vector-register.svg';
 import logo from '@/assets/images/logo.png';
+import { useCustomerStore } from '@/stores/customer';
 
 const router = useRouter();
 const quasar = useQuasar();
@@ -71,6 +72,7 @@ const form: UserAuth = reactive({
     password: ''
 });
 const isPwd = ref<boolean>(true);
+const customerStore = useCustomerStore();
 
 function isValidEmail(email: string) {
     const regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
@@ -122,6 +124,7 @@ function storeUserInfo(data: any) {
     let customer = data;
     customer.is_provider = false;
     UserService.storeUser(customer, UserType.C);
+    customerStore.setLoggedInUser(customer);
 }
 
 function goToLogin() {

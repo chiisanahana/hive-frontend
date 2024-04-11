@@ -29,7 +29,7 @@
                     <div v-else-if="orders.length == 0" class="q-pa-lg text-center text-blue-grey-4">
                         No history
                     </div>
-                    <OrderHistoryCard v-else v-for="order in orders" :order="order" />
+                    <OrderHistoryCard v-else v-for="order in orders" :order="order" @post-rate="onOrderRated" />
                 </q-card-section>
             </q-card>
         </div>
@@ -120,6 +120,13 @@ function handleCompletePayment(order: Order) {
             OrderService.updateOrderStatus(order.id!, '1');
         });
     }
+}
+
+function onOrderRated(orderId: number, rating: number) {
+    data.value.map((data) => {
+        if (data.id == orderId) data.rating = rating;
+    });
+    filterOrders(filter.value);
 }
 
 onMounted(() => {

@@ -136,6 +136,7 @@ import { ionLocation, ionPerson, ionStorefront } from '@quasar/extras/ionicons-v
 import { isValidEmail, isValidName } from '@/composables/validator';
 import { formatNameCase } from '@/composables/formatter';
 import type { Option } from '@/interfaces/Option';
+import { useProviderStore } from '@/stores/provider';
 
 const router = useRouter();
 const quasar = useQuasar();
@@ -156,6 +157,7 @@ const provinceList = ref<Option[]>([]);
 const cityList = ref<Option[]>([]);
 const selectedProvince = ref<Option>({ label: 'Select province', value: '' });
 const selectedCity = ref<Option>({ label: 'Select city', value: '' });
+const providerStore = useProviderStore();
 
 function isEmailAvail(email: string) {
     return UserService.isEmailExists(email, UserType.P)
@@ -245,6 +247,7 @@ function submit() {
         .then((response) => {
             // console.log(response.data);
             UserService.storeUser(response.data, UserType.P);
+            providerStore.setLoggedInUser(response.data);
 
             // set cust info if same as provider
             let customer = UserService.getLoggedInCust();

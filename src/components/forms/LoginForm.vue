@@ -49,6 +49,8 @@ import { isValidEmail } from '@/composables/validator';
 import type { UserAuth } from '@/interfaces/UserAuth';
 import { Message, UserType } from '@/enums/enum';
 import { ionLockClosed, ionMail, ionEyeOff, ionEye } from '@quasar/extras/ionicons-v6';
+import { useCustomerStore } from '@/stores/customer';
+import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
     email?: string,
@@ -67,6 +69,8 @@ const form: UserAuth = reactive({
 });
 const isPwd = ref<boolean>(true);
 const errMsg = ref<string>('');
+const customerStore = useCustomerStore();
+const providerStore = useProviderStore();
 
 function submit() {
     quasar.loading.show({ spinner: QSpinnerGears });
@@ -101,8 +105,10 @@ function storeUserInfo(data: any, type: UserType) {
         let customer = data['customer'];
         customer.is_provider = data['provider'] == null ? false : true;
         UserService.storeUser(customer, UserType.C);
+        customerStore.setLoggedInUser(customer);
     } else if (type == UserType.P) {
         UserService.storeUser(data, UserType.P);
+        providerStore.setLoggedInUser(data);
     }
 }
 

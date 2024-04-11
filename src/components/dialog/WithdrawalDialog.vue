@@ -28,7 +28,7 @@ import { useQuasar } from 'quasar';
 import { Message, UserType } from '@/enums/enum';
 import BalanceService from '@/services/balance.service';
 import UserService from '@/services/user.service';
-import { useStorage } from '@vueuse/core'
+import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
     providerId: number,
@@ -41,6 +41,7 @@ const quasar = useQuasar();
 const amount = ref<string>('');
 const withdrawAll = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
+const providerStore = useProviderStore();
 
 function clearLeadingZeros(str: string) {
     return str.replace(/^0+(?=\d)/, '');
@@ -61,9 +62,10 @@ function withdraw() {
     isLoading.value = true;
     BalanceService.withdraw(props.providerId, parseInt(amount.value))
         .then((response) => {
-            UserService.get(UserService.getLoggedInPrv().id, UserType.P)
+            UserService.get(props.providerId, UserType.P)
                 .then((response) => {
                     UserService.storeUser(response.data, UserType.P);
+                    providerStore.setLoggedInUser(response.data);
                     amount.value = '';
                     isLoading.value = false;
                     emit('close');

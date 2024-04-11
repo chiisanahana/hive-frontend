@@ -152,7 +152,7 @@ function getCar(carId: number) {
         car.value = response.data;
         rentBasePrice.value = calcRentBasePrice(rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!);
         rentPrice.value = rentBasePrice.value + +car.value?.deposit!;
-        console.log('get', rentBasePrice.value, rentPrice.value);
+        // console.log('get', rentBasePrice.value, rentPrice.value);
         quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
@@ -177,7 +177,7 @@ function getCarFromWishlist(wishlistId: number) {
         rentBasePrice.value = calcRentBasePrice(rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!);
         rentPrice.value = rentBasePrice.value + +car.value?.deposit!;
 
-        console.log('get from wishlist', rentBasePrice.value, rentPrice.value);
+        // console.log('get from wishlist', rentBasePrice.value, rentPrice.value);
         quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
@@ -257,7 +257,7 @@ function bookNow() {
         OrderService.createOrder(
             car.value?.id!, UserService.getLoggedInCust().id, rentBasePrice.value, rentDetails.value!
         ).then((response) => {
-            console.log('order created', response.data)
+            // console.log('order created', response.data)
             PaymentService.initiatePayment(
                 response.data.id,
                 action.id == 'va' ? 'Virtual Account' : 'Credit Card',

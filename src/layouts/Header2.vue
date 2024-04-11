@@ -6,39 +6,33 @@
             </a>
             <q-space />
 
-            <div v-if="isLoggedIn && customerStore.getLoggedInUser" class="q-pa-x-sm q-gutter-x-lg">
+            <div v-if="isLoggedIn && user" class="q-pa-x-sm q-gutter-x-lg">
                 <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionCar" size="18px">
-                    <WishlistDropdown :customerId="customerStore.getLoggedInUser.id" />
+                    <WishlistDropdown :customerId="user.id" />
                 </q-btn>
                 <q-btn v-if="currentUser == UserType.C" flat round dense :icon="ionChatbubbleEllipses">
-                    <ChatDropdown :customerId="customerStore.getLoggedInUser.id" />
+                    <ChatDropdown :customerId="user.id" />
                 </q-btn>
-                <q-btn v-if="currentUser" flat round dense :icon="ionNotifications">
-                    <NotifDropdown
-                        :customerId="currentUser == UserType.C ? customerStore.getLoggedInUser.id : providerStore.getLoggedInUser.id" />
+                <q-btn flat round dense :icon="ionNotifications">
+                    <NotifDropdown :customerId="user.id" />
                     <!-- <q-badge rounded color="red" floating transparent>
                         2
                     </q-badge> -->
                 </q-btn>
                 <q-btn flat dense no-caps align="left" class="gt-xs"
                     :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'" style="min-width: 220px">
-                    <q-avatar v-if="(currentUser == UserType.C && customerStore.getLoggedInUser.profile_picture) ||
-                        (currentUser == UserType.P && providerStore.getLoggedInUser.profile_picture)" class="q-mr-md">
-                        <img
-                            :src="getProfPict(currentUser == UserType.C ? customerStore.getLoggedInUser : providerStore.getLoggedInUser)">
+                    <q-avatar v-if="user?.profile_picture != null" class="q-mr-md">
+                        <img :src="getProfPict(user)">
                     </q-avatar>
                     <q-avatar v-else color="orange" class="q-mr-md text-white">
-                        {{ currentUser == UserType.C ? customerStore.getLoggedInUser.name.charAt(0).toUpperCase() :
-                            providerStore.getLoggedInUser.trading_name?.charAt(0).toUpperCase() }}
+                        {{ user!.name?.charAt(0).toUpperCase() }}
                     </q-avatar>
                     <div class="column align-left justify-start">
-                        <div v-if="user" class="text-left text-font">
-                            {{ currentUser == UserType.C ?
-                                customerStore.getLoggedInUser.name : providerStore.getLoggedInUser.trading_name
-                            }}
-                        </div>
+                        <div v-if="user" class="text-left text-font">{{ currentUser == UserType.C ? user.name : (user as
+                            Provider).trading_name
+                            }}</div>
                         <div v-if="user && currentUser == UserType.P" class="text-left text-caption text-blue-grey-4">
-                            {{ providerStore.getLoggedInUser.name }}
+                            {{ user.name }}
                         </div>
                     </div>
                     <NavbarDropdown v-if="user && currentUser" :user="user" :type="currentUser"
@@ -46,17 +40,14 @@
                 </q-btn>
                 <q-btn flat dense no-caps align="left" class="lt-sm q-ml-xs"
                     :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'">
-                    <q-avatar v-if="(currentUser == UserType.C && customerStore.getLoggedInUser.profile_picture) ||
-                        (currentUser == UserType.P && providerStore.getLoggedInUser.profile_picture)" class="q-mr-md">
-                        <img
-                            :src="getProfPict(currentUser == UserType.C ? customerStore.getLoggedInUser : providerStore.getLoggedInUser)">
+                    <q-avatar v-if="user?.profile_picture != null">
+                        <img :src="getProfPict(user)">
                     </q-avatar>
                     <q-avatar v-else color="orange" class="text-white">
-                        {{ currentUser == UserType.C ? customerStore.getLoggedInUser.name.charAt(0).toUpperCase() :
-                            providerStore.getLoggedInUser.trading_name?.charAt(0).toUpperCase() }}
+                        {{ user!.name?.charAt(0).toUpperCase() }}
                     </q-avatar>
-                    <NavbarDropdown v-if="user && currentUser" :user="user" :type="currentUser"
-                        @open-login-dialog="openLoginDialog" />
+                    <NavbarDropdown :user="user!" :type="currentUser!" @open-login-dialog="openLoginDialog"
+                        @check-prv-update="getUserData" />
                 </q-btn>
             </div>
             <div v-else class="q-pa-sm q-gutter-md">
@@ -76,6 +67,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import CryptoService from '@/services/crypto.service';
 import type { Provider } from '@/interfaces/rest/Provider';
 import type { Customer } from '@/interfaces/rest/Customer';
 import { UserType } from '@/enums/enum';
@@ -88,7 +80,6 @@ import NotifDropdown from '@/components/dropdown/NotifDropdown.vue';
 import { getProfPict } from '@/composables/getter';
 import logo from '@/assets/images/logo.png';
 import { useCustomerStore } from '@/stores/customer';
-import { useProviderStore } from '@/stores/provider';
 
 const route = useRoute();
 const router = useRouter();
@@ -97,7 +88,6 @@ const currentUser = ref<UserType | null>(null);
 const loginDialog = ref<boolean>(false);
 const isLoggedIn = computed<boolean>(() => user.value != null);
 const customerStore = useCustomerStore();
-const providerStore = useProviderStore();
 
 watch(
     () => route.fullPath, async () => { getUserData(); }
@@ -105,8 +95,9 @@ watch(
 
 function getUserData() {
     if (route.fullPath.includes('/provider')) {
-        if (providerStore.getLoggedInUser != null) {
-            user.value = providerStore.getLoggedInUser;
+        const data = localStorage.getItem(import.meta.env.VITE_PRV_SESSION_KEY);
+        if (data != null) {
+            user.value = JSON.parse(CryptoService.decrypt(data));
             currentUser.value = UserType.P;
         }
     } else {
@@ -114,6 +105,12 @@ function getUserData() {
             user.value = customerStore.getLoggedInUser;
             currentUser.value = UserType.C;
         }
+        
+        // const data = localStorage.getItem(import.meta.env.VITE_CUST_SESSION_KEY);
+        // if (data != null) {
+        //     user.value = JSON.parse(CryptoService.decrypt(data));
+        //     currentUser.value = UserType.C;
+        // }
     }
 }
 

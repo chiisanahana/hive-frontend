@@ -31,8 +31,8 @@
 
                 <div class="col">
                     <div class="q-mb-md">
-                        <div :class="isEdit ? 'text-bold' : 'text-bold q-mb-md'">Profile Information</div>
-                        <div :class="isEdit ? 'column' : 'column q-gutter-y-sm'">
+                        <div class="text-bold q-mb-md">Profile Information</div>
+                        <div class="q-gutter-y-sm">
                             <div class="row items-center">
                                 <div class="col-xs-6 col-md-4 col-lg-3">Name</div>
                                 <div v-if="!isEdit" class="col">{{ provider?.name }}</div>
@@ -72,8 +72,8 @@
                     </div>
 
                     <div class="q-mb-lg">
-                        <div class="text-bold q-mb-sm">Address</div>
-                        <div :class="isEdit ? 'column' : 'column q-gutter-y-sm'">
+                        <div class="text-bold q-mb-md">Address</div>
+                        <div class="q-gutter-y-sm">
                             <div class="row items-center">
                                 <div v-if="!isEdit" class="col"> {{ provider?.address }} </div>
                                 <q-input v-else class="col-10" style="min-width: 200px;" outlined dense debounce="500"
@@ -83,7 +83,7 @@
                             </div>
                             <div class="row items-center">
                                 <div v-if="!isEdit" class="col">{{ provider?.city }}, {{ provider?.province }}</div>
-                                <div v-else class="col-10 row q-mt-sm">
+                                <div v-else class="col-10 row">
                                     <div class="col">
                                         <q-select dense outlined v-model="selectedCity" :options="cityList"
                                             @filter="getCityFilter" behavior="menu"
@@ -105,28 +105,22 @@
                     <div>
                         <BankAccountInfo v-if="!isEdit && provider != undefined" :provider="provider" />
                         <div v-else>
-                            <div class="text-bold q-mb-sm">Bank Account</div>
-                            <div :class="isEdit ? 'column' : 'column q-col-gutter-y-sm'">
+                            <div class="text-bold q-mb-md">Bank Account</div>
+                            <div class="q-gutter-y-sm">
                                 <div class="row items-center">
-                                    
-                                    <div class="col-12 column">
-                                        <div class="row items-center">
-                                            <div class="col-3">Bank name</div>
-                                            <div class="col-7">
-                                                <q-select dense outlined v-model="selectedBank" :options="bankList"
-                                                    behavior="menu" hide-bottom-space />
-                                            </div>
-                                        </div>
-                                        <div class="row items-center">
-                                            <div class="col-3">Account number</div>
-                                            <q-input class="col-7" style="min-width: 200px;" outlined dense
-                                                debounce="500" v-model="bankAccount"
-                                                :disable="selectedBank.label == 'Select bank'" mask="#############"
-                                                lazy-rules :rules="[
-                                                    (val) => (val && val.length >= 10) || 'Account number is not valid',
-                                                    (val) => checkBankAccount(val)]" hide-bottom-space />
-                                        </div>
+                                    <div class="col-3">Bank name</div>
+                                    <div class="col-7">
+                                        <q-select dense outlined v-model="selectedBank" :options="bankList"
+                                            behavior="menu" hide-bottom-space />
                                     </div>
+                                </div>
+                                <div class="row items-center">
+                                    <div class="col-3">Account number</div>
+                                    <q-input class="col-7" style="min-width: 200px;" outlined dense debounce="500"
+                                        v-model="bankAccount" :disable="selectedBank.label == 'Select bank'"
+                                        mask="#############" lazy-rules :rules="[
+                                            (val) => (val && val.length >= 10) || 'Account number is not valid',
+                                            (val) => checkBankAccount(val)]" hide-bottom-space />
                                 </div>
                             </div>
                         </div>
@@ -153,6 +147,7 @@ import type { Provider } from '@/interfaces/rest/Provider';
 import type { Option } from '@/interfaces/Option';
 import { ionWallet } from '@quasar/extras/ionicons-v6';
 import BankAccountInfo from '@/components/ui-block/BankAccountInfo.vue';
+import { useProviderStore } from '@/stores/provider';
 
 const quasar = useQuasar();
 const provider = ref<Provider>();
@@ -180,6 +175,7 @@ const selectedCity = ref<Option>({ label: 'Select city', value: '' });
 const selectedBank = ref<Option>({ label: 'Select bank', value: '' });
 const bankAccount = ref<string>('');
 const bankName = ref<string>('');
+const providerStore = useProviderStore();
 
 function getProvider() {
     quasar.loading.show({ spinner: QSpinnerGears });
@@ -254,12 +250,13 @@ function updateData() {
 
     form.province = selectedProvince.value?.label;
     form.city = selectedCity.value?.label.substring(selectedCity.value?.label.indexOf(' ') + 1);
-    console.log('form', form);
+    // console.log('form', form);
     UserService.updateProfile(provider.value?.id!, form, UserType.P)
         .then((response) => {
             console.log('updated', response.data);
             provider.value = response.data;
             UserService.storeUser(provider.value, UserType.P);
+            providerStore.setLoggedInUser(provider.value!);
             quasar.loading.hide();
             resetForm();
             quasar.notify({

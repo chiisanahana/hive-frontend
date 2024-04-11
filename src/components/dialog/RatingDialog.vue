@@ -38,6 +38,9 @@ import { Message } from '@/enums/enum';
 const props = defineProps<{
     orderId: number;
 }>();
+const emit = defineEmits<{
+    postRate: [orderId: number, rating: number]
+}>();
 const quasar = useQuasar();
 const model = ref<boolean>(true);
 const rating = ref<number>(0);
@@ -47,6 +50,7 @@ const isSuccess = ref<boolean>(false);
 function submit() {
     isLoading.value = true;
     OrderService.rateOrder(props.orderId, rating.value).then((response) => {
+        emit('postRate', props.orderId, rating.value);
         isLoading.value = false;
         isSuccess.value = true;
     }).catch((error) => {

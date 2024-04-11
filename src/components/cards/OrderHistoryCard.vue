@@ -25,7 +25,7 @@
                         </span>
                         <span v-else>
                             {{ formatTimestampToDateDisplay(props.order?.start_datetime) }} - {{
-                    formatTimestampToDateDisplay(props.order?.end_datetime) }}
+                                formatTimestampToDateDisplay(props.order?.end_datetime) }}
                         </span>
 
                     </div>
@@ -38,14 +38,14 @@
             </div>
             <q-card-actions align="right">
                 <q-btn flat text-color="accent" label="View details" no-caps @click="viewDetails" />
-                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="secondary" text-color="accent"
-                    label="Rate" style="min-width: 140px;" @click="ratingDialog = true" />
+                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="primary" label="Rate"
+                    style="min-width: 140px;" @click="ratingDialog = true" />
                 <q-btn v-else-if="['0', '1'].includes(props.order?.status!)" unelevated color="secondary"
                     text-color="accent" label="Cancel" style="min-width: 140px;" />
             </q-card-actions>
         </q-card-section>
     </q-card>
-    <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" />
+    <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" @post-rate="onOrderRated" />
 </template>
 
 <script setup lang="ts">
@@ -61,6 +61,9 @@ import CryptoService from '@/services/crypto.service';
 
 const props = defineProps<{
     order: Order | undefined
+}>();
+const emit = defineEmits<{
+    postRate: [orderId: number, rating: number]
 }>();
 const isRated = computed(() => props.order?.rating != undefined && props.order.rating != null);
 const isSameDay = computed(() => calcDateDiff(formatTimestampToDate(props.order?.start_datetime!), formatTimestampToDate(props.order?.end_datetime!)) == 1);
@@ -78,6 +81,10 @@ function sumTotal() {
         total += +payment.amount as number;
     });
     return total;
+}
+
+function onOrderRated(orderId: number, rating: number) {
+    emit('postRate', orderId, rating);
 }
 
 function viewDetails() {
