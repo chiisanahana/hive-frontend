@@ -2,7 +2,7 @@
     <div class="row q-pa-md q-col-gutter-md">
         <div class="col-7 q-gutter-y-md">
             <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
-            <q-card flat>
+            <q-card flat v-if="car">
                 <q-card-section horizontal>
                     <q-card-section class="col-8">
                         <CarCarousel v-if="car != undefined" :photos="car.car_files" />
@@ -45,6 +45,7 @@
                     <div class="text-body1" style="white-space: pre-wrap">{{ car?.description }}</div>
                 </q-card-section>
             </q-card>
+            <CarDetailsSkeleton v-else />
         </div>
         <div class="col q-gutter-y-md">
             <ProviderInfoCard :provider="car?.provider" @go-to-chat="goToChat" />
@@ -98,6 +99,7 @@ import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';
 import PaymentService from '@/services/payment.service';
 import { useChatStore } from '@/stores/chat';
+import CarDetailsSkeleton from '@/components/skeleton/CarDetailsSkeleton.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -146,17 +148,17 @@ function goToChat() {
 }
 
 function getCar(carId: number) {
-    quasar.loading.show({ spinner: QSpinnerGears });
+    // quasar.loading.show({ spinner: QSpinnerGears });
     CarService.get(carId).then((response: any) => {
         // console.log(response);
         car.value = response.data;
         rentBasePrice.value = calcRentBasePrice(rentDetails.value?.startDate!, rentDetails.value?.endDate!, car.value?.price!);
         rentPrice.value = rentBasePrice.value + +car.value?.deposit!;
         // console.log('get', rentBasePrice.value, rentPrice.value);
-        quasar.loading.hide();
+        // quasar.loading.hide();
     }).catch((e: Error) => {
         console.error(e);
-        quasar.loading.hide();
+        // quasar.loading.hide();
     });
 }
 

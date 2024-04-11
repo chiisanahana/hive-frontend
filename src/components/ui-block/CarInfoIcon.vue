@@ -7,7 +7,8 @@
             <q-icon v-else :name="props.icon" color="accent" size="sm" />
         </div>
         <div class="text-bold">{{ props.text }}</div>
-        <div>{{ props.value }}</div>
+        <div v-if="props.value">{{ props.value }}</div>
+        <q-skeleton v-else type="text" />
     </div>
 </template>
 
@@ -16,7 +17,7 @@ const props = defineProps<{
     icon: any;
     asset?: boolean;
     text: string;
-    value: string | number | undefined;
+    value?: string | number | undefined;
 }>();
 </script>
 
