@@ -1,8 +1,10 @@
 <template>
     <div>
-        <q-carousel animated v-model="slide" arrows navigation infinite height="300px">
-            <q-carousel-slide v-for="i in urls.length" :key="i" :name="i" :img-src="urls[i - 1]" />
-        </q-carousel>
+        <q-responsive :ratio="16/9">
+            <q-carousel animated v-model="slide" arrows navigation infinite height="auto">
+                <q-carousel-slide v-for="i in urls.length" :key="i" :name="i" :img-src="urls[i - 1]" />
+            </q-carousel>
+        </q-responsive>
     </div>
 </template>
 

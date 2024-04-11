@@ -2,10 +2,12 @@ import { ionCarSport } from '@quasar/extras/ionicons-v6';
 <template>
     <q-card flat>
         <q-card-section horizontal>
-            <q-card-section class="col-8">
-                <q-skeleton width="500px" height="300px" />
+            <q-card-section class="col-xs-12 col-sm-10 col-md-8">
+                <q-responsive :ratio="16 / 9">
+                    <q-skeleton />
+                </q-responsive>
             </q-card-section>
-            <q-card-section>
+            <q-card-section class="col-xs-12 col-md">
                 <q-skeleton type="rect" width="130px" />
                 <q-skeleton type="text" width="130px" class="q-mb-md" />
                 <q-skeleton type="text" width="130px" />

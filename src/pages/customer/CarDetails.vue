@@ -1,13 +1,13 @@
 <template>
     <div class="row q-pa-md q-col-gutter-md">
-        <div class="col-7 q-gutter-y-md">
+        <div class="col-xs-12 col-md-7 q-gutter-y-md">
             <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
             <q-card flat v-if="car">
                 <q-card-section horizontal>
-                    <q-card-section class="col-8">
+                    <q-card-section class="col-xs-12 col-sm-10 col-md-8">
                         <CarCarousel v-if="car != undefined" :photos="car.car_files" />
                     </q-card-section>
-                    <q-card-section>
+                    <q-card-section class="col-xs-12 col-md">
                         <div class="text-h6 text-bold">{{ car?.brand }}</div>
                         <div class="text-body1 q-mb-md">{{ car?.vehicle_no }}</div>
                         <div class="row">
