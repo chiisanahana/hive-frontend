@@ -40,8 +40,12 @@ class OrderService {
         return http.put(`/orders/${id}/`, { status: status });
     }
 
-    completeOrder(orderId: number, providerId: number) {
+    completeOrder(orderId: number, providerId: number): Promise<any> {
         return http.post(`/orders/complete/${orderId}`, { provider_id: providerId });
+    }
+    
+    cancelOrder(orderId: number): Promise<any> {
+        return http.post(`/orders/cancel/${orderId}`);
     }
 
     rateOrder(id: number, rate: number): Promise<any> {

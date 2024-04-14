@@ -11,7 +11,7 @@
                 <q-space />
                 <div v-if="car?.rating != undefined && car.rating > 0" class="row items-center">
                     <q-icon name="r_star" size="xs" color="warning" class="q-mr-xs" />
-                    <span class="text-bold">{{ car?.rating }}</span>
+                    <span class="text-bold">{{ formatRating(car.rating) }}</span>
                 </div>
             </div>
             <div class="row q-gutter-md q-mt-xs">
@@ -37,7 +37,7 @@
 import { useRouter } from 'vue-router';
 import type { Car } from '@/interfaces/rest/Car';
 import CryptoService from '@/services/crypto.service';
-import { formatAmount } from '@/composables/formatter';
+import { formatAmount, formatRating } from '@/composables/formatter';
 import { getCarImg } from '@/composables/getter';
 import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';

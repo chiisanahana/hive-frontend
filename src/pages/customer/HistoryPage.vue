@@ -5,7 +5,7 @@
                 <q-card-section>
                     <div class="text-h6">Transaction History</div>
                 </q-card-section>
-    
+
                 <q-card-section>
                     <!-- Filter -->
                     <div class="row items-center q-mb-md">
@@ -15,21 +15,22 @@
                                 @click="resetFilter" />
                             <q-btn outline :color="filter == 'payment-pending' ? 'accent' : 'blue-grey-4'"
                                 label="Payment Pending" no-caps @click="filterOrders('payment-pending')" />
-                            <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Ongoing" no-caps
-                                @click="filterOrders('ongoing')" />
+                            <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Ongoing"
+                                no-caps @click="filterOrders('ongoing')" />
                             <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Completed"
                                 no-caps @click="filterOrders('completed')" />
                             <q-btn outline :color="filter == 'cancelled' ? 'accent' : 'blue-grey-4'" label="Cancelled"
                                 no-caps @click="filterOrders('cancelled')" />
                         </div>
                     </div>
-    
+
                     <!-- Data -->
                     <HistoryCardSkeleton v-if="isLoading" v-for="n in 4" :key="n" />
                     <div v-else-if="orders.length == 0" class="q-pa-lg text-center text-blue-grey-4">
                         No history
                     </div>
-                    <OrderHistoryCard v-else v-for="order in orders" :order="order" @post-rate="onOrderRated" />
+                    <OrderHistoryCard v-else v-for="order in orders" :order="order" @post-rate="onOrderRated"
+                        @post-cancel="onOrderCancelled" />
                 </q-card-section>
             </q-card>
         </div>
@@ -123,10 +124,21 @@ function handleCompletePayment(order: Order) {
 }
 
 function onOrderRated(orderId: number, rating: number) {
+    isLoading.value = true;
     data.value.map((data) => {
         if (data.id == orderId) data.rating = rating;
     });
     filterOrders(filter.value);
+    isLoading.value = false;
+}
+
+function onOrderCancelled(orderId: number) {
+    isLoading.value = true;
+    data.value.map((data) => {
+        if (data.id == orderId) data.status = '5';
+    });
+    filterOrders(filter.value);
+    isLoading.value = false;
 }
 
 onMounted(() => {

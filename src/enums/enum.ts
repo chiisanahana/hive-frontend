@@ -15,6 +15,7 @@ export enum Message {
     ORDER_APPROVE_SUCCESS = 'Order has been approved',
     ORDER_REJECT_SUCCESS = 'Order has been rejected',
     ORDER_COMPLETED = 'Order has been completed',
+    ORDER_CANCELLED = 'Order has been cancelled',
     INVALID_BANK_ACCOUNT = 'Bank account number is not found',
     WITHDRAW_SUCCESS = 'Your account balance has been withdrawn',
 }

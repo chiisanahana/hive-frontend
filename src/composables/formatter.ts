@@ -59,3 +59,7 @@ export function formatChatTime(datetime: string | undefined) {
     }
     return date.formatDate(datetime, 'D MMM');
 }
+
+export function formatRating(rating: number) {
+    return Math.round(rating * 10) / 10;
+}

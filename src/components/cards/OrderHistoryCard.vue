@@ -41,34 +41,44 @@
                 <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="primary" label="Rate"
                     style="min-width: 140px;" @click="ratingDialog = true" />
                 <q-btn v-else-if="['0', '1'].includes(props.order?.status!)" unelevated color="secondary"
-                    text-color="accent" label="Cancel" style="min-width: 140px;" />
+                    text-color="accent" label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
             </q-card-actions>
         </q-card-section>
     </q-card>
+    <ConfirmDialog v-model="cancelDialog" message="Are you sure want to cancel this rent?"
+        hint="Your payment will be refunded." action-btn-title="YES" cancel-btn-title="NO"
+        @confirm-action="cancelOrder()" />
     <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" @post-rate="onOrderRated" />
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+import CryptoService from '@/services/crypto.service';
+import OrderService from '@/services/order.service';
 import type { Order } from '@/interfaces/rest/Order';
 import { getCarImg, getOrderStatus } from '@/composables/getter';
 import { formatAmount, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
 import { ionCalendar, ionLocation } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff } from '@/composables/calculator';
 import RatingDialog from '@/components/dialog/RatingDialog.vue';
-import CryptoService from '@/services/crypto.service';
+import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
+import { Message } from '@/enums/enum';
 
 const props = defineProps<{
     order: Order | undefined
 }>();
 const emit = defineEmits<{
     postRate: [orderId: number, rating: number]
+    postCancel: [orderId: number]
 }>();
 const isRated = computed(() => props.order?.rating != undefined && props.order.rating != null);
 const isSameDay = computed(() => calcDateDiff(formatTimestampToDate(props.order?.start_datetime!), formatTimestampToDate(props.order?.end_datetime!)) == 1);
 const ratingDialog = ref<boolean>(false);
+const cancelDialog = ref<boolean>(false);
 const router = useRouter();
+const quasar = useQuasar();
 
 function getLocation() {
     return props.order?.car?.provider?.city + ', ' + props.order?.car?.provider?.province;
@@ -85,6 +95,17 @@ function sumTotal() {
 
 function onOrderRated(orderId: number, rating: number) {
     emit('postRate', orderId, rating);
+}
+
+function cancelOrder() {
+    OrderService.cancelOrder(props.order!.id!).then((response) => {
+        emit('postCancel', props.order!.id!);
+        quasar.notify({
+            color: 'positive',
+            position: 'top-right',
+            message: Message.ORDER_CANCELLED
+        });
+    });
 }
 
 function viewDetails() {

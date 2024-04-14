@@ -7,7 +7,7 @@
             </q-item-label>
             <q-scroll-area :style="{ height: height }">
                 <q-resize-observer @resize="onResize"></q-resize-observer>
-                <ChatDropdownSkeleton v-if="isLoading" v-for="i in 2" :key="i" />
+                <ChatDropdownSkeleton v-if="isLoading" />
 
                 <q-item clickable v-close-popup v-ripple v-else-if="rooms.length > 0" v-for="room in rooms"
                     @click="goToChat(room)">

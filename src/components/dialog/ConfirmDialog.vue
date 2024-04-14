@@ -5,7 +5,7 @@
                 <q-avatar :icon="ionWarning" color="warning" text-color="white" class="q-mr-md" />
                 <div class="column q-gutter-sm">
                     <span>{{ message }}</span>
-                    <span class="text-blue-grey-4">This action cannot be undone.</span>
+                    <span class="text-blue-grey-4">{{ hint }}</span>
                 </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -22,8 +22,12 @@ import { ionWarning } from '@quasar/extras/ionicons-v6';
 const props = withDefaults(defineProps<{
     message: string
     actionBtnTitle: string
-    cancelBtnTitle?: string
-}>(), { cancelBtnTitle: 'Cancel' });
+    cancelBtnTitle?: string,
+    hint?: string
+}>(), { 
+    cancelBtnTitle: 'Cancel',
+    hint: 'This action cannot be undone.'
+ });
 
 const emit = defineEmits<{
     confirmAction: []
