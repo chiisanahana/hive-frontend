@@ -30,7 +30,7 @@
                 </div>
                 <q-list>
                     <q-expansion-item dense v-model="paymentExpanded" header-class="order-expansion"
-                        :expand-icon="ionChevronDown">
+                        :expand-icon="ionChevronDown" expand-icon-class="expand-icon">
                         <template v-slot:header>
                             <div v-if="paymentExpanded" class="row col-12 text-blue-grey-4 text-bold">
                                 Transaction Details</div>
@@ -165,30 +165,53 @@
                 </q-list>
             </div>
         </q-card-section>
-        <q-card-actions>
-            <q-btn unelevated color="secondary" :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack"
-                no-caps />
+        <q-card-actions align="right">
+            <div v-if="order.rating && isRated" class="q-ml-xs">
+                <q-icon v-for="i in order.rating" name="r_star" size="sm" color="warning" class="q-mr-xs" />
+                <q-icon v-for="i in (5 - order.rating)" name="r_star" size="sm" class="q-mr-xs" />
+            </div>
+            <q-space v-if="isRated" />
+            <q-btn unelevated :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
+            <q-btn v-if="order.status == '4' && !isRated" unelevated color="primary" label="Rate"
+                style="min-width: 140px;" @click="ratingDialog = true" />
+            <q-btn v-else-if="['0', '1'].includes(order?.status!)" unelevated color="secondary" text-color="accent"
+                label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
         </q-card-actions>
     </q-card>
+    <ConfirmDialog v-model="cancelDialog" message="Are you sure want to cancel this rent?"
+        hint="Your payment will be refunded." action-btn-title="YES" cancel-btn-title="NO"
+        @confirm-action="cancelOrder()" />
+    <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" @post-rate="onOrderRated" />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar, date, copyToClipboard } from 'quasar';
 import type { Order } from '@/interfaces/rest/Order';
+import OrderService from '@/services/order.service';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTimeFull } from '@/composables/formatter';
 import { getOrderStatus } from '@/composables/getter';
-import { ionChevronBack, ionChevronDown, ionCopy, ionInformation, ionInformationCircle } from '@quasar/extras/ionicons-v6';
+import { ionChevronBack, ionChevronDown, ionCopy, ionInformationCircle } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff, calcDepositReturn } from '@/composables/calculator';
+import RatingDialog from '@/components/dialog/RatingDialog.vue';
+import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
+import { Message } from '@/enums/enum';
 
 const props = defineProps<{
     order: Order
+}>();
+const emit = defineEmits<{
+    postRate: [orderId: number]
+    postCancel: [orderId: number]
 }>();
 const router = useRouter();
 const quasar = useQuasar();
 const paymentExpanded = ref<boolean>(false);
 const depositExpanded = ref<boolean>(false);
+const isRated = computed(() => props.order.rating != undefined && props.order.rating != null);
+const ratingDialog = ref<boolean>(false);
+const cancelDialog = ref<boolean>(false);
 
 function getTransactionDateTime() {
     if (props.order.payments[0].payment_method == 'Virtual Account') {
@@ -223,6 +246,21 @@ function copy(text: string) {
 function goBack() {
     router.go(-1);
 }
+
+function onOrderRated(orderId: number, rating: number) {
+    emit('postRate', orderId);
+}
+
+function cancelOrder() {
+    OrderService.cancelOrder(props.order!.id!).then((response) => {
+        emit('postCancel', props.order!.id!);
+        quasar.notify({
+            color: 'positive',
+            position: 'top-right',
+            message: Message.ORDER_CANCELLED
+        });
+    });
+}
 </script>
 
 <style>
@@ -242,5 +280,9 @@ function goBack() {
     border: none;
     border-top: 2px dashed #D1D1D1;
     height: 3px;
+}
+
+.expand-icon {
+    margin-left: -8px;
 }
 </style>

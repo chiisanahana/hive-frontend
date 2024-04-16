@@ -43,15 +43,18 @@
             </q-card>
         </div>
         <div class="col-xs-12 col-sm-7">
-            <OrderInfoCard v-if="order != undefined && order.payments[0].status != 'IN'" :order="order" />
+            <OrderInfoSkeleton v-if="order == undefined" />
+            <OrderInfoCard v-else-if="order.payments[0].status != 'IN'" :order="order" @post-rate="onOrderRated"
+                @post-cancel="onOrderCancelled" />
             <div v-else>
-                <PaymentVaCard v-if="order != undefined && getPaymentMethod() == 'Virtual Account'" :order="order" />
+                <PaymentVaCard v-if="getPaymentMethod() == 'Virtual Account'" :order="order" />
                 <q-card flat v-else-if="getPaymentMethod() == 'Credit Card'">
                     <q-card-section>
                         <div class="text-h6 text-center">Payment details</div>
-    
+
                         <q-card-actions align="right" class="q-mt-xl">
-                            <q-btn unelevated color="secondary" text-color="accent" label="Back to history" @click="back" />
+                            <q-btn unelevated color="secondary" text-color="accent" label="Back to history"
+                                @click="back" />
                         </q-card-actions>
                     </q-card-section>
                 </q-card>
@@ -63,7 +66,6 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { QSpinnerGears, useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
 import OrderService from '@/services/order.service';
 import { formatTimestampToDate, formatTimestampToTime } from '@/composables/formatter';
@@ -73,18 +75,16 @@ import { ionLocation } from '@quasar/extras/ionicons-v6';
 import type { Order } from '@/interfaces/rest/Order';
 import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import OrderInfoCard from '@/components/cards/OrderInfoCard.vue';
+import OrderInfoSkeleton from '@/components/skeleton/OrderInfoSkeleton.vue';
 
 const route = useRoute();
 const router = useRouter();
-const quasar = useQuasar();
 const order = ref<Order>();
 const rentDetails = ref<RentDetails>();
 
 function getOrderDetails(orderId: number) {
-    quasar.loading.show({ spinner: QSpinnerGears });
     OrderService.get(orderId).then((response) => {
-        console.log(response.data);
-        quasar.loading.hide();
+        // console.log(response.data);
         order.value = response.data;
 
         rentDetails.value = {
@@ -99,7 +99,6 @@ function getOrderDetails(orderId: number) {
         }
     }).catch((error) => {
         console.log(error);
-        quasar.loading.hide();
     });
 }
 
@@ -111,6 +110,15 @@ function getPaymentMethod() {
 
 function back() {
     router.go(-1);
+}
+
+function onOrderRated(orderId: number) {
+    getOrderDetails(orderId);
+}
+
+function onOrderCancelled(orderId: number) {
+    order.value = undefined;
+    getOrderDetails(orderId);
 }
 
 onBeforeMount(() => {
