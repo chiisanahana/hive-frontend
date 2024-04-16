@@ -101,6 +101,11 @@ const router = createRouter({
       component: () => import('@/pages/provider/ViewOrderPage.vue'),
     },
     {
+      path: '/provider/orders/details',
+      name: 'order-details',
+      component: () => import('@/pages/provider/OrderDetailsPage.vue'),
+    },
+    {
       path: '/provider/account',
       name: 'provider-account',
       component: () => import('@/pages/provider/AccountPage.vue'),

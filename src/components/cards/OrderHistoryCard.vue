@@ -3,7 +3,7 @@
         <q-card-section class="q-pa-sm">
             <div class="row items-center q-gutter-x-md q-mb-md">
                 <div class="text-body2 text-blue-grey-4">{{ props.order?.payments[0].invoice_no }}</div>
-                <q-badge color="accent">{{ getOrderStatus(props.order?.status!) }}</q-badge>
+                <q-badge color="primary">{{ getOrderStatus(props.order?.status!) }}</q-badge>
             </div>
 
             <div class="row">
@@ -38,7 +38,7 @@
             </div>
             <q-card-actions align="right">
                 <q-btn flat text-color="accent" label="View details" no-caps @click="viewDetails" />
-                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="primary" label="Rate"
+                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="accent" label="Rate"
                     style="min-width: 140px;" @click="ratingDialog = true" />
                 <q-btn v-else-if="['0', '1'].includes(props.order?.status!)" unelevated color="secondary"
                     text-color="accent" label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />

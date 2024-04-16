@@ -1,48 +1,23 @@
 <template>
     <div class="row q-pa-md q-col-gutter-md">
-        <div class="col-xs-12 col-sm">
+        <div class="col-sm-12 col-md">
             <q-card flat>
                 <q-card-section>
                     <div class="text-body1 text-bold q-mb-sm">Car Details</div>
-                    <div class="row" v-if="order?.car && order?.car.provider">
-                        <div class="column">
-                            <div class="text-body1">{{ order?.car.brand }}</div>
-                            <div class="text-body1">{{ order?.car.vehicle_no }}</div>
-                        </div>
-                        <q-space />
-                        <div class="column q-mr-md">
-                            <div class="text-body1">{{ order?.car.provider?.trading_name }}</div>
-                            <div class="column">
-                                <div class="row items-center text-blue-grey-4">
-                                    <q-icon :name="ionLocation" class="q-mr-sm" />
-                                    {{ order?.car.provider.address }}
-                                </div>
-                                <div class="row items-center text-blue-grey-4 q-ml-lg">
-                                    {{ order?.car.provider.city }}, {{ order?.car.provider.province }}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="column" v-if="order?.car">
+                        <div class="text-body">{{ order?.car.brand }}</div>
+                        <div class="text-body">{{ order?.car.vehicle_no }}</div>
                     </div>
-                    <div class="row" v-else>
-                        <div class="column">
-                            <q-skeleton type="text" width="100px" />
-                            <q-skeleton type="text" width="100px" />
-                        </div>
-                        <q-space />
-                        <div class="column q-mr-md">
-                            <q-skeleton type="text" width="160px" />
-                            <div class="column">
-                                <q-skeleton type="text" />
-                                <q-skeleton type="text" class="q-ml-lg" />
-                            </div>
-                        </div>
+                    <div class="column" v-else>
+                        <q-skeleton type="text" width="100px" />
+                        <q-skeleton type="text" width="100px" />
                     </div>
                 </q-card-section>
 
                 <RentDetailsCardSec :editable="false" :rentDetails="rentDetails" />
             </q-card>
         </div>
-        <div class="col-xs-12 col-sm-7">
+        <div class="col-xs-12 col-md-6">
             <OrderInfoSkeleton v-if="order == undefined" />
             <OrderInfoCard v-else-if="order.payments[0].status != 'IN'" :order="order" @post-rate="onOrderRated"
                 @post-status-update="onOrderStatusUpdated" />
@@ -71,7 +46,6 @@ import OrderService from '@/services/order.service';
 import { formatTimestampToDate, formatTimestampToTime } from '@/composables/formatter';
 import RentDetailsCardSec from '@/components/cards/RentDetailsCardSec.vue';
 import type { RentDetails } from '@/interfaces/RentDetails';
-import { ionLocation } from '@quasar/extras/ionicons-v6';
 import type { Order } from '@/interfaces/rest/Order';
 import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import OrderInfoCard from '@/components/cards/OrderInfoCard.vue';

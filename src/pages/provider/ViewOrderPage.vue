@@ -94,6 +94,7 @@ function filterOrders(key: string) {
             break;
 
         default:
+            orders.value = data.value;
             break;
     }
 }

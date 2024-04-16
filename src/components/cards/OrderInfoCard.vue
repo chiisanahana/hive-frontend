@@ -4,16 +4,16 @@
             <div class="row q-mb-md">
                 <div class="text-body1 text-bold ">Order Details</div>
                 <q-space />
-                <q-badge color="accent">{{ getOrderStatus(order.status) }}</q-badge>
+                <q-badge color="primary">{{ getOrderStatus(order.status) }}</q-badge>
             </div>
             <div class="q-gutter-sm q-mb-lg">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Order created date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Order created date</div>
                     <div class="col-xs-12 col-sm-6">{{ formatTimestampToDateDisplay(order.created_datetime) }} {{
                         formatTimestampToTimeFull(order.created_datetime) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Invoice number</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Invoice number</div>
                     <div class="row col-xs-12 col-sm-6">
                         {{ order.payments[0].invoice_no }}
                         <q-btn flat dense round color="accent" :icon="ionCopy" size="sm" class="q-ml-md"
@@ -21,11 +21,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Payment method</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Payment method</div>
                     <div class="col-xs-12 col-sm-6">{{ order.payments[0].payment_method }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Transaction date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Transaction date</div>
                     <div class="col-xs-12 col-sm-6">{{ getTransactionDateTime() }}</div>
                 </div>
                 <q-list>
@@ -35,8 +35,8 @@
                             <div v-if="paymentExpanded" class="row col-12 text-blue-grey-4 text-bold">
                                 Transaction Details</div>
                             <div v-else class="row col-12">
-                                <div class="col-xs-12 col-sm-6 col-md-4">Total amount</div>
-                                <div class="col-xs-12 col-sm text-bold q-pl-xs">
+                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Total amount</div>
+                                <div class="col-xs-12 col-sm-6 text-bold q-pl-xs">
                                     {{ formatAmount(order.payments[0].amount as number) }}
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
 
             <div v-if="['4', '5', '6'].includes(order.status)" class="q-mt-md q-gutter-sm q-mb-md">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Order completed date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Order completed date</div>
                     <div class="col-xs-12 col-sm-6">{{ formatTimestampToDateDisplay(order.updated_datetime) }} {{
                         formatTimestampToTimeFull(order.updated_datetime) }}</div>
                 </div>
@@ -96,13 +96,13 @@
                     </q-card>
                 </div>
                 <div v-if="isHasDeposit()" class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Deposit return date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return date</div>
                     <div class="col-xs-12 col-sm-6">{{
                         formatTimestampToDateDisplay(order.payments[0].deposit_return_time) }} {{
                             formatTimestampToTimeFull(order.payments[0].deposit_return_time) }}</div>
                 </div>
                 <div v-if="isHasDeposit() && isNoFee()" class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4">Deposit return amount</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return amount</div>
                     <div class="col-xs-12 col-sm text-bold">
                         {{ formatAmount(order.car?.deposit) }}
                     </div>
@@ -114,8 +114,8 @@
                             <div v-if="depositExpanded" class="row col-12 text-blue-grey-4 text-bold">
                                 Transaction Details</div>
                             <div v-else class="row col-12">
-                                <div class="col-xs-12 col-sm-6 col-md-4">Deposit return amount</div>
-                                <div class="col-xs-12 col-sm text-bold">
+                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return amount</div>
+                                <div class="col-xs-12 col-sm-6 text-bold">
                                     {{ formatAmount(calcDepositReturn(order)) }}
                                 </div>
                             </div>
@@ -172,10 +172,20 @@
             </div>
             <q-space v-if="isRated" />
             <q-btn unelevated :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
-            <q-btn v-if="order.status == '4' && !isRated" unelevated color="primary" label="Rate"
+
+            <!-- Customer actions -->
+            <q-btn v-if="!isProvider && order.status == '4' && !isRated" unelevated color="primary" label="Rate"
                 style="min-width: 140px;" @click="ratingDialog = true" />
-            <q-btn v-else-if="['0', '1'].includes(order?.status!)" unelevated color="secondary" text-color="accent"
-                label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
+            <q-btn v-else-if="!isProvider && ['0', '1'].includes(order?.status!)" unelevated color="secondary"
+                text-color="accent" label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
+
+            <!-- Provider actions -->
+            <q-btn v-if="isProvider && order.status == '1'" unelevated color="secondary" text-color="accent"
+                label="Reject" @click="setStatus('6')" />
+            <q-btn v-if="isProvider && order.status == '1'" unelevated color="accent" label="Approve"
+                @click="setStatus('2')" />
+            <q-btn v-else-if="isProvider && order.status == '2'" unelevated color="accent" label="Complete"
+                @click="handleCompleteOrder" />
         </q-card-actions>
     </q-card>
     <ConfirmDialog v-model="cancelDialog" message="Are you sure want to cancel this rent?"
@@ -185,26 +195,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar, date, copyToClipboard } from 'quasar';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
+import UserService from '@/services/user.service';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTimeFull } from '@/composables/formatter';
 import { getOrderStatus } from '@/composables/getter';
 import { ionChevronBack, ionChevronDown, ionCopy, ionInformationCircle } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff, calcDepositReturn } from '@/composables/calculator';
 import RatingDialog from '@/components/dialog/RatingDialog.vue';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
-import { Message } from '@/enums/enum';
+import { Message, UserType } from '@/enums/enum';
+import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
     order: Order
 }>();
 const emit = defineEmits<{
     postRate: [orderId: number]
-    postCancel: [orderId: number]
+    postStatusUpdate: [orderId: number]
 }>();
+const route = useRoute();
 const router = useRouter();
 const quasar = useQuasar();
 const paymentExpanded = ref<boolean>(false);
@@ -212,6 +225,8 @@ const depositExpanded = ref<boolean>(false);
 const isRated = computed(() => props.order.rating != undefined && props.order.rating != null);
 const ratingDialog = ref<boolean>(false);
 const cancelDialog = ref<boolean>(false);
+const isProvider = ref<boolean>();
+const providerStore = useProviderStore();
 
 function getTransactionDateTime() {
     if (props.order.payments[0].payment_method == 'Virtual Account') {
@@ -253,7 +268,7 @@ function onOrderRated(orderId: number, rating: number) {
 
 function cancelOrder() {
     OrderService.cancelOrder(props.order!.id!).then((response) => {
-        emit('postCancel', props.order!.id!);
+        emit('postStatusUpdate', props.order!.id!);
         quasar.notify({
             color: 'positive',
             position: 'top-right',
@@ -261,6 +276,52 @@ function cancelOrder() {
         });
     });
 }
+
+function setStatus(status: string) {
+    OrderService.updateOrderStatus(props.order.id!, status)
+        .then((response) => {
+            // console.log(response.data)
+            quasar.notify({
+                color: 'positive',
+                position: 'top-right',
+                message: status == '2' ? Message.ORDER_APPROVE_SUCCESS : Message.ORDER_REJECT_SUCCESS
+            });
+            emit('postStatusUpdate', props.order!.id!);
+        }).catch((error) => {
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        });
+}
+
+function handleCompleteOrder() {
+    OrderService.completeOrder(props.order.id!, props.order.car?.provider?.id!)
+        .then((response) => {
+            UserService.get(UserService.getLoggedInPrv().id, UserType.P)
+                .then((response) => {
+                    UserService.storeUser(response.data, UserType.P);
+                    providerStore.setLoggedInUser(response.data);
+                    quasar.notify({
+                        color: 'positive',
+                        position: 'top-right',
+                        message: Message.ORDER_COMPLETED
+                    });
+                    emit('postStatusUpdate', props.order!.id!);
+                });
+        }).catch((error) => {
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        });
+}
+
+onBeforeMount(() => {
+    isProvider.value = route.fullPath.includes('provider');
+})
 </script>
 
 <style>

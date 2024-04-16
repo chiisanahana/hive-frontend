@@ -3,7 +3,7 @@
         <q-card-section class="q-pa-sm">
             <div class="row items-center q-gutter-x-md q-mb-md">
                 <div class="text-body2 text-blue-grey-4">{{ order.payments[0].invoice_no }}</div>
-                <q-badge color="accent">{{ getOrderStatus(order.status) }}</q-badge>
+                <q-badge color="primary">{{ getOrderStatus(order.status) }}</q-badge>
             </div>
 
             <div class="row">
@@ -141,7 +141,7 @@ function handleCompleteOrder() {
 
 function viewDetails() {
     const encryptedId = CryptoService.encrypt(props.order?.id);
-    // router.push({ name: 'history-details', query: { oid: encryptedId } })
+    router.push({ name: 'order-details', query: { oid: encryptedId } })
 }
 
 onMounted(() => {
