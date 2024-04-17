@@ -15,7 +15,8 @@
                 </q-btn>
                 <q-btn v-if="currentUser" flat round dense :icon="ionNotifications">
                     <NotifDropdown
-                        :customerId="currentUser == UserType.C ? customerStore.getLoggedInUser.id : providerStore.getLoggedInUser.id" />
+                        :userId="currentUser == UserType.C ? customerStore.getLoggedInUser.id : providerStore.getLoggedInUser.id"
+                        :type="currentUser" />
                     <!-- <q-badge rounded color="red" floating transparent>
                         2
                     </q-badge> -->
