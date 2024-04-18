@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-md row justify-center">
-        <q-scroll-area style="width:100%; height: calc(100vh - 72px - 72px - 32px);">
+        <q-scroll-area style="width:100%; height: calc(100vh - 72px - 72px - 32px);"    >
             <div v-if="room != null" v-for="(chat, index) in chatStore.getChats">
                 <div class="row justify-center">
                     <q-chip

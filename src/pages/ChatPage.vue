@@ -7,7 +7,7 @@
 
                 <q-scroll-area style="height: calc(100vh - 70px - 50px);">
                     <div v-for="room in chatRooms">
-                        <q-item clickable v-ripple @click="goToChatRoom(room)">
+                        <q-item clickable v-ripple @click="goToChatRoom(room)"
                             :active="chatStore.getCurrentRoom != null && room.id == chatStore.getCurrentRoom.id"
                             active-class="bg-secondary">
                             <q-item-section avatar>
@@ -138,7 +138,11 @@ function getUnreadCount(room: ChatRoom) {
 
 function goToChatRoom(room: ChatRoom) {
     if (userType.value != undefined) {
-        ChatService.readChat(room, userType.value);
+        if (userType.value == UserType.C) {
+            ChatService.readChat(room, UserType.P);
+        } else {
+            ChatService.readChat(room, UserType.C);
+        }
         chatStore.setCurrentRoom(room);
     }
 }

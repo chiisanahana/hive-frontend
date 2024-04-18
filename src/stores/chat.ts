@@ -18,18 +18,9 @@ export const useChatStore = defineStore('chat', {
         setCurrentRoom(chatRoom: ChatRoom) {
             this.room = chatRoom;
             this.chats = chatRoom.chats;
-            // order chat
-            this.chats.sort((chat1: any, chat2: any) => {
-                const time1 = chat1.created_datetime;
-                const time2 = chat2.created_datetime;
-                if (time1 != undefined && time2 != undefined) {
-                    return time2.localeCompare(time1);
-                }
-                return 0;
-            });
         },
         addChat(chat: Chat) {
-            this.chats?.unshift(chat);
+            this.chats?.push(chat);
         },
     },
 });
