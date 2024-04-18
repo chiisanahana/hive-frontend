@@ -12,16 +12,18 @@ class NotificationService {
         return http.get('/notifications/', { params: params })
     }
 
-    createNotif(userId: number, type: UserType, message: string): Promise<any> {
+    createNotif(userId: number, type: UserType, title: string, message: string): Promise<any> {
         let data: any;
         if (type == UserType.C) {
             data = {
                 customer_id: userId,
+                title: title,
                 message: message
             }
         } else {
             data = {
                 provider_id: userId,
+                title: title,
                 message: message
             }
         }

@@ -65,14 +65,18 @@ import { useRouter } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
 import OrderService from '@/services/order.service';
+import NotifService from '@/services/notification.service';
 import type { Order } from '@/interfaces/rest/Order';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTime } from '@/composables/formatter';
 import { ionCalendar, ionLocation, ionTime } from '@quasar/extras/ionicons-v6';
 import { getCarImg, getOrderStatus } from '@/composables/getter';
-import { Message, UserType } from '@/enums/enum';
+import { Message, UserType, Notif } from '@/enums/enum';
 import type { Payment } from '@/interfaces/rest/Payment';
 import UserService from '@/services/user.service';
 import { useProviderStore } from '@/stores/provider';
+import { useNotifStore } from '@/stores/notif';
+import { calcDepositReturn } from '@/composables/calculator';
+import orderService from '@/services/order.service';
 
 const props = defineProps<{
     order: Order
@@ -96,6 +100,20 @@ function setStatus(status: string) {
     OrderService.updateOrderStatus(props.order.id!, status)
         .then((response) => {
             // console.log(response.data)
+            let title: string = status == '2' ? Notif.RENT_APPROVE_TITLE : Notif.RENT_REJECT_TITLE;
+            let message: string = status == '2' ? Notif.RENT_APPROVE_MSG : Notif.RENT_REJECT_MSG;
+            message = message.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!);
+
+            NotifService.createNotif(props.order.customer!.id, UserType.C, title, message)
+                .then((response) => {
+                    if (status == '6') {
+                        NotifService.createNotif(props.order.customer!.id, UserType.C,
+                            Notif.PAYMENT_REFUND_TITLE,
+                            Notif.PAYMENT_REFUND_MSG.replace('{amount}', payments.value[0].amount.toString()).replace('{invoice}', payments.value[0].invoice_no)
+                        );
+                    }
+                });
+
             quasar.notify({
                 color: 'positive',
                 position: 'top-right',
@@ -119,6 +137,22 @@ function handleCompleteOrder() {
         .then((response) => {
             UserService.get(UserService.getLoggedInPrv().id, UserType.P)
                 .then((response) => {
+                    NotifService.createNotif(providerStore.getLoggedInUser.id, UserType.P,
+                        Notif.BALANCE_ADDED_TITLE,
+                        Notif.BALANCE_ADDED_MSG.replace('{amount}', props.order.base_price!).replace('{car}', props.order.car?.brand!)
+                    );
+                    NotifService.createNotif(props.order.customer!.id, UserType.C,
+                        Notif.RENT_COMPLETE_TITLE,
+                        Notif.RENT_COMPLETE_MSG.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!)
+                    ).then((response) => {
+                        if (props.order.car?.deposit != 0) {
+                            NotifService.createNotif(props.order.customer!.id, UserType.C,
+                                Notif.DEPOSIT_REFUND_TITLE,
+                                Notif.DEPOSIT_REFUND_MSG.replace('{amount}', calcDepositReturn(props.order).toString()).replace('{invoice}', payments.value[0].invoice_no)
+                            );
+                        }
+                    });
+
                     UserService.storeUser(response.data, UserType.P);
                     providerStore.setLoggedInUser(response.data);
                     quasar.notify({

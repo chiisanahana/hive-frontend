@@ -201,13 +201,14 @@ import { useQuasar, date, copyToClipboard } from 'quasar';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
 import UserService from '@/services/user.service';
+import NotifService from '@/services/notification.service';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTimeFull } from '@/composables/formatter';
 import { getOrderStatus } from '@/composables/getter';
 import { ionChevronBack, ionChevronDown, ionCopy, ionInformationCircle } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff, calcDepositReturn } from '@/composables/calculator';
 import RatingDialog from '@/components/dialog/RatingDialog.vue';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
-import { Message, UserType } from '@/enums/enum';
+import { Message, UserType, Notif } from '@/enums/enum';
 import { useProviderStore } from '@/stores/provider';
 
 const props = defineProps<{
@@ -268,6 +269,10 @@ function onOrderRated(orderId: number, rating: number) {
 
 function cancelOrder() {
     OrderService.cancelOrder(props.order!.id!).then((response) => {
+        NotifService.createNotif(props.order?.car?.provider!.id!, UserType.P,
+            Notif.ORDER_CANCEL_TITLE,
+            Notif.ORDER_CANCEL_MSG.replace('{car}', props.order?.car?.brand!).replace('{date}', formatTimestampToDateDisplay(props.order?.start_datetime))
+        );
         emit('postStatusUpdate', props.order!.id!);
         quasar.notify({
             color: 'positive',
@@ -281,6 +286,20 @@ function setStatus(status: string) {
     OrderService.updateOrderStatus(props.order.id!, status)
         .then((response) => {
             // console.log(response.data)
+            let title: string = status == '2' ? Notif.RENT_APPROVE_TITLE : Notif.RENT_REJECT_TITLE;
+            let message: string = status == '2' ? Notif.RENT_APPROVE_MSG : Notif.RENT_REJECT_MSG;
+            message = message.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!);
+
+            NotifService.createNotif(props.order.customer!.id, UserType.C, title, message)
+                .then((response) => {
+                    if (status == '6') {
+                        NotifService.createNotif(props.order.customer!.id, UserType.C,
+                            Notif.PAYMENT_REFUND_TITLE,
+                            Notif.PAYMENT_REFUND_MSG.replace('{amount}', props.order.payments[0].amount.toString()).replace('{invoice}', props.order.payments[0].invoice_no)
+                        );
+                    }
+                });
+
             quasar.notify({
                 color: 'positive',
                 position: 'top-right',
@@ -301,6 +320,18 @@ function handleCompleteOrder() {
         .then((response) => {
             UserService.get(UserService.getLoggedInPrv().id, UserType.P)
                 .then((response) => {
+                    NotifService.createNotif(props.order.customer!.id, UserType.C,
+                        Notif.RENT_COMPLETE_TITLE,
+                        Notif.RENT_COMPLETE_MSG.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!)
+                    ).then((response) => {
+                        if (props.order.car?.deposit != 0) {
+                            NotifService.createNotif(props.order.customer!.id, UserType.C,
+                                Notif.DEPOSIT_REFUND_TITLE,
+                                Notif.DEPOSIT_REFUND_MSG.replace('{amount}', calcDepositReturn(props.order).toString()).replace('{invoice}', props.order.payments[0].invoice_no)
+                            );
+                        }
+                    });
+
                     UserService.storeUser(response.data, UserType.P);
                     providerStore.setLoggedInUser(response.data);
                     quasar.notify({

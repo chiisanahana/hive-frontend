@@ -17,9 +17,9 @@
                     <NotifDropdown
                         :userId="currentUser == UserType.C ? customerStore.getLoggedInUser.id : providerStore.getLoggedInUser.id"
                         :type="currentUser" />
-                    <!-- <q-badge rounded color="red" floating transparent>
-                        2
-                    </q-badge> -->
+                    <q-badge v-if="notifStore.getUnreadCount > 0" rounded color="red" floating transparent>
+                        {{ notifStore.getUnreadCount }}
+                    </q-badge>
                 </q-btn>
                 <q-btn flat dense no-caps align="left" class="gt-xs"
                     :class="currentUser == UserType.C ? 'q-pa-md' : 'q-pa-sm'" style="min-width: 220px">
@@ -90,6 +90,8 @@ import { getProfPict } from '@/composables/getter';
 import logo from '@/assets/images/logo.png';
 import { useCustomerStore } from '@/stores/customer';
 import { useProviderStore } from '@/stores/provider';
+import { useNotifStore } from '@/stores/notif';
+import NotificationService from '@/services/notification.service';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,6 +101,7 @@ const loginDialog = ref<boolean>(false);
 const isLoggedIn = computed<boolean>(() => user.value != null);
 const customerStore = useCustomerStore();
 const providerStore = useProviderStore();
+const notifStore = useNotifStore();
 
 watch(
     () => route.fullPath, async () => { getUserData(); }
@@ -109,11 +112,21 @@ function getUserData() {
         if (providerStore.getLoggedInUser != null) {
             user.value = providerStore.getLoggedInUser;
             currentUser.value = UserType.P;
+
+            NotificationService.get(providerStore.getLoggedInUser.id, UserType.P)
+                .then((response) => {
+                    notifStore.setNotif(response.data);
+                });
         }
     } else {
         if (customerStore.getLoggedInUser != null) {
             user.value = customerStore.getLoggedInUser;
             currentUser.value = UserType.C;
+
+            NotificationService.get(user.value!.id, UserType.C)
+                .then((response) => {
+                    notifStore.setNotif(response.data);
+                });
         }
     }
 }

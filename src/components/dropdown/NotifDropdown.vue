@@ -1,19 +1,19 @@
 <template>
-    <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" self="top middle"
-        @before-show="getNotif()">
+    <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" self="top middle">
         <q-list style="width: 350px">
             <q-item-label header class="q-py-sm">
                 <div class="q-my-xs text-bold">Notification</div>
             </q-item-label>
             <q-scroll-area :style="{ height: height }">
                 <q-resize-observer @resize="onResize"></q-resize-observer>
-                <q-item v-if="notifications.length > 0" v-for="notif in notifications"
-                    :class="notif.isread == '0' ? 'bg-secondary' : ''" clickable @click="markAsRead(notif)">
+                <NotifDropdownSkeleton v-if="notifStore.getNotif == null" />
+                <q-item v-else-if="notifStore.getCount > 0" v-for="notif in notifStore.getNotif"
+                    :class="notif.isread == '0' ? 'bg-secondary' : ''" :clickable="notif.isread == '0'"
+                    @click="markAsRead(notif)">
                     <q-item-section>
                         <q-item-label caption>{{ formatChatTime(notif.created_datetime) }}</q-item-label>
                         <q-item-label>{{ notif.title }}</q-item-label>
                         <q-item-label caption>{{ notif.message }}</q-item-label>
-                        
                     </q-item-section>
                 </q-item>
                 <q-item v-else>
@@ -30,13 +30,10 @@ import { UserType } from '@/enums/enum';
 import type { Notification } from '@/interfaces/rest/Notification';
 import NotificationService from '@/services/notification.service';
 import { formatChatTime } from '@/composables/formatter';
+import NotifDropdownSkeleton from '@/components/skeleton/NotifDropdownSkeleton.vue';
+import { useNotifStore } from '@/stores/notif';
 
-const props = defineProps<{
-    userId: number;
-    type: UserType;
-}>();
-
-const notifications = ref<Notification[]>([]);
+const notifStore = useNotifStore();
 const height = ref<string>('48px');
 const isLoading = ref<boolean>(false);
 
@@ -45,17 +42,9 @@ const onResize: any = (size: any) => {
     height.value = size.height <= 300 ? `${size.height}px` : '300px';
 }
 
-function getNotif() {
-    NotificationService.get(props.userId, props.type).then((response) => {
-        notifications.value = response.data;
-    })
-}
-
 function markAsRead(notif: Notification) {
     NotificationService.readNotif(notif.id).then((response) => {
-        notifications.value.map((data: Notification) => {
-            if (data.id == notif.id) data.isread = '1';
-        })
+        notifStore.setRead(notif.id);
     })
 }
 

@@ -57,6 +57,7 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
 import OrderService from '@/services/order.service';
+import NotifService from '@/services/notification.service';
 import type { Order } from '@/interfaces/rest/Order';
 import { getCarImg, getOrderStatus } from '@/composables/getter';
 import { formatAmount, formatTimestampToDate, formatTimestampToDateDisplay } from '@/composables/formatter';
@@ -64,7 +65,7 @@ import { ionCalendar, ionLocation } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff } from '@/composables/calculator';
 import RatingDialog from '@/components/dialog/RatingDialog.vue';
 import ConfirmDialog from '@/components/dialog/ConfirmDialog.vue';
-import { Message } from '@/enums/enum';
+import { Message, Notif, UserType } from '@/enums/enum';
 
 const props = defineProps<{
     order: Order | undefined
@@ -99,6 +100,10 @@ function onOrderRated(orderId: number, rating: number) {
 
 function cancelOrder() {
     OrderService.cancelOrder(props.order!.id!).then((response) => {
+        NotifService.createNotif(props.order?.car?.provider!.id!, UserType.P,
+            Notif.ORDER_CANCEL_TITLE,
+            Notif.ORDER_CANCEL_MSG.replace('{car}', props.order?.car?.brand!).replace('{date}', formatTimestampToDateDisplay(props.order?.start_datetime))
+        );
         emit('postCancel', props.order!.id!);
         quasar.notify({
             color: 'positive',
