@@ -1,11 +1,11 @@
 <template>
     <div class="q-pa-md row justify-center">
         <q-scroll-area style="width:100%; height: calc(100vh - 72px - 72px - 32px);">
-            <div v-if="room != null" v-for="(chat, index) in chats">
+            <div v-if="room != null" v-for="(chat, index) in chatStore.getChats">
                 <div class="row justify-center">
                     <q-chip
                         v-if="index == 0 ||
-                formatTimestampToDateDisplay(chat.created_datetime) != formatTimestampToDateDisplay(chats[index - 1].created_datetime)"
+                            formatTimestampToDateDisplay(chat.created_datetime) != formatTimestampToDateDisplay(chatStore.getChats[index - 1].created_datetime)"
                         square color="secondary" text-color="accent" class="self-center">
                         {{ getChatDate(chat) }}
                     </q-chip>
@@ -36,37 +36,43 @@ import type { ChatRoom } from '@/interfaces/rest/ChatRoom';
 import type { Chat } from '@/interfaces/rest/Chat';
 import ChatService from '@/services/chat.service';
 import { formatTimestampToDate, formatTimestampToDateDisplay, formatTimestampToTime } from '@/composables/formatter';
+import { UserType } from '@/enums/enum';
+import { useChatStore } from '@/stores/chat';
 
 const props = defineProps<{
-    room: ChatRoom | null
+    room: ChatRoom | null,
+    userType: UserType
 }>();
 
-watch(props, async () => {
-    console.log(props.room);
-    connection.value = new WebSocket(`${import.meta.env.VITE_WS_URL}/chat/${props.room?.provider?.id}_${props.room?.customer?.id}/`);
+// watch(props, async () => {
+//     console.log(props.room);
+//     connection.value = new WebSocket(`${import.meta.env.VITE_WS_URL}/chat/${props.room?.provider?.id}_${props.room?.customer?.id}/`);
 
-    connection.value.onopen = () => console.log('connection open');
-    connection.value.onmessage = (e) => {
-        console.log('print something plis')
-        console.log(e.data);
-        testing.value.push(e.data);
-    }
-})
-
-const chats = ref<Chat[]>([]);
+//     connection.value.onopen = () => console.log('connection open');
+//     connection.value.onmessage = (e) => {
+//         console.log('print something plis')
+//         console.log(e.data);
+//         testing.value.push(e.data);
+//     }
+// })
+const chatStore = useChatStore();
 const text = ref<string>('');
-const connection = ref<WebSocket>(new WebSocket(`${import.meta.env.VITE_WS_URL}/chat/${props.room?.provider?.id}_${props.room?.customer?.id}/`));
-const testing = ref<string[]>([]);
+// const connection = ref<WebSocket>(new WebSocket(`${import.meta.env.VITE_WS_URL}/chat/${props.room?.provider?.id}_${props.room?.customer?.id}/`));
+// const testing = ref<string[]>([]);
 
-connection.value.onopen = () => console.log('connection open');
-connection.value.onmessage = (e) => {
-    console.log('print something plis')
-    console.log(e.data);
-    testing.value.push(e.data);
-}
+// connection.value.onopen = () => console.log('connection open');
+// connection.value.onmessage = (e) => {
+//     console.log('print something plis')
+//     console.log(e.data);
+//     testing.value.push(e.data);
+// }
 
 function isSentByMe(chat: Chat) {
-    return chat.customer_id != null;
+    if (props.userType == UserType.C) {
+        return chat.customer_id != null;
+    } else {
+        return chat.provider_id != null;
+    }
 }
 
 function getChatDate(chat: Chat) {
@@ -83,7 +89,7 @@ function sendChat() {
     const msg = text.value;
     text.value = '';
 
-    chats.value.push({
+    chatStore.addChat({
         chat_room_id: props.room?.id,
         customer_id: props.room?.customer?.id,
         message: msg,
@@ -98,9 +104,9 @@ function sendChat() {
     } as Chat);
 }
 
-onBeforeMount(() => {
-    if (props.room != undefined) {
-        chats.value = props.room.chats;
-    }
-});
+// onBeforeMount(() => {
+//     if (props.room != undefined) {
+//         chats.value = props.room.chats;
+//     }
+// });
 </script>

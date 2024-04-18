@@ -22,7 +22,7 @@ export enum Message {
 
 export enum Notif {
     ORDER_PENDING_TITLE = 'New order',
-    ORDER_PENDING_MSG = 'You have new order for car {car} in {date} waiting for approval',
+    ORDER_PENDING_MSG = 'You have new order for car {car} on {date} waiting for approval',
     ORDER_CANCEL_TITLE = 'Order cancelled',
     ORDER_CANCEL_MSG = 'Order for car {car} in {date} has been cancelled',
     RENT_APPROVE_TITLE = 'Rent approved',
@@ -31,6 +31,8 @@ export enum Notif {
     RENT_REJECT_MSG = 'Rent for car {car} in {city} has been rejected',
     RENT_COMPLETE_TITLE = 'Rent completed',
     RENT_COMPLETE_MSG = 'Rent for car {car} in {city} has been completed',
+    PAYMENT_COMPLETE_TITLE = 'Payment completed',
+    PAYMENT_COMPLETE_MSG = 'Your rent payment for car {car} on {date} has been completed. Enjoy your ride!',
     PAYMENT_REFUND_TITLE = 'Payment refund',
     PAYMENT_REFUND_MSG = 'Your rent payment {amount} with invoice {invoice} has been refunded',
     DEPOSIT_REFUND_TITLE = 'Deposit refund',

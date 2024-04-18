@@ -132,7 +132,7 @@ function goToChat() {
     if (car.value != undefined && car.value.provider != undefined) {
         ChatService.createOrGetRoom(UserService.getLoggedInCust().id, car.value.provider.id)
             .then((response) => {
-                chatStore.setCurrentRoom(response.data as ChatRoom);
+                chatStore.setCurrentRoom(response.data as ChatRoom, UserType.C);
                 quasar.loading.hide();
                 router.push({ name: 'chat' });
             })

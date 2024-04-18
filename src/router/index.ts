@@ -106,6 +106,11 @@ const router = createRouter({
       component: () => import('@/pages/provider/OrderDetailsPage.vue'),
     },
     {
+      path: '/provider/chat',
+      name: 'provider-chat',
+      component: () => import('@/pages/ChatPage.vue'),
+    },
+    {
       path: '/provider/account',
       name: 'provider-account',
       component: () => import('@/pages/provider/AccountPage.vue'),

@@ -1,5 +1,7 @@
+import type { UserType } from '@/enums/enum';
 import http from '@/http-common';
 import type { Chat } from '@/interfaces/rest/Chat';
+import type { ChatRoom } from '@/interfaces/rest/ChatRoom';
 
 class ChatService {
     getRoom(id: number): Promise<any> {
@@ -36,6 +38,10 @@ class ChatService {
 
     sendChat(chat: Chat): Promise<any> {
         return http.post('/chats/', chat);
+    }
+
+    readChat(chatRoom: ChatRoom, type: UserType): Promise<any> {
+        return http.post(`/chats/read/${type}/${chatRoom.id}`);
     }
 }
 

@@ -43,9 +43,12 @@ import UserService from '@/services/user.service';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
 import PaymentService from '@/services/payment.service';
+import NotifService from '@/services/notification.service';
 import HistoryCardSkeleton from '@/components/skeleton/HistoryCardSkeleton.vue';
 import OrderHistoryCard from '@/components/cards/OrderHistoryCard.vue';
 import { calcTimeDiff } from '@/composables/calculator';
+import { Notif, UserType } from '@/enums/enum';
+import { formatTimestampToDateDisplay } from '@/composables/formatter';
 
 const data = ref<Order[]>([]);
 const orders = ref<Order[]>([]);
@@ -119,6 +122,10 @@ function handleCompletePayment(order: Order) {
     if (diff > 1) {
         PaymentService.completePayment(payment.id!).then((response) => {
             OrderService.updateOrderStatus(order.id!, '1');
+            NotifService.createNotif(order.customer!.id!, UserType.C,
+                Notif.PAYMENT_COMPLETE_TITLE,
+                Notif.PAYMENT_COMPLETE_MSG.replace('{car}', order?.car?.brand!).replace('{date}', formatTimestampToDateDisplay(order?.start_datetime))
+            );
         });
     }
 }
