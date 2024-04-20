@@ -2,7 +2,7 @@
     <div class="q-pa-md">
         <q-card flat>
             <q-card-section>
-                <div class="text-h6">Manage Orders</div>
+                <div class="text-h6">Kelola Penyewaan</div>
             </q-card-section>
 
             <q-card-section>
@@ -10,13 +10,13 @@
                 <div class="row items-center q-mb-md">
                     <div class="text-bold q-mr-lg">Status</div>
                     <div class="row q-gutter-x-sm buttons">
-                        <q-btn outline :color="filter == '' ? 'accent' : 'blue-grey-4'" label="All" no-caps
+                        <q-btn outline :color="filter == '' ? 'accent' : 'blue-grey-4'" label="Semua" no-caps
                             @click="resetFilter" />
-                        <q-btn outline :color="filter == 'pending' ? 'accent' : 'blue-grey-4'" label="Pending" no-caps
+                        <q-btn outline :color="filter == 'pending' ? 'accent' : 'blue-grey-4'" label="Menunggu" no-caps
                             @click="filterBtn('pending')" />
-                        <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Ongoing" no-caps
+                        <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Berjalan" no-caps
                             @click="filterBtn('ongoing')" />
-                        <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Completed"
+                        <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Selesai"
                             no-caps @click="filterBtn('completed')" />
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 <!-- Data -->
                 <HistoryCardSkeleton v-if="isLoading" v-for="n in 4" :key="n" />
                 <div v-else-if="orders.length == 0" class="q-pa-lg text-center text-blue-grey-4">
-                    No order yet
+                    Tidak ada permintaan
                 </div>
                 <OrderCard v-else v-for="order in orders" :order="order" @post-update="onOrderUpdated" />
             </q-card-section>

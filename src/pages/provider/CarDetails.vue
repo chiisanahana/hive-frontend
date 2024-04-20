@@ -10,40 +10,40 @@
                     <div class="text-body1 q-mb-md">{{ car?.vehicle_no }}</div>
                     <div class="row">
                         <div class="text-body1">{{ formatAmount(car?.price) }}</div>
-                        <span class="text-body1 text-blue-grey-4 q-ml-sm">/day</span>
+                        <span class="text-body1 text-blue-grey-4 q-ml-sm">/hari</span>
                     </div>
                     <div class="text-body1">
-                        {{ car?.deposit! > 0 ? 'Deposit ' + formatAmount(car?.deposit) : 'No deposit' }}
+                        {{ car?.deposit! > 0 ? 'Deposit ' + formatAmount(car?.deposit) : 'Tanpa deposit' }}
                     </div>
                 </q-card-section>
             </q-card-section>
             <q-card-section>
-                <div class="text-body1 text-bold q-mb-sm">Car Info</div>
+                <div class="text-body1 text-bold q-mb-sm">Informasi Mobil</div>
                 <div class="row q-gutter-x-md">
-                    <CarInfoIcon :icon="ionCarSport" :text="'Car Type'" :value="car?.car_type" />
-                    <CarInfoIcon :icon="ionCalendarClear" :text="'Year'" :value="car?.year" />
-                    <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Seats'" :value="car?.seat" />
-                    <CarInfoIcon :icon="ionColorPalette" :text="'Color'" :value="car?.color" />
-                    <CarInfoIcon :icon="ionSpeedometer" :text="'Fuel'" :value="getCarFuel()" />
-                    <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmission'"
-                        :value="car?.transmission" />
+                    <CarInfoIcon :icon="ionCarSport" :text="'Tipe'" :value="car?.car_type" />
+                    <CarInfoIcon :icon="ionCalendarClear" :text="'Tahun'" :value="car?.year" />
+                    <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Kursi'" :value="car?.seat" />
+                    <CarInfoIcon :icon="ionColorPalette" :text="'Warna'" :value="car?.color" />
+                    <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmisi'"
+                        :value="getCarTransmission(car)" />
+                    <CarInfoIcon :icon="ionSpeedometer" :text="'Bahan Bakar'" :value="getCarFuel(car)" />
                     <q-space />
                     <div class="rating-box column q-pa-md">
                         <div class="row items-center q-mb-sm">
                             <q-icon name="r_star" size="sm" color="warning" class="q-mr-sm" />
                             <span class="text-bold">{{ car?.rating }}</span>
                         </div>
-                        <div>Rented {{ car?.order_count }} times</div>
+                        <div>Disewa {{ car?.order_count }} kali</div>
                     </div>
                 </div>
             </q-card-section>
             <q-separator inset />
             <q-card-section>
-                <div class="text-body1 text-bold q-mb-sm">Description</div>
+                <div class="text-body1 text-bold q-mb-sm">Deskripsi</div>
                 <div class="text-body1" style="white-space: pre-wrap">{{ car?.description }}</div>
             </q-card-section>
             <q-card-actions>
-                <q-btn unelevated color="secondary" :icon="ionChevronBack" label="Back" text-color="accent"
+                <q-btn unelevated color="secondary" :icon="ionChevronBack" label="Kembali" text-color="accent"
                     @click="goBack" no-caps />
             </q-card-actions>
         </q-card>
@@ -63,6 +63,7 @@ import CarInfoIcon from '@/components/ui-block/CarInfoIcon.vue';
 import { ionChevronBack, ionCarSport, ionCalendarClear, ionColorPalette, ionSpeedometer } from '@quasar/extras/ionicons-v6';
 import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';
+import { getCarFuel, getCarTransmission } from '@/composables/getter';
 
 const route = useRoute();
 const router = useRouter();
@@ -90,17 +91,6 @@ function getCar(carId: number) {
         console.error(e);
         quasar.loading.hide();
     });
-}
-
-function getCarFuel() {
-    switch (car?.value?.fuel) {
-        case '1':
-            return 'Gasoline';
-        case '2':
-            return 'Electric';
-        default:
-            return '';
-    }
 }
 
 onBeforeMount(() => {

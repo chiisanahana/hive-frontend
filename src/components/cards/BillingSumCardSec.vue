@@ -1,8 +1,8 @@
 <template>
     <q-card-section>
-        <div class="text-body1 text-bold q-mb-sm">Billing Summary</div>
+        <div class="text-body1 text-bold q-mb-sm">Ringkasan Tagihan</div>
         <div class="row">
-            <div class="text-body1">Rent price</div>
+            <div class="text-body1">Harga sewa</div>
             <q-space />
             <div v-if="props.price && props.deposit" class="text-body1">
                 {{ calcDateDiff(props.startDate, props.endDate) + ' x ' +
@@ -20,7 +20,7 @@
         </div>
         <hr class="billing-separator" />
         <div class="row">
-            <div class="text-body1 text-bold">Total price</div>
+            <div class="text-body1 text-bold">Total tagihan</div>
             <q-space />
             <div v-if="props.price && props.deposit" class="text-body1 text-bold">
                 {{ formatAmount(getRentPrice()) }}

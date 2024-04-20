@@ -1,12 +1,13 @@
 <template>
     <q-card v-ripple class="cursor-pointer relative-position full-height" @click="viewCar">
-        <q-img v-if="car != undefined && car.car_files.length > 0" :src="getCarImg(car.car_files[0] || null)" :ratio="16 / 9" />
+        <q-img v-if="car != undefined && car.car_files.length > 0" :src="getCarImg(car.car_files[0] || null)"
+            :ratio="16 / 9" />
         <q-card-section>
             <div class="text-body1 text-bold">{{ car?.brand }}</div>
             <div class="row">
                 <div class="text-body2">
                     {{ formatAmount(car?.price) }}
-                    <span class="text-blue-grey-4">/day</span>
+                    <span class="text-blue-grey-4">/hari</span>
                 </div>
                 <q-space />
                 <div v-if="car?.rating != undefined && car.rating > 0" class="row items-center">
@@ -19,13 +20,13 @@
                     <q-icon size="xs" class="q-mr-xs">
                         <img :src="chairAlt" class="icon">
                     </q-icon>
-                    {{ car?.seat }} seats
+                    {{ car?.seat }} kursi
                 </div>
                 <div class="row items-center text-blue-grey-4">
                     <q-icon size="xs" class="q-mr-xs">
                         <img :src="autoTransmission" class="icon">
                     </q-icon>
-                    {{ car?.transmission }}
+                    {{ getCarTransmission(car) }}
                 </div>
             </div>
         </q-card-section>
@@ -38,7 +39,7 @@ import { useRouter } from 'vue-router';
 import type { Car } from '@/interfaces/rest/Car';
 import CryptoService from '@/services/crypto.service';
 import { formatAmount, formatRating } from '@/composables/formatter';
-import { getCarImg } from '@/composables/getter';
+import { getCarImg, getCarTransmission } from '@/composables/getter';
 import autoTransmission from '@/assets/icons/auto_transmission.svg';
 import chairAlt from '@/assets/icons/chair_alt.svg';
 

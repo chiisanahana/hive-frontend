@@ -3,7 +3,7 @@
         <template v-slot:avatar>
             <q-icon :name="ionWallet" color="white" />
         </template>
-        Please fill in your bank account to withdraw.
+        Lengkapi data rekening bank Anda untuk dapat melakukan penarikan dana.
         <template v-slot:action>
             <q-btn flat color="white" label="Dismiss" @click="showBanner = false" />
         </template>
@@ -12,9 +12,9 @@
         <q-card flat class="col-xs-12">
             <q-card-section>
                 <div class="row">
-                    <div class="text-h6">Account Setting</div>
+                    <div class="text-h6">Pengaturan Profil</div>
                     <q-space />
-                    <q-btn v-if="!isEdit" flat color="accent" icon="edit" label="Edit account" no-caps
+                    <q-btn v-if="!isEdit" flat color="accent" icon="edit" label="Ubah profil" no-caps
                         @click="isEdit = true" />
                 </div>
             </q-card-section>
@@ -25,28 +25,28 @@
                         Profile pict
                     </q-card> -->
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
-                        label="Change your password" no-caps />
+                        label="Ganti kata sandi" no-caps />
                 </div>
                 <div class="col-sm-1"></div>
 
                 <div class="col">
                     <div class="q-mb-md">
-                        <div class="text-bold q-mb-md">Profile Information</div>
+                        <div class="text-bold q-mb-md">Informasi Profil</div>
                         <div class="q-gutter-y-sm">
                             <div class="row items-center">
-                                <div class="col-xs-6 col-md-4 col-lg-3">Name</div>
+                                <div class="col-xs-6 col-md-4 col-lg-3">Nama</div>
                                 <div v-if="!isEdit" class="col">{{ provider?.name }}</div>
                                 <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
                                     v-model="form.name" autocomplete="on" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Name is required',
-                                        (val) => isValidName(val.trim()) || 'Name is not valid']" hide-bottom-space />
+                                        (val) => (val && val.length > 0) || 'Nama tidak dapat dikosongkan',
+                                        (val) => isValidName(val.trim()) || 'Nama tidak valid']" hide-bottom-space />
                             </div>
                             <div class="row items-center">
-                                <div class="col-xs-6 col-md-4 col-lg-3">Branding name</div>
+                                <div class="col-xs-6 col-md-4 col-lg-3">Nama branding</div>
                                 <div v-if="!isEdit" class="col"> {{ provider?.trading_name }} </div>
                                 <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
                                     v-model="form.trading_name" autocomplete="on" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Branding name is required']"
+                                        (val) => (val && val.length > 0) || 'Nama branding tidak dapat dikosongkan']"
                                     hide-bottom-space />
                             </div>
                             <div class="row items-center">
@@ -54,31 +54,31 @@
                                 <div v-if="!isEdit" class="col"> {{ provider?.email }} </div>
                                 <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
                                     v-model="form.email" autocomplete="on" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Email is required',
-                                        (val) => isValidEmail(val.trim()) || 'Email is not valid',
+                                        (val) => (val && val.length > 0) || 'Email tidak dapat dikosongkan',
+                                        (val) => isValidEmail(val.trim()) || 'Email tidak valid',
                                         (val) => isEmailAvail(val.trim())]" hide-bottom-space />
                             </div>
                             <div class="row items-center">
-                                <div class="col-xs-6 col-md-4 col-lg-3">Phone number</div>
+                                <div class="col-xs-6 col-md-4 col-lg-3">Nomor telepon</div>
                                 <div v-if="!isEdit" class="col">
                                     {{ provider?.phone_number }}
                                 </div>
                                 <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
                                     v-model="form.phone_number" mask="##############" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Phone number is required',
-                                        (val) => val.length >= 10 || 'Phone number is not valid']" />
+                                        (val) => (val && val.length > 0) || 'Nomor telepon tidak dapat dikosongkan',
+                                        (val) => val.length >= 10 || 'Nomor telepon tidak valid']" />
                             </div>
                         </div>
                     </div>
 
                     <div class="q-mb-lg">
-                        <div class="text-bold q-mb-md">Address</div>
+                        <div class="text-bold q-mb-md">Alamat</div>
                         <div class="q-gutter-y-sm">
                             <div class="row items-center">
                                 <div v-if="!isEdit" class="col"> {{ provider?.address }} </div>
                                 <q-input v-else class="col-10" style="min-width: 200px;" outlined dense debounce="500"
                                     v-model="form.address" autocomplete="on" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Address is required']"
+                                        (val) => (val && val.length > 0) || 'Alamat tidak dapat dikosongkan']"
                                     hide-bottom-space />
                             </div>
                             <div class="row items-center">
@@ -88,13 +88,13 @@
                                         <q-select dense outlined v-model="selectedCity" :options="cityList"
                                             @filter="getCityFilter" behavior="menu"
                                             :disable="selectedProvince.value == ''"
-                                            :rules="[val => val && val.value != '' || 'City is required']"
+                                            :rules="[val => val && val.value != '' || 'Kota tidak dapat dikosongkan']"
                                             hide-bottom-space />
                                     </div>
                                     <div class="col q-ml-sm">
                                         <q-select dense outlined v-model="selectedProvince" :options="provinceList"
                                             @update:model-value="cityList = []" behavior="menu"
-                                            :rules="[val => val && val.value != '' || 'Province is required']"
+                                            :rules="[val => val && val.value != '' || 'Provinsi tidak dapat dikosongkan']"
                                             hide-bottom-space />
                                     </div>
                                 </div>
@@ -105,21 +105,21 @@
                     <div>
                         <BankAccountInfo v-if="!isEdit && provider != undefined" :provider="provider" />
                         <div v-else>
-                            <div class="text-bold q-mb-md">Bank Account</div>
+                            <div class="text-bold q-mb-md">Rekening Bank</div>
                             <div class="q-gutter-y-sm">
                                 <div class="row items-center">
-                                    <div class="col-3">Bank name</div>
+                                    <div class="col-3">Nama bank</div>
                                     <div class="col-7">
                                         <q-select dense outlined v-model="selectedBank" :options="bankList"
                                             behavior="menu" hide-bottom-space />
                                     </div>
                                 </div>
                                 <div class="row items-center">
-                                    <div class="col-3">Account number</div>
+                                    <div class="col-3">Nomor rekening</div>
                                     <q-input class="col-7" style="min-width: 200px;" outlined dense debounce="500"
-                                        v-model="bankAccount" :disable="selectedBank.label == 'Select bank'"
+                                        v-model="bankAccount" :disable="selectedBank.label == 'Pilih bank'"
                                         mask="#############" lazy-rules :rules="[
-                                            (val) => (val && val.length >= 10) || 'Account number is not valid',
+                                            (val) => (val && val.length >= 10) || 'Nomor rekening tidak valid',
                                             (val) => checkBankAccount(val)]" hide-bottom-space />
                                 </div>
                             </div>
@@ -127,8 +127,8 @@
                     </div>
 
                     <div v-if="isEdit" class="row q-gutter-md q-mt-sm justify-end">
-                        <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="resetForm" />
-                        <q-btn color="accent" label="Save Profile" :disable="!isValidInput" @click="updateData" />
+                        <q-btn unelevated color="secondary" text-color="accent" label="Batal" @click="resetForm" />
+                        <q-btn color="accent" label="Simpan" :disable="!isValidInput" @click="updateData" />
                     </div>
                 </div>
             </q-card-section>
@@ -170,9 +170,9 @@ const form = reactive({
 const provinceList = ref<Option[]>([]);
 const cityList = ref<Option[]>([]);
 const bankList = ref<Option[]>([]);
-const selectedProvince = ref<Option>({ label: 'Select province', value: '' });
-const selectedCity = ref<Option>({ label: 'Select city', value: '' });
-const selectedBank = ref<Option>({ label: 'Select bank', value: '' });
+const selectedProvince = ref<Option>({ label: 'Pilih provinsi', value: '' });
+const selectedCity = ref<Option>({ label: 'Pilih kota', value: '' });
+const selectedBank = ref<Option>({ label: 'Pilih bank', value: '' });
 const bankAccount = ref<string>('');
 const bankName = ref<string>('');
 const providerStore = useProviderStore();
@@ -328,8 +328,8 @@ function isDataCompleted() {
         form.address !== '' && form.city !== '' &&
         form.province !== '';
 
-    if (selectedBank.value.label != 'Select bank' && form.bank_account_number == '') return false;
-    if (isMainDataCompleted && selectedBank.value.label == 'Select bank') return true;
+    if (selectedBank.value.label != 'Pilih bank' && form.bank_account_number == '') return false;
+    if (isMainDataCompleted && selectedBank.value.label == 'Pilih bank') return true;
     return isMainDataCompleted && form.bank_account_number != '';
 }
 
@@ -347,7 +347,7 @@ function resetForm() {
         form.bank_account_number = isHasBankAccount(provider.value) ? provider.value.bank_account_number! : '';
         form.bank_account_name = isHasBankAccount(provider.value) ? provider.value.bank_account_name! : '';
         selectedCity.value = { label: form.city };
-        selectedBank.value = { label: 'Select bank' };
+        selectedBank.value = { label: 'Pilih bank' };
     }
 }
 

@@ -2,7 +2,7 @@
     <div class="q-pa-md">
         <q-card flat>
             <q-card-section>
-                <div class="text-h6 q-mb-xl">Add Car</div>
+                <div class="text-h6 q-mb-xl">Tambah Mobil</div>
                 <CarDataForm></CarDataForm>
             </q-card-section>
         </q-card>

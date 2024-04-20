@@ -36,7 +36,7 @@
 
                 <!-- if doesn't have chat yet -->
                 <q-item v-else v-show="!isLoading">
-                    <q-item-section align="center">Your chat is empty</q-item-section>
+                    <q-item-section align="center">Tidak ada percakapan</q-item-section>
                 </q-item>
             </q-scroll-area>
         </q-list>

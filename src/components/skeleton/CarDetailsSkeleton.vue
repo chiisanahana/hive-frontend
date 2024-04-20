@@ -17,12 +17,12 @@ import { ionCarSport } from '@quasar/extras/ionicons-v6';
         <q-card-section>
             <div class="text-body1 text-bold q-mb-sm">Car Info</div>
             <div class="row q-gutter-x-md">
-                <CarInfoIcon :icon="ionCarSport" :text="'Car Type'" />
-                <CarInfoIcon :icon="ionCalendarClear" :text="'Year'" />
-                <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Seats'" />
-                <CarInfoIcon :icon="ionColorPalette" :text="'Color'" />
-                <CarInfoIcon :icon="ionSpeedometer" :text="'Fuel'" />
-                <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmission'" />
+                <CarInfoIcon :icon="ionCarSport" :text="'Tipe'" />
+                <CarInfoIcon :icon="ionCalendarClear" :text="'Tahun'" />
+                <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Kursi'" />
+                <CarInfoIcon :icon="ionColorPalette" :text="'Warna'" />
+                <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmisi'" />
+                <CarInfoIcon :icon="ionSpeedometer" :text="'Bahan Bakar'" />
                 <q-space />
                 <div class="rating-box column q-pa-md">
                     <div class="row items-center q-mb-sm">
@@ -35,7 +35,7 @@ import { ionCarSport } from '@quasar/extras/ionicons-v6';
         </q-card-section>
         <q-separator inset />
         <q-card-section>
-            <div class="text-body1 text-bold q-mb-sm">Description</div>
+            <div class="text-body1 text-bold q-mb-sm">Deskripsi</div>
             <q-skeleton type="text" />
             <q-skeleton type="text" />
             <q-skeleton type="text" />

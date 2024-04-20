@@ -3,7 +3,7 @@ import type { ionChevronDown } from '@quasar/extras/ionicons-v6';
     <q-card flat>
         <q-card-section>
             <div class="row q-mb-md">
-                <div class="text-body1 text-bold ">Order Details</div>
+                <div class="text-body1 text-bold ">Detail Pembayaran</div>
                 <q-space />
                 <q-skeleton type="QBadge" />
             </div>

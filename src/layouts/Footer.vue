@@ -14,7 +14,7 @@
         <div class="row justify-center q-pt-md q-px-md q-pb-xs">
             <div class="row items-center col-xs-11 col-sm-10">
                 <div class="row items-center">
-                    <div class="q-mr-sm">Contact us:</div>
+                    <div class="q-mr-sm">Hubungi kami:</div>
                     <q-btn flat round :icon="ionLogoInstagram" />
                     <q-btn flat round :icon="ionLogoWhatsapp" />
                 </div>

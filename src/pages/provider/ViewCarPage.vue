@@ -7,7 +7,7 @@
                     class="text-font" :loading="isLoading" color="primary">
                     <template v-slot:top>
                         <div class="row col-12 items-center">
-                            <div class="text-h6">Car List</div>
+                            <div class="text-h6">Kelola Mobil</div>
                             <q-space />
                             <div class="row q-gutter-x-sm">
                                 <q-btn v-if="selected.length > 0" flat round class="rounded-borders" color="blue-grey-4"
@@ -66,7 +66,7 @@
                                 {{ formatAmount(props.row.deposit) }}
                             </q-td>
                             <q-td key="status" :props="props">
-                                <q-toggle v-model="props.row.status" false-value="N" true-value="A"
+                                <q-toggle v-model="props.row.status" false-value="0" true-value="1"
                                     @update:model-value="(val) => { toggleCarStatus(props.row.id, val) }" />
                             </q-td>
                         </q-tr>
@@ -75,8 +75,8 @@
             </q-card-section>
         </q-card>
         <ConfirmDialog v-model="showConfirm"
-            :message="selected.length > 1 ? 'Are you sure want to delete these cars?' : 'Are you sure want to delete this car?'"
-            action-btn-title="Delete" @confirm-action="deleteCars(selected)" />
+            message="Apakah Anda yakin untuk menghapus mobil ini?"
+            action-btn-title="Hapus" @confirm-action="deleteCars(selected)" />
     </div>
 </template>
 
@@ -102,11 +102,11 @@ const isLoading = ref<boolean>(false);
 const selected = ref<any>([]);
 const showConfirm = ref<boolean>(false);
 const columns: QTableColumn[] = [
-    { name: 'brand', align: 'left', label: 'Car Information', field: 'brand' },
-    { name: 'statistic', align: 'center', label: 'Statistics', field: 'rating', sortable: true },
-    { name: 'price', align: 'left', label: 'Price', field: 'price', sortable: true },
+    { name: 'brand', align: 'left', label: 'Informasi Mobil', field: 'brand' },
+    { name: 'statistic', align: 'center', label: 'Statistik', field: 'rating', sortable: true },
+    { name: 'price', align: 'left', label: 'Harga', field: 'price', sortable: true },
     { name: 'deposit', align: 'left', label: 'Deposit', field: 'deposit', sortable: true },
-    { name: 'status', align: 'center', label: 'Active', field: 'status' }
+    { name: 'status', align: 'center', label: 'Aktif', field: 'status' }
 ]
 
 function getSelectedString() {
@@ -148,7 +148,7 @@ function toggleCarStatus(rowId: number, value: any) {
             isLoading.value = false;
         }).catch((error) => {
             // revert
-            cars.value.map((car) => { if (car.id == rowId) car.status = value == 'A' ? 'N' : 'A' });
+            cars.value.map((car) => { if (car.id == rowId) car.status = value == '1' ? '0' : '1' });
             quasar.notify({
                 color: 'negative',
                 position: 'top-right',

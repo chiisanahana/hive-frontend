@@ -2,18 +2,18 @@
     <q-card flat>
         <q-card-section>
             <div class="row q-mb-md">
-                <div class="text-body1 text-bold ">Order Details</div>
+                <div class="text-body1 text-bold ">Detail Pembayaran</div>
                 <q-space />
                 <q-badge color="primary">{{ getOrderStatus(order.status) }}</q-badge>
             </div>
             <div class="q-gutter-sm q-mb-lg">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Order created date</div>
+                <!-- <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Waktu penyewaan</div>
                     <div class="col-xs-12 col-sm-6">{{ formatTimestampToDateDisplay(order.created_datetime) }} {{
                         formatTimestampToTimeFull(order.created_datetime) }}</div>
-                </div>
+                </div> -->
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Invoice number</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Kode invoice</div>
                     <div class="row col-xs-12 col-sm-6">
                         {{ order.payments[0].invoice_no }}
                         <q-btn flat dense round color="accent" :icon="ionCopy" size="sm" class="q-ml-md"
@@ -21,11 +21,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Payment method</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Metode pembayaran</div>
                     <div class="col-xs-12 col-sm-6">{{ order.payments[0].payment_method }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Transaction date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Waktu pembayaran</div>
                     <div class="col-xs-12 col-sm-6">{{ getTransactionDateTime() }}</div>
                 </div>
                 <q-list>
@@ -33,9 +33,9 @@
                         :expand-icon="ionChevronDown" expand-icon-class="expand-icon">
                         <template v-slot:header>
                             <div v-if="paymentExpanded" class="row col-12 text-blue-grey-4 text-bold">
-                                Transaction Details</div>
+                                Detail Transaksi</div>
                             <div v-else class="row col-12">
-                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Total amount</div>
+                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Total pembayaran</div>
                                 <div class="col-xs-12 col-sm-6 text-bold q-pl-xs">
                                     {{ formatAmount(order.payments[0].amount as number) }}
                                 </div>
@@ -45,7 +45,7 @@
                             <q-card-section>
                                 <div class="row q-mb-sm">
                                     <div class="row col-xs-12 col-md-8">
-                                        <div class="col">Rent price</div>
+                                        <div class="col">Harga sewa</div>
                                         <div class="col text-right">
                                             {{ calcDateDiff(order.start_datetime, order.end_datetime) + ' x ' +
                                                 formatAmount(order.car?.price as number) }}
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="row q-mb-sm">
                                     <div class="row col-xs-12 col-md-8">
-                                        <div class="col text-bold">Total amount</div>
+                                        <div class="col text-bold">Total pembayaran</div>
                                         <div class="col text-bold text-right">
                                             {{ formatAmount(order.payments[0].amount as number) }}
                                         </div>
@@ -83,7 +83,7 @@
 
             <div v-if="['4', '5', '6'].includes(order.status)" class="q-mt-md q-gutter-sm q-mb-md">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Order completed date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Waktu selesai</div>
                     <div class="col-xs-12 col-sm-6">{{ formatTimestampToDateDisplay(order.updated_datetime) }} {{
                         formatTimestampToTimeFull(order.updated_datetime) }}</div>
                 </div>
@@ -91,18 +91,18 @@
                     <q-card flat class="bg-blue-grey-1 q-mt-sm q-pa-sm col-auto">
                         <div class="row items-center">
                             <q-icon :name="ionInformationCircle" color="accent" class="q-mr-sm" size="sm" />
-                            This rent does not require deposit.
+                            Penyewaan ini tidak membutuhkan deposit.
                         </div>
                     </q-card>
                 </div>
                 <div v-if="isHasDeposit()" class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return date</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Pengembalian deposit</div>
                     <div class="col-xs-12 col-sm-6">{{
                         formatTimestampToDateDisplay(order.payments[0].deposit_return_time) }} {{
                             formatTimestampToTimeFull(order.payments[0].deposit_return_time) }}</div>
                 </div>
                 <div v-if="isHasDeposit() && isNoFee()" class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return amount</div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Jumlah pengembalian</div>
                     <div class="col-xs-12 col-sm text-bold">
                         {{ formatAmount(order.car?.deposit) }}
                     </div>
@@ -112,9 +112,9 @@
                         :expand-icon="ionChevronDown">
                         <template v-slot:header>
                             <div v-if="depositExpanded" class="row col-12 text-blue-grey-4 text-bold">
-                                Transaction Details</div>
+                                Detail pengembalian</div>
                             <div v-else class="row col-12">
-                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Deposit return amount</div>
+                                <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Total pengembalian</div>
                                 <div class="col-xs-12 col-sm-6 text-bold">
                                     {{ formatAmount(calcDepositReturn(order)) }}
                                 </div>
@@ -132,7 +132,7 @@
                                 </div>
                                 <div v-if="parseInt(order.late_fee!) != 0" class="row q-mb-sm">
                                     <div class="row col-xs-12 col-md-8">
-                                        <div class="col-6">Late return charge</div>
+                                        <div class="col-6">Biaya keterlambatan</div>
                                         <div class="col text-right">
                                             {{ formatAmount(parseInt(order.late_fee!)) }}
                                         </div>
@@ -140,7 +140,7 @@
                                 </div>
                                 <div v-if="parseInt(order.damage_fee!) != 0" class="row q-mb-sm">
                                     <div class="row col-xs-12 col-md-8">
-                                        <div class="col-6">Car damage charge</div>
+                                        <div class="col-6">Biaya kerusakan</div>
                                         <div class="col text-right">
                                             {{ formatAmount(parseInt(order.damage_fee!)) }}
                                         </div>
@@ -153,7 +153,7 @@
                                 </div>
                                 <div class="row q-mb-sm">
                                     <div class="row col-xs-12 col-md-8">
-                                        <div class="col text-bold">Deposit return amount</div>
+                                        <div class="col text-bold">Total pengembalian</div>
                                         <div class="col text-bold text-right">
                                             {{ formatAmount(calcDepositReturn(order)) }}
                                         </div>
@@ -171,25 +171,25 @@
                 <q-icon v-for="i in (5 - order.rating)" name="r_star" size="sm" class="q-mr-xs" />
             </div>
             <q-space v-if="isRated" />
-            <q-btn unelevated :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
+            <q-btn unelevated :icon="ionChevronBack" label="Kembali" text-color="accent" @click="goBack" no-caps />
 
             <!-- Customer actions -->
-            <q-btn v-if="!isProvider && order.status == '4' && !isRated" unelevated color="primary" label="Rate"
+            <q-btn v-if="!isProvider && order.status == '4' && !isRated" unelevated color="primary" label="Nilai"
                 style="min-width: 140px;" @click="ratingDialog = true" />
             <q-btn v-else-if="!isProvider && ['0', '1'].includes(order?.status!)" unelevated color="secondary"
-                text-color="accent" label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
+                text-color="accent" label="Batal" style="min-width: 140px;" @click="cancelDialog = true" />
 
             <!-- Provider actions -->
             <q-btn v-if="isProvider && order.status == '1'" unelevated color="secondary" text-color="accent"
-                label="Reject" @click="setStatus('6')" />
-            <q-btn v-if="isProvider && order.status == '1'" unelevated color="accent" label="Approve"
+                label="Tolak" @click="setStatus('6')" />
+            <q-btn v-if="isProvider && order.status == '1'" unelevated color="accent" label="Setujui"
                 @click="setStatus('2')" />
-            <q-btn v-else-if="isProvider && order.status == '2'" unelevated color="accent" label="Complete"
+            <q-btn v-else-if="isProvider && order.status == '2'" unelevated color="accent" label="Tandai Selesai"
                 @click="handleCompleteOrder" />
         </q-card-actions>
     </q-card>
-    <ConfirmDialog v-model="cancelDialog" message="Are you sure want to cancel this rent?"
-        hint="Your payment will be refunded." action-btn-title="YES" cancel-btn-title="NO"
+    <ConfirmDialog v-model="cancelDialog" message="Apakah kamu yakin untuk membatalkan penyewaan ini?"
+        hint="Pembayaranmu akan dikembalikan." action-btn-title="Ya" cancel-btn-title="Tidak"
         @confirm-action="cancelOrder()" />
     <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" @post-rate="onOrderRated" />
 </template>
@@ -254,7 +254,7 @@ function copy(text: string) {
             color: 'secondary',
             textColor: 'accent',
             position: 'bottom',
-            message: 'Coppied!'
+            message: 'Berhasil menyalin!'
         });
     });
 }

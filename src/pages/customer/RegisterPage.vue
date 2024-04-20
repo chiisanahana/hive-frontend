@@ -11,14 +11,14 @@
         </div>
         <div class="column col-6 items-center">
             <q-form @submit="submit" class="form shadow-2">
-                <p class="text-h5 text-bold text-center q-mt-sm">Sign Up</p>
+                <p class="text-h5 text-bold text-center q-mt-sm">Daftar</p>
 
                 <div class="column field q-gutter-y-sm">
                     <label class="field-label">Email</label>
-                    <q-input outlined dense debounce="500" v-model="form.email" placeholder="Enter your email"
+                    <q-input outlined dense debounce="500" v-model="form.email" placeholder="Masukkan email"
                         autocomplete="on" lazy-rules :rules="[
-            val => val && val.length > 0 || 'Email is required',
-            val => isValidEmail(val.trim()) || 'Email is not valid',
+            val => val && val.length > 0 || 'Email tidak dapat dikosongkan',
+            val => isValidEmail(val.trim()) || 'Email tidak valid',
             val => isEmailAvail(val.trim())
         ]">
                         <template v-slot:prepend>
@@ -28,11 +28,11 @@
                 </div>
 
                 <div class="column field q-gutter-y-sm">
-                    <label class="field-label">Password</label>
+                    <label class="field-label">Kata Sandi</label>
                     <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
-                        placeholder="Enter your password" autocomplete="on" lazy-rules :rules="[
-            val => val && val.length > 0 || 'Password is required',
-            val => val.length >= 8 || 'Password is too short'
+                        placeholder="Masukkan kata sandi" autocomplete="on" lazy-rules :rules="[
+            val => val && val.length > 0 || 'Kata sandi tidak dapat dikosongkan',
+            val => val.length >= 8 || 'Kata sandi terlalu pendek'
         ]">
                         <template v-slot:prepend>
                             <q-icon :name="ionLockClosed" />
@@ -45,8 +45,8 @@
                 </div>
 
                 <div class="column items-center q-mt-md q-gutter-y-lg">
-                    <q-btn class="full-width q-pa-sm" label="Sign Up" type="submit" color="primary" />
-                    <p>Already have an account? <a class="link cursor-pointer text-accent" @click="goToLogin">Sign In</a></p>
+                    <q-btn class="full-width q-pa-sm" label="Daftar" type="submit" color="primary" />
+                    <p>Sudah memiliki akun? <a class="link cursor-pointer text-accent" @click="goToLogin">Masuk</a></p>
                 </div>
             </q-form>
         </div>

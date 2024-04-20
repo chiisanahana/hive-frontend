@@ -3,10 +3,10 @@
         <template v-slot:avatar>
             <q-icon :name="ionWallet" color="white" />
         </template>
-        Please fill in your bank account to withdraw.
+        Lengkapi data rekening bank Anda untuk dapat melakukan penarikan dana.
         <template v-slot:action>
-            <q-btn flat color="white" label="Dismiss" @click="showBanner = false" />
-            <q-btn flat color="white" label="Update Bank Account" @click="goToSetting" />
+            <q-btn flat color="white" label="Tutup" @click="showBanner = false" />
+            <q-btn flat color="white" label="Perbarui Data" @click="goToSetting" />
         </template>
     </q-banner>
 
@@ -17,11 +17,11 @@
                     <div class="row q-gutter-md items-center q-mb-lg">
                         <q-icon :name="ionCash" size="md" color="primary"></q-icon>
                         <div class="column">
-                            <div>Total Balance</div>
+                            <div>Total Saldo</div>
                             <div class="text-h6 text-bold">{{ formatAmount(provider.balance) }}</div>
                         </div>
                     </div>
-                    <q-btn color="primary" label="Withdraw" :disable="!isHasBankAccount(provider) || !isHasBalance()"
+                    <q-btn color="primary" label="Tarik Dana" :disable="!isHasBankAccount(provider) || !isHasBalance()"
                         @click="showDialog = true" />
                 </q-card-section>
                 <q-card-section class="q-mt-md">
@@ -32,7 +32,7 @@
         <div class="col">
             <q-card flat class="full-height">
                 <q-card-section>
-                    <div class="text-h6 q-mb-md">Balance History</div>
+                    <div class="text-h6 q-mb-md">Riwayat Saldo</div>
                     <q-card flat>
                         <q-tabs v-model="tab" @update:model-value="filterHistory" dense class="text-grey"
                             active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
@@ -52,28 +52,28 @@
                                         <div v-for="h in history">
                                             <q-item>
                                                 <q-item-section>
-                                                    <q-item-label>{{ h.is_income ? 'Payment for rent' : 'Withdrawal'
+                                                    <q-item-label>{{ h.is_income ? 'Pembayaran sewa mobil' : 'Penarikan dana'
                                                         }}</q-item-label>
                                                     <q-item-label caption lines="2">
                                                         <span class="q-mr-md">
-                                                            Date: {{ formatDateDisplay(h.transaction_datetime) }}
+                                                            Tanggal: {{ formatDateDisplay(h.transaction_datetime) }}
                                                         </span>
                                                         <span>
-                                                            Time: {{ formatTimestampToTime(h.transaction_datetime) }}
+                                                            Pukul: {{ formatTimestampToTime(h.transaction_datetime) }}
                                                         </span>
                                                     </q-item-label>
                                                 </q-item-section>
                                                 <q-item-section side top>
                                                     <q-item-label
                                                         :class="h.is_income ? 'text-positive' : 'text-negative'">{{
-                                                        formatAmount(h.amount) }}</q-item-label>
+                                                            formatAmount(h.amount) }}</q-item-label>
                                                 </q-item-section>
                                             </q-item>
                                             <q-separator v-if="h.id != history[history.length - 1].id" />
                                         </div>
                                     </q-scroll-area>
                                 </div>
-                                <div v-else class="q-ma-md text-center">No history</div>
+                                <div v-else class="q-ma-md text-center">Tidak ada riwayat</div>
                             </q-tab-panel>
                         </q-tab-panels>
                     </q-card>
@@ -104,8 +104,8 @@ const provider = ref<Provider>(UserService.getLoggedInPrv());
 const showBanner = ref<boolean>(true);
 const data = ref<BalanceHistory[]>([]);
 const history = ref<BalanceHistory[]>([]);
-const tabs = ref<string[]>(['all', 'income', 'withdrawal']);
-const tab = ref<string>('all');
+const tabs = ref<string[]>(['semua', 'pendapatan', 'penarikan']);
+const tab = ref<string>('semua');
 const isLoading = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
 
@@ -128,15 +128,15 @@ function getBalanceHistory() {
 
 function filterHistory(tab: any) {
     switch (tab) {
-        case 'all':
+        case 'semua':
             history.value = data.value;
             break;
-        case 'income':
+        case 'pendapatan':
             history.value = data.value.filter((history: any) => {
                 return history.is_income;
             })
             break;
-        case 'withdrawal':
+        case 'penarikan':
             history.value = data.value.filter((history: any) => {
                 return !history.is_income;
             })

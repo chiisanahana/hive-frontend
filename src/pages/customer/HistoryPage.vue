@@ -3,7 +3,7 @@
         <div class="col-xs-12 col-md-9">
             <q-card flat>
                 <q-card-section>
-                    <div class="text-h6">Transaction History</div>
+                    <div class="text-h6">Riwayat Penyewaan</div>
                 </q-card-section>
 
                 <q-card-section>
@@ -11,15 +11,15 @@
                     <div class="row items-center q-mb-md">
                         <div class="text-bold q-mr-lg">Status</div>
                         <div class="row q-gutter-x-sm buttons">
-                            <q-btn outline :color="filter == '' ? 'accent' : 'blue-grey-4'" label="All" no-caps
+                            <q-btn outline :color="filter == '' ? 'accent' : 'blue-grey-4'" label="Semua" no-caps
                                 @click="resetFilter" />
                             <q-btn outline :color="filter == 'payment-pending' ? 'accent' : 'blue-grey-4'"
-                                label="Payment Pending" no-caps @click="filterOrders('payment-pending')" />
-                            <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Ongoing"
+                                label="Menunggu Pembayaran" no-caps @click="filterOrders('payment-pending')" />
+                            <q-btn outline :color="filter == 'ongoing' ? 'accent' : 'blue-grey-4'" label="Berjalan"
                                 no-caps @click="filterOrders('ongoing')" />
-                            <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Completed"
+                            <q-btn outline :color="filter == 'completed' ? 'accent' : 'blue-grey-4'" label="Selesai"
                                 no-caps @click="filterOrders('completed')" />
-                            <q-btn outline :color="filter == 'cancelled' ? 'accent' : 'blue-grey-4'" label="Cancelled"
+                            <q-btn outline :color="filter == 'cancelled' ? 'accent' : 'blue-grey-4'" label="Dibatalkan"
                                 no-caps @click="filterOrders('cancelled')" />
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                     <!-- Data -->
                     <HistoryCardSkeleton v-if="isLoading" v-for="n in 4" :key="n" />
                     <div v-else-if="orders.length == 0" class="q-pa-lg text-center text-blue-grey-4">
-                        No history
+                        Tidak ada riwayat
                     </div>
                     <OrderHistoryCard v-else v-for="order in orders" :order="order" @post-rate="onOrderRated"
                         @post-cancel="onOrderCancelled" />

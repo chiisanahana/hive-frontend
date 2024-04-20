@@ -1,3 +1,4 @@
+import type { Car } from "@/interfaces/rest/Car";
 import type { CarFile } from "@/interfaces/rest/CarFile";
 import type { Customer } from "@/interfaces/rest/Customer";
 import type { Provider } from "@/interfaces/rest/Provider";
@@ -6,23 +7,38 @@ import FileService from "@/services/file.service";
 export function getOrderStatus(status: string): string {
     switch (status) {
         case '0':
-            return 'Payment Pending';
+            return 'Menunggu Pembayaran';
         case '1':
-            return 'Approval Pending';
+            return 'Menunggu Persetujuan';
         case '2':
-            return 'Approved';
+            return 'Disetujui';
         case '3':
-            return 'Fee Payment Pending';
+            return 'Menunggu Pembayaran Denda';
         case '4':
-            return 'Completed';
+            return 'Selesai';
         case '5':
-            return 'Cancelled';
+            return 'Dibatalkan';
         case '6':
-            return 'Rejected';
+            return 'Ditolak';
     
         default:
             return '';
     }
+}
+
+export function getCarTransmission(car: Car | undefined): string {
+    if (car == undefined) return '';
+    return car.transmission == '1' ? 'Otomatis' : 'Manual';
+}
+
+export function getCarStatus(car: Car | undefined): string {
+    if (car == undefined) return '';
+    return car.status == '1' ? 'Aktif' : 'Inaktif';
+}
+
+export function getCarFuel(car: Car | undefined): string {
+    if (car == undefined) return '';
+    return car.status == '1' ? 'Bensin' : 'Elektrik';
 }
 
 export function getCarImg(img: CarFile | null): string {

@@ -25,8 +25,8 @@ const props = withDefaults(defineProps<{
     cancelBtnTitle?: string,
     hint?: string
 }>(), { 
-    cancelBtnTitle: 'Cancel',
-    hint: 'This action cannot be undone.'
+    cancelBtnTitle: 'Batal',
+    hint: 'Tindakan ini tidak dapat dikembalikan.'
  });
 
 const emit = defineEmits<{

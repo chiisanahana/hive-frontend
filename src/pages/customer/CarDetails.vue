@@ -1,7 +1,7 @@
 <template>
     <div class="row q-pa-md q-col-gutter-md">
         <div class="col-xs-12 col-md-7 q-gutter-y-md">
-            <q-btn flat dense :icon="ionChevronBack" label="Back" text-color="accent" @click="goBack" no-caps />
+            <q-btn flat dense :icon="ionChevronBack" label="Kembali" text-color="accent" @click="goBack" no-caps />
             <q-card flat v-if="car">
                 <q-card-section horizontal>
                     <q-card-section class="col-xs-12 col-sm-10 col-md-8">
@@ -15,33 +15,33 @@
                             <span class="text-body1 text-blue-grey-4 q-ml-sm">/day</span>
                         </div>
                         <div class="text-body1">
-                            {{ car?.deposit! > 0 ? 'Deposit ' + formatAmount(car?.deposit) : 'No deposit' }}
+                            {{ car?.deposit! > 0 ? 'Deposit ' + formatAmount(car?.deposit) : 'Tanpa deposit' }}
                         </div>
                     </q-card-section>
                 </q-card-section>
                 <q-card-section>
-                    <div class="text-body1 text-bold q-mb-sm">Car Info</div>
+                    <div class="text-body1 text-bold q-mb-sm">Informasi Mobil</div>
                     <div class="row q-gutter-x-md">
-                        <CarInfoIcon :icon="ionCarSport" :text="'Car Type'" :value="car?.car_type" />
-                        <CarInfoIcon :icon="ionCalendarClear" :text="'Year'" :value="car?.year" />
-                        <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Seats'" :value="car?.seat" />
-                        <CarInfoIcon :icon="ionColorPalette" :text="'Color'" :value="car?.color" />
-                        <CarInfoIcon :icon="ionSpeedometer" :text="'Fuel'" :value="getCarFuel()" />
-                        <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmission'"
-                            :value="car?.transmission" />
+                        <CarInfoIcon :icon="ionCarSport" :text="'Tipe'" :value="car?.car_type" />
+                        <CarInfoIcon :icon="ionCalendarClear" :text="'Tahun'" :value="car?.year" />
+                        <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Kursi'" :value="car?.seat" />
+                        <CarInfoIcon :icon="ionColorPalette" :text="'Warna'" :value="car?.color" />
+                        <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmisi'"
+                        :value="getCarTransmission(car)" />
+                        <CarInfoIcon :icon="ionSpeedometer" :text="'Bahan Bakar'" :value="getCarFuel(car)" />
                         <q-space />
                         <div class="rating-box column q-pa-md">
                             <div class="row items-center q-mb-sm">
                                 <q-icon name="r_star" size="sm" color="warning" class="q-mr-sm" />
                                 <span class="text-bold">{{ car?.rating }}</span>
                             </div>
-                            <div>Rented {{ car?.order_count }} times</div>
+                            <div>Disewa {{ car?.order_count }} kali</div>
                         </div>
                     </div>
                 </q-card-section>
                 <q-separator inset />
                 <q-card-section>
-                    <div class="text-body1 text-bold q-mb-sm">Description</div>
+                    <div class="text-body1 text-bold q-mb-sm">Deskripsi</div>
                     <div class="text-body1" style="white-space: pre-wrap">{{ car?.description }}</div>
                 </q-card-section>
             </q-card>
@@ -57,9 +57,9 @@
                     :endDate="rentDetails.endDate" :price="car?.price!" :deposit="car?.deposit!" />
 
                 <q-card-actions align="right">
-                    <q-btn unelevated color="secondary" text-color="accent" label="Add to wishlist"
+                    <q-btn unelevated color="secondary" text-color="accent" label="Tambahkan ke wishlist"
                         @click="addToWishlist" />
-                    <q-btn color="primary" label="Book now" style="min-width: 140px;" :disabled="!isValidInput"
+                    <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput"
                         @click="bookNow" />
                 </q-card-actions>
             </q-card>
@@ -100,6 +100,7 @@ import chairAlt from '@/assets/icons/chair_alt.svg';
 import PaymentService from '@/services/payment.service';
 import { useChatStore } from '@/stores/chat';
 import CarDetailsSkeleton from '@/components/skeleton/CarDetailsSkeleton.vue';
+import { getCarFuel, getCarTransmission } from '@/composables/getter';
 
 const route = useRoute();
 const router = useRouter();
@@ -187,17 +188,6 @@ function getCarFromWishlist(wishlistId: number) {
     });
 }
 
-function getCarFuel() {
-    switch (car?.value?.fuel) {
-        case '1':
-            return 'Gasoline';
-        case '2':
-            return 'Electric';
-        default:
-            return '';
-    }
-}
-
 function setRentDetailsValue() {
     if (rentDetails.value != undefined) {
         rentDetails.value.pickupAddress = pickupAddress.value;
@@ -240,7 +230,7 @@ function bookNow() {
 
     quasar.bottomSheet({
         class: 'payment-opt',
-        message: 'Select payment option',
+        message: 'Pilih metode pembayaran',
         actions: [
             {
                 label: 'BCA Virtual Account',

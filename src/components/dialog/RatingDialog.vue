@@ -2,7 +2,7 @@
     <q-dialog v-model="model" :persistent="isLoading">
         <q-card class="q-pa-lg">
             <q-form @submit="submit" class="form column items-center">
-                <p class="text-body1 text-bold text-center q-mt-sm">How was your rent experience?</p>
+                <p class="text-body1 text-bold text-center q-mt-sm">Bagaimana pengalamanmu dengan penyewaan ini?</p>
                 <div v-if="isLoading" class="q-pa-md">
                     <lord-icon trigger="loop" src="/src/assets/icons/shooting-stars.json"
                         style="width: 120px; height: 120px"></lord-icon>
@@ -11,7 +11,7 @@
                     <div class="column items-center">
                         <lord-icon trigger="in" src="/src/assets/icons/star.json"
                             style="width: 120px; height: 120px"></lord-icon>
-                        <div class="text-center q-mt-lg">Thanks for sharing your experience!</div>
+                        <div class="text-center q-mt-lg">Terima kasih telah memberikan penilaianmu!</div>
                     </div>
                 </div>
 
@@ -21,7 +21,7 @@
                             <q-rating v-model="rating" size="3.5em" color="yellow-7" icon="star_border" icon-selected="star" />
                         </div>
                         <q-space />
-                        <q-btn class="q-mt-lg" label="Rate" type="submit" color="primary" :disable="rating == 0" style="width: 140px;" />
+                        <q-btn class="q-mt-lg" label="Nilai" type="submit" color="primary" :disable="rating == 0" style="width: 140px;" />
                     </div>
                 </div>
             </q-form>

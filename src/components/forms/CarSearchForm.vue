@@ -5,7 +5,7 @@
                 <div class="col column drop-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionLocation" size="xs" class="q-mr-xs" />
-                        Destination
+                        Destinasi
                     </label>
                     <q-select outlined dense v-model="selectedLocation" :options="locationsOpt!" behavior="menu"
                         :error="errors.location" hide-bottom-space>
@@ -20,7 +20,7 @@
                         <template v-slot:no-option>
                             <q-item>
                                 <q-item-section class="text-grey">
-                                    No results
+                                    Tidak ada data
                                 </q-item-section>
                             </q-item>
                         </template>
@@ -29,7 +29,7 @@
                 <div class="col-2 column date-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionCalendar" size="xs" class="q-mr-xs" />
-                        Pick-up Date
+                        Tanggal mulai
                     </label>
                     <q-input outlined dense v-model="form.startDate" placeholder="Pick-up date"
                         :error="errors.startDate" hide-bottom-space :rules="['date']">
@@ -37,7 +37,7 @@
                             <q-date v-model="form.startDate" :options="validStartDate"
                                 @update:model-value="dateProxy.hide()">
                                 <div class="row items-center justify-end">
-                                    <q-btn v-close-popup label="Close" color="primary" flat />
+                                    <q-btn v-close-popup label="Tutup" color="primary" flat />
                                 </div>
                             </q-date>
                         </q-popup-proxy>
@@ -46,14 +46,14 @@
                 <div class="col-1 column time-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionTime" size="xs" class="q-mr-xs" />
-                        Pick-up Time
+                        Waktu mulai
                     </label>
                     <q-input outlined dense v-model="form.startTime" placeholder="Pick-up time"
                         :error="errors.startTime" hide-bottom-space :rules="[(val) => (val && val.length > 0)]">
                         <q-popup-proxy ref="timeProxy" cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="form.startTime">
                                 <div class="row items-center justify-end">
-                                    <q-btn v-close-popup label="Close" color="primary" flat />
+                                    <q-btn v-close-popup label="Tutup" color="primary" flat />
                                 </div>
                             </q-time>
                         </q-popup-proxy>
@@ -62,7 +62,7 @@
                 <div class="col-2 column date-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionCalendar" size="xs" class="q-mr-xs" />
-                        Return Date
+                        Tanggal selesai
                     </label>
                     <q-input outlined dense v-model="form.endDate" placeholder="Return date" :error="errors.endDate"
                         hide-bottom-space :rules="['date']">
@@ -70,7 +70,7 @@
                             <q-date v-model="form.endDate" :options="validEndDate"
                                 @update:model-value="dateProxy.hide()">
                                 <div class="row items-center justify-end">
-                                    <q-btn v-close-popup label="Close" color="primary" flat />
+                                    <q-btn v-close-popup label="Tutup" color="primary" flat />
                                 </div>
                             </q-date>
                         </q-popup-proxy>
@@ -79,14 +79,14 @@
                 <div class="col-1 column time-field">
                     <label class="q-mb-xs row items-center">
                         <q-icon :name="ionTime" size="xs" class="q-mr-xs" />
-                        Return Time
+                        Waktu selesai
                     </label>
                     <q-input outlined dense v-model="form.endTime" placeholder="Return time" :error="errors.endTime"
                         hide-bottom-space :rules="[(val) => (val && val.length > 0)]">
                         <q-popup-proxy ref="timeProxy" cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="form.endTime">
                                 <div class="row items-center justify-end">
-                                    <q-btn v-close-popup label="Close" color="primary" flat />
+                                    <q-btn v-close-popup label="Tutup" color="primary" flat />
                                 </div>
                             </q-time>
                         </q-popup-proxy>
@@ -167,6 +167,9 @@ function getLocationOptions() {
                     description: location[1]
                 });
             })
+            locationsOpt.value.sort((a: Option, b: Option) => {
+                return a.label.localeCompare(b.label);
+            })
             // console.log(locationsOpt.value);
             // locationsOpt.value = locationsOpt.value.concat(response.data);
         })
@@ -239,6 +242,6 @@ onMounted(() => {
 }
 
 .time-field {
-    min-width: 120px;
+    min-width: 130px;
 }
 </style>

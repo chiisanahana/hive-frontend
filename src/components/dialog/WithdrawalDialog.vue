@@ -2,20 +2,20 @@
     <q-dialog persistent>
         <q-card class="container">
             <q-card-section>
-                <div class="text-body1 text-bold q-mb-md">Withdraw</div>
+                <div class="text-body1 text-bold q-mb-md">Tarik Dana</div>
                 <q-input class="col" outlined dense v-model="amount" prefix="Rp" autofocus
                     @update:model-value="() => { amount = clearLeadingZeros(amount) }"
-                    placeholder=" Input withdrawal amount" mask="###.###.###.###.###" reverse-fill-mask unmasked-value
+                    placeholder="500.000" mask="###.###.###.###.###" reverse-fill-mask unmasked-value
                     lazy-rules :rules="[
-                        (val) => (val && val.length > 0) || 'Amount is required',
-                        (val) => (parseInt(val) > 0) || 'Amount is not valid',
-                        (val) => (parseInt(val) <= (totalAmount as number)) || 'Withdrawal limit exceeded'
+                        (val) => (val && val.length > 0) || 'Nominal tidak dapat dikosongkan',
+                        (val) => (parseInt(val) > 0) || 'Nominal tidak valid',
+                        (val) => (parseInt(val) <= (totalAmount as number)) || 'Nominal melewati batas penarikan'
                     ]" />
-                <q-toggle v-model="withdrawAll" label="Withdraw all" @update:model-value="toggleAmount()" />
+                <q-toggle v-model="withdrawAll" label="Tarik semua dana" @update:model-value="toggleAmount()" />
             </q-card-section>
             <q-card-actions align="right" class="q-pa-md">
-                <q-btn flat color="accent" v-close-popup @click="amount = ''">Cancel</q-btn>
-                <q-btn color="accent" :disable="!isValidAmount()" @click="withdraw">Confirm</q-btn>
+                <q-btn flat color="accent" v-close-popup @click="amount = ''">Batal</q-btn>
+                <q-btn color="accent" :disable="!isValidAmount()" @click="withdraw">Konfirmasi</q-btn>
             </q-card-actions>
             <q-inner-loading :showing="isLoading" />
         </q-card>

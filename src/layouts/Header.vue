@@ -61,8 +61,8 @@
                 </q-btn>
             </div>
             <div v-else class="q-pa-sm q-gutter-md">
-                <q-btn unelevated color="secondary" text-color="accent" label="Log in" @click="openLoginDialog" />
-                <q-btn unelevated color="primary" label="Sign up" to="/sign-up" />
+                <q-btn unelevated color="secondary" text-color="accent" label="Masuk" @click="openLoginDialog" />
+                <q-btn unelevated color="primary" label="Daftar" to="/sign-up" />
             </div>
         </q-toolbar>
     </q-header>

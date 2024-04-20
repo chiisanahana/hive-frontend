@@ -5,20 +5,20 @@
                 <q-item-section side>
                     <q-icon :name="ionPerson"></q-icon>
                 </q-item-section>
-                <q-item-section>Account</q-item-section>
+                <q-item-section>Profil</q-item-section>
             </q-item>
             <q-item v-if="type == UserType.C" clickable v-close-popup @click="goToHistory">
                 <q-item-section side>
                     <q-icon name="history"></q-icon>
                 </q-item-section>
-                <q-item-section>History</q-item-section>
+                <q-item-section>Riwayat</q-item-section>
             </q-item>
             <q-item v-if="type == UserType.C" clickable v-close-popup @click="handleProviderAuth">
                 <q-item-section side>
                     <q-icon :name="ionStorefront"></q-icon>
                 </q-item-section>
                 <q-item-section>
-                    {{ isProvider() ? 'Owner Dashboard' : 'Be Our Provider' }}
+                    {{ isProvider() ? 'Beranda Penyedia' : 'Jadi Penyedia Mobil' }}
                 </q-item-section>
             </q-item>
             <q-item v-if="type == UserType.P" clickable v-close-popup @click="goToWithdraw">
@@ -26,13 +26,13 @@
                     <q-icon :name="ionCash"></q-icon>
                 </q-item-section>
                 <q-item-section>
-                    <div>Balance</div>
+                    <div>Saldo</div>
                     <div>{{ formatAmount(providerStore.getLoggedInUser.balance) }}</div>
                 </q-item-section>
             </q-item>
             <q-item v-if="type == UserType.P" clickable v-close-popup @click="backToMain">
                 <q-item-section>
-                    Back To HiVe
+                    Kembali ke HiVe
                 </q-item-section>
             </q-item>
             <q-separator />
@@ -41,7 +41,7 @@
                     <q-icon :name="ionLogOut"></q-icon>
                 </q-item-section>
                 <q-item-section>
-                    Logout
+                    Keluar
                 </q-item-section>
             </q-item>
         </q-list>
@@ -111,9 +111,9 @@ function handleProviderAuth() {
 
 function logout() {
     quasar.loading.show({ spinner: QSpinnerGears });
+    customerStore.logout();
+    providerStore.logout();
     setTimeout(() => {
-        customerStore.logout();
-        providerStore.logout();
         UserService.logout(props.type);
         router.push({ name: 'logout' });
         quasar.loading.hide();

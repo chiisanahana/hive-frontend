@@ -1,14 +1,14 @@
 <template>
     <q-form @submit="submit" class="form shadow-2">
-        <p class="text-h5 text-bold text-center q-mt-sm">Login</p>
+        <p class="text-h5 text-bold text-center q-mt-sm">Masuk</p>
 
         <div class="column field q-gutter-y-sm">
             <label class="field-label">Email</label>
-            <q-input outlined dense v-model="form.email" placeholder="Enter your email" autocomplete="on" lazy-rules
+            <q-input outlined dense v-model="form.email" placeholder="Masukkan email" autocomplete="on" lazy-rules
                 :rules="[
-        (val) => (val && val.length > 0) || 'Email is required',
-        (val) => isValidEmail(val.trim()) || 'Email is not valid',
-    ]">
+                    (val) => (val && val.length > 0) || 'Email tidak dapat dikosongkan',
+                    (val) => isValidEmail(val.trim()) || 'Email tidak valid',
+                ]">
                 <template v-slot:prepend>
                     <q-icon :name="ionMail" />
                 </template>
@@ -16,11 +16,11 @@
         </div>
 
         <div class="column field q-gutter-y-sm">
-            <label class="field-label">Password</label>
+            <label class="field-label">Kata Sandi</label>
             <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
-                placeholder="Enter your password" autocomplete="on" lazy-rules :rules="[
-        (val) => (val && val.length > 0) || 'Password is required',
-    ]">
+                placeholder="Masukkan password" autocomplete="on" lazy-rules :rules="[
+                    (val) => (val && val.length > 0) || 'Kata sandi tidak dapat dikosongkan',
+                ]">
                 <template v-slot:prepend>
                     <q-icon :name="ionLockClosed" />
                 </template>
@@ -32,10 +32,10 @@
         </div>
 
         <div class="column items-center q-mt-md q-gutter-y-lg">
-            <q-btn class="full-width q-pa-sm" label="Login" type="submit" color="primary" />
+            <q-btn class="full-width q-pa-sm" label="Masuk" type="submit" color="primary" />
             <p>
-                Don't have an account?
-                <a class="link cursor-pointer text-accent" @click="$emit('routeToSignUp')">Sign Up</a>
+                Belum memiliki akun?
+                <a class="link cursor-pointer text-accent" @click="$emit('routeToSignUp')">Daftar</a>
             </p>
         </div>
     </q-form>

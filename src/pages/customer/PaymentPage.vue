@@ -3,7 +3,7 @@
         <div class="col">
             <q-card flat>
                 <q-card-section>
-                    <div class="text-body1 text-bold q-mb-sm">Car Details</div>
+                    <div class="text-body1 text-bold q-mb-sm">Detail Mobil</div>
                     <div class="row items-center">
                         <div class="column">
                             <div class="text-body1">{{ order?.car?.brand }}</div>

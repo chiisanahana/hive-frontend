@@ -47,12 +47,12 @@
             </div>
 
             <q-card-actions align="right">
-                <q-btn flat text-color="accent" label="View details" no-caps @click="viewDetails" />
-                <q-btn v-if="order.status == '1'" unelevated color="secondary" text-color="accent" label="Reject"
+                <q-btn flat text-color="accent" label="Lihat detail" no-caps @click="viewDetails" />
+                <q-btn v-if="order.status == '1'" unelevated color="secondary" text-color="accent" label="Tolak"
                     style="min-width: 140px;" @click="setStatus('6')" />
-                <q-btn v-if="order.status == '1'" unelevated color="accent" label="Approve" style="min-width: 140px;"
+                <q-btn v-if="order.status == '1'" unelevated color="accent" label="Setujui" style="min-width: 140px;"
                     @click="setStatus('2')" />
-                <q-btn v-else-if="order.status == '2'" unelevated color="accent" label="Complete"
+                <q-btn v-else-if="order.status == '2'" unelevated color="accent" label="Tandai Selesai"
                     style="min-width: 140px;" @click="handleCompleteOrder" />
             </q-card-actions>
         </q-card-section>
@@ -74,9 +74,7 @@ import { Message, UserType, Notif } from '@/enums/enum';
 import type { Payment } from '@/interfaces/rest/Payment';
 import UserService from '@/services/user.service';
 import { useProviderStore } from '@/stores/provider';
-import { useNotifStore } from '@/stores/notif';
 import { calcDepositReturn } from '@/composables/calculator';
-import orderService from '@/services/order.service';
 
 const props = defineProps<{
     order: Order

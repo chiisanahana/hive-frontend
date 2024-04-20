@@ -77,10 +77,10 @@ function isSentByMe(chat: Chat) {
 
 function getChatDate(chat: Chat) {
     const now = formatTimestampToDate(new Date().toISOString());
-    if (formatTimestampToDate(chat.created_datetime) == now) return 'Today';
+    if (formatTimestampToDate(chat.created_datetime) == now) return 'Hari ini';
 
     const yesterday = formatTimestampToDate(date.subtractFromDate(new Date(), { days: 1 }).toISOString())
-    if (formatTimestampToDate(chat.created_datetime) == yesterday) return 'Yesterday';
+    if (formatTimestampToDate(chat.created_datetime) == yesterday) return 'Kemarin';
 
     return formatTimestampToDateDisplay(chat.created_datetime);
 }

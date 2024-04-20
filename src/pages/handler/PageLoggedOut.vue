@@ -4,11 +4,11 @@
             <img :src="imgUrl" width="100%">
         </div>
         <div class="col-8 logout">
-            <h2>You have been logged out</h2>
-            <p>Thank you for using HiVe!</p>
+            <h2>Anda telah keluar</h2>
+            <p>Terima kasih telah menggunakan HiVe!</p>
             <div class="q-gutter-md q-mt-lg">
-                <a class="secondary" @click="goToLogin">Login with Another Account</a>
-                <a class="primary" @click="goToHome">Back To Homepage</a>
+                <a class="secondary" @click="goToLogin">Masuk dengan akun lain</a>
+                <a class="primary" @click="goToHome">Kembali ke halaman utama</a>
             </div>
         </div>
     </div>

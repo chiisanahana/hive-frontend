@@ -12,7 +12,7 @@
                         <q-btn flat text-color="accent" label="Reset" no-caps @click="resetFilter" />
                     </div>
                     <div class="column">
-                        <q-expansion-item label="PRICE RANGE" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="HARGA" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="row items-center q-gutter-sm q-mb-sm">
@@ -31,7 +31,7 @@
                             </q-card>
                         </q-expansion-item>
                         <q-separator class="q-mt-xs" />
-                        <q-expansion-item label="CAR TYPE" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="TIPE MOBIL" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="column q-gutter-sm q-mb-sm">
@@ -39,13 +39,13 @@
                                         color="accent" />
                                     <q-checkbox dense v-model="filter.carType" val="SUV" label="SUV" color="accent" />
                                     <q-checkbox dense v-model="filter.carType" val="MPV" label="MPV" color="accent" />
-                                    <q-checkbox dense v-model="filter.carType" val="Sport" label="Sport"
+                                    <q-checkbox dense v-model="filter.carType" val="Hatchback" label="Hatchback"
                                         color="accent" />
                                 </div>
                             </q-card>
                         </q-expansion-item>
                         <q-separator class="q-mt-xs" />
-                        <q-expansion-item label="YEAR" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="TAHUN" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="row items-center q-gutter-sm q-mb-sm">
@@ -64,35 +64,35 @@
                             </q-card>
                         </q-expansion-item>
                         <q-separator class="q-mt-xs" />
-                        <q-expansion-item label="SEAT" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="JUMLAH KURSI" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="column q-gutter-sm q-mb-sm">
-                                    <q-checkbox dense v-model="filter.seat" val="4" label="4 Seater" color="accent" />
-                                    <q-checkbox dense v-model="filter.seat" val="6" label="6 Seater" color="accent" />
-                                    <q-checkbox dense v-model="filter.seat" val="8" label="8 Seater" color="accent" />
+                                    <q-checkbox dense v-model="filter.seat" val="4" label="4 Kursi" color="accent" />
+                                    <q-checkbox dense v-model="filter.seat" val="6" label="6 Kursi" color="accent" />
+                                    <q-checkbox dense v-model="filter.seat" val="8" label="8 Kursi" color="accent" />
                                 </div>
                             </q-card>
                         </q-expansion-item>
                         <q-separator class="q-mt-xs" />
-                        <q-expansion-item label="TRANSMISSION" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="TRANSMISI" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="column q-gutter-sm q-mb-sm">
-                                    <q-checkbox dense v-model="filter.transmission" val="Automatic" label="Automatic"
+                                    <q-checkbox dense v-model="filter.transmission" val="1" label="Otomatis"
                                         color="accent" />
-                                    <q-checkbox dense v-model="filter.transmission" val="Manual" label="Manual"
+                                    <q-checkbox dense v-model="filter.transmission" val="2" label="Manual"
                                         color="accent" />
                                 </div>
                             </q-card>
                         </q-expansion-item>
                         <q-separator class="q-mt-xs" />
-                        <q-expansion-item label="FUEL" :expand-icon="ionChevronDown"
+                        <q-expansion-item label="BAHAN BAKAR" :expand-icon="ionChevronDown"
                             header-class="text-bold filter-category" default-opened dense-toggle>
                             <q-card>
                                 <div class="column q-gutter-sm">
-                                    <q-checkbox dense v-model="filter.fuel" val="1" label="Gasoline" color="accent" />
-                                    <q-checkbox dense v-model="filter.fuel" val="2" label="Electric" color="accent" />
+                                    <q-checkbox dense v-model="filter.fuel" val="1" label="Bensin" color="accent" />
+                                    <q-checkbox dense v-model="filter.fuel" val="2" label="Elektrik" color="accent" />
                                 </div>
                             </q-card>
                         </q-expansion-item>
@@ -110,7 +110,7 @@
                 </div>
             </div>
             <div v-else-if="cars.length == 0" class="q-py-xl text-center">
-                Oops... No cars available
+                Ups... Tidak ada mobil yang tersedia
             </div>
             <div v-else class="row q-py-md q-col-gutter-md">
                 <div class="col-xs-6 col-md-3" v-for="car in cars">

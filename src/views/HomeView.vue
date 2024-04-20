@@ -1,7 +1,7 @@
 <template>
   <div class="row justify-center jumbotron">
     <div class="col-xs-11 col-sm-5 column q-gutter-y-lg q-pt-xl q-mb-lg">
-      <div class="text-body1 text-bold text-primary">— Welcome to HiVe</div>
+      <div class="text-body1 text-bold text-primary">— Selamat datang di aplikasi HiVe</div>
       <div class="text-h5 text-bold">Rental mobil terpercaya di tangan Anda.</div>
       <div>Cari dan kemudikan mobil pilihan Anda di destinasi pilihan untuk perjalanan dalam kota.</div>
     </div>
@@ -29,7 +29,7 @@
                   <div class="q-pa-sm bg-secondary icon-container">
                     <q-avatar color="primary" textColor="white" :icon="ionCarSport" />
                   </div>
-                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Well-Maintained Car</div>
+                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Mobil Terawat</div>
                   <div class="q-mt-xs q-ml-sm">
                     Hadirkan kenyamanan dan ketenangan dalam perjalanan Anda dengan kendaraan yang terawat dengan baik
                     dan mempriotaskan keselamatan pengendara.
@@ -45,7 +45,7 @@
                   <div class="q-pa-sm bg-secondary icon-container">
                     <q-avatar color="primary" textColor="white" :icon="ionShieldCheckmark" />
                   </div>
-                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Secure Payment</div>
+                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Pembayaran Aman</div>
                   <div class="q-mt-xs q-ml-sm">
                     Dengan sistem pembayaran yang aman, Anda dapat melanjutkan perjalanan
                     dengan tenang tanpa mengkhawatirkan keamanan transaksi.
@@ -61,7 +61,7 @@
                   <div class="q-pa-sm bg-secondary icon-container">
                     <q-avatar color="primary" textColor="white" :icon="ionFlash" />
                   </div>
-                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Always On</div>
+                  <div class="q-mt-md q-ml-sm text-body1 text-bold">Selalu Aktif</div>
                   <div class="q-mt-xs q-ml-sm">
                     Butuh menyewa mobil dengan cepat? Lakukan pemesanan dimanapun dan
                     kapanpun melalui aplikasi.

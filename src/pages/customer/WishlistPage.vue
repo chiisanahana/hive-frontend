@@ -11,7 +11,7 @@
                         <q-checkbox toggle-indeterminate class="q-mr-md" v-model="selectAll" color="primary"
                             @click="toggleAllItems" />
                         <div>
-                            <span class="text-bold" style="line-height: 42px;">Select All</span>
+                            <span class="text-bold" style="line-height: 42px;">Pilih Semua</span>
                             ({{ wishlists.length }})
                         </div>
                         <q-btn v-if="selected.length > 0" flat round size="sm" class="rounded-borders q-ml-md"
@@ -37,8 +37,8 @@
         </div>
     </div>
     <ConfirmDialog v-model="showConfirm"
-        :message="selected.length > 1 ? 'Are you sure want to delete these items?' : 'Are you sure want to delete this item?'"
-        action-btn-title="Delete" @confirm-action="deleteWishlists(selected)" />
+        message="Apakah kamu yakin untuk menghapus wishlist ini?"
+        action-btn-title="Hapus" @confirm-action="deleteWishlists(selected)" />
 </template>
 
 <script setup lang="ts">

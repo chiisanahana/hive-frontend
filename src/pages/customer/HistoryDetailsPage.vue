@@ -3,7 +3,7 @@
         <div class="col-xs-12 col-sm">
             <q-card flat>
                 <q-card-section>
-                    <div class="text-body1 text-bold q-mb-sm">Car Details</div>
+                    <div class="text-body1 text-bold q-mb-sm">Detail Mobil</div>
                     <div class="row" v-if="order?.car && order?.car.provider">
                         <div class="column">
                             <div class="text-body1">{{ order?.car.brand }}</div>
@@ -50,10 +50,10 @@
                 <PaymentVaCard v-if="getPaymentMethod() == 'Virtual Account'" :order="order" />
                 <q-card flat v-else-if="getPaymentMethod() == 'Credit Card'">
                     <q-card-section>
-                        <div class="text-h6 text-center">Payment details</div>
+                        <div class="text-h6 text-center">Detail Pembayaran</div>
 
                         <q-card-actions align="right" class="q-mt-xl">
-                            <q-btn unelevated color="secondary" text-color="accent" label="Back to history"
+                            <q-btn unelevated color="secondary" text-color="accent" label="Kembali ke riwayat"
                                 @click="back" />
                         </q-card-actions>
                     </q-card-section>

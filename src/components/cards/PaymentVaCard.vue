@@ -2,14 +2,14 @@
     <q-card flat class="q-pa-md">
         <q-card-section>
             <div class="text-h6 text-center q-mb-md">
-                <div>Please finish your payment in</div>
+                <div>Harap selesaikan pembayaranmu dalam</div>
                 <vue-countdown v-if="time > 0" class="text-accent" :time="time" v-slot="{ minutes, seconds }">
                     {{ minutes }} : {{ seconds }}
                 </vue-countdown>
                 <div v-else class="text-accent">-- : --</div>
             </div>
             <div class="text-center text-blue-grey-4">
-                Payment is due by {{ getPaymentDue() }}
+                Batas pembayaran {{ getPaymentDue() }}
             </div>
 
             <q-card flat bordered class="q-ma-lg">
@@ -20,17 +20,17 @@
                 <q-card-section>
                     <div class="row">
                         <div class="col column">
-                            <span class="text-blue-grey-4">Virtual Account Number</span>
+                            <span class="text-blue-grey-4">Nomor Virtual Account</span>
                             <span class="text-bold">{{ va }}</span>
                         </div>
                         <div class="row col-3 justify-end">
-                            <q-btn flat text-color="accent" label="Copy" :icon="ionCopy" no-caps @click="copy(va)" />
+                            <q-btn flat text-color="accent" label="Salin" :icon="ionCopy" no-caps @click="copy(va)" />
                         </div>
                     </div>
                 </q-card-section>
                 <q-card-section>
                     <div class="col column">
-                        <span class="text-blue-grey-4">Total Payment</span>
+                        <span class="text-blue-grey-4">Total Pembayaran</span>
                         <div class="row items-center">
                             <span class="text-bold">{{ price }}</span>
                             <q-btn round flat color="accent" :icon="ionCopy" size="sm" class="q-ml-xs"
@@ -42,8 +42,8 @@
             </q-card>
 
             <q-card-actions align="right" class="q-mt-xl">
-                <q-btn unelevated color="secondary" text-color="accent" label="Explore cars" @click="goToCars" />
-                <q-btn color="primary" label="View history" style="min-width: 140px;" @click="goToHistory" />
+                <q-btn unelevated color="secondary" text-color="accent" label="Cari mobil" @click="goToCars" />
+                <q-btn color="primary" label="Lihat riwayat" style="min-width: 140px;" @click="goToHistory" />
             </q-card-actions>
         </q-card-section>
     </q-card>
@@ -77,7 +77,7 @@ function copy(text: string) {
             color: 'secondary',
             textColor: 'accent',
             position: 'bottom',
-            message: 'Coppied!'
+            message: 'Berhasil menyalin!'
         });
     });
 }

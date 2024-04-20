@@ -1,7 +1,7 @@
 <template>
     <q-card flat>
         <q-card-section v-if="provider">
-            <div class="text-body1 text-bold q-mb-sm">Provider</div>
+            <div class="text-body1 text-bold q-mb-sm">Penyedia</div>
             <div class="row">
                 <q-avatar size="32px" color="orange" class="q-mr-md">
                     {{ props.provider?.trading_name?.charAt(0).toUpperCase() }}
@@ -32,7 +32,7 @@
         </q-card-section>
 
         <q-card-section v-else>
-            <div class="text-body1 text-bold q-mb-sm">Provider</div>
+            <div class="text-body1 text-bold q-mb-sm">Penyedia</div>
             <div class="row">
                 <q-skeleton type="QAvatar" size="32px" class="q-mr-md" />
 

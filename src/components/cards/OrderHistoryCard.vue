@@ -10,7 +10,6 @@
                 <div class="column justify-center q-mr-lg">
                     <img width="120px" class="rounded-borders"
                         :src="getCarImg(props.order?.car?.car_files[0] || null)" />
-
                 </div>
                 <div class="column q-gutter-sm">
                     <div class="text-body1 text-bold">{{ props.order?.car?.brand }}</div>
@@ -27,7 +26,6 @@
                             {{ formatTimestampToDateDisplay(props.order?.start_datetime) }} - {{
                                 formatTimestampToDateDisplay(props.order?.end_datetime) }}
                         </span>
-
                     </div>
                 </div>
                 <q-space />
@@ -37,16 +35,16 @@
                 </div>
             </div>
             <q-card-actions align="right">
-                <q-btn flat text-color="accent" label="View details" no-caps @click="viewDetails" />
-                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="accent" label="Rate"
+                <q-btn flat text-color="accent" label="Lihat detail" no-caps @click="viewDetails" />
+                <q-btn v-if="props.order?.status == '4' && !isRated" unelevated color="accent" label="Nilai"
                     style="min-width: 140px;" @click="ratingDialog = true" />
                 <q-btn v-else-if="['0', '1'].includes(props.order?.status!)" unelevated color="secondary"
-                    text-color="accent" label="Cancel" style="min-width: 140px;" @click="cancelDialog = true" />
+                    text-color="accent" label="Batalkan" style="min-width: 140px;" @click="cancelDialog = true" />
             </q-card-actions>
         </q-card-section>
     </q-card>
-    <ConfirmDialog v-model="cancelDialog" message="Are you sure want to cancel this rent?"
-        hint="Your payment will be refunded." action-btn-title="YES" cancel-btn-title="NO"
+    <ConfirmDialog v-model="cancelDialog" message="Apakah kamu yakin untuk membatalkan penyewaan ini?"
+        hint="Pembayaranmu akan dikembalikan." action-btn-title="Ya" cancel-btn-title="Tidak"
         @confirm-action="cancelOrder()" />
     <RatingDialog v-model="ratingDialog" :orderId="props.order?.id!" @post-rate="onOrderRated" />
 </template>

@@ -3,7 +3,7 @@
         <div class="col-3">
             <!-- list of chat rooms -->
             <q-list bordered class="bg-white" style="max-width: 350px;">
-                <q-item-label header>Chats</q-item-label>
+                <q-item-label header>Chat</q-item-label>
 
                 <q-scroll-area style="height: calc(100vh - 70px - 50px);">
                     <div v-for="room in chatRooms">

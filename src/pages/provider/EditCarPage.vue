@@ -2,7 +2,7 @@
     <div class="q-pa-md">
         <q-card flat>
             <q-card-section>
-                <div class="text-h6 q-mb-xl">Edit Car</div>
+                <div class="text-h6 q-mb-xl">Ubah Data Mobil</div>
                 <CarDataForm v-if="car" :car="car" :is-edit="true"></CarDataForm>
             </q-card-section>
         </q-card>

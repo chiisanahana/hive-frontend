@@ -2,7 +2,7 @@
     <q-menu transition-show="jump-down" transition-hide="jump-up" anchor="bottom middle" self="top middle">
         <q-list style="width: 350px">
             <q-item-label header class="q-py-sm">
-                <div class="q-my-xs text-bold">Notification</div>
+                <div class="q-my-xs text-bold">Notifikasi</div>
             </q-item-label>
             <q-scroll-area :style="{ height: height }">
                 <q-resize-observer @resize="onResize"></q-resize-observer>
@@ -17,7 +17,7 @@
                     </q-item-section>
                 </q-item>
                 <q-item v-else>
-                    <q-item-section align="center">No notification</q-item-section>
+                    <q-item-section align="center">Tidak ada notifikasi</q-item-section>
                 </q-item>
             </q-scroll-area>
         </q-list>
@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { UserType } from '@/enums/enum';
 import type { Notification } from '@/interfaces/rest/Notification';
 import NotificationService from '@/services/notification.service';
 import { formatChatTime } from '@/composables/formatter';

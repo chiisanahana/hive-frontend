@@ -2,113 +2,113 @@
     <q-form @submit="onSubmit" class="q-gutter-md">
         <q-card flat bordered>
             <q-card-section>
-                <div class="text-bold q-mb-lg">Car Information</div>
+                <div class="text-bold q-mb-lg">Informasi Mobil</div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Car Brand</div>
+                    <div class="col-3 q-pt-sm">Merk Mobil</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.brand"
-                        placeholder="Example: Toyota Avanza G 1.5" lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || 'Car brand is required']" />
+                        placeholder="Contoh: Toyota Avanza G 1.5" lazy-rules
+                        :rules="[(val) => (val && val.length > 0) || 'Merk mobil tidak dapat dikosongkan']" />
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Car Type</div>
+                    <div class="col-3 q-pt-sm">Tipe Mobil</div>
                     <q-select outlined dense class="col" v-model="form.car_type" :options="carTypeOpt"
-                        :rules="[(val) => (val && val != 'Choose category') || 'Car type is required']">
+                        :rules="[(val) => (val && val != 'Pilih kategori') || 'Tipe mobil tidak dapat dikosongkan']">
                     </q-select>
                 </div>
             </q-card-section>
             <q-card-section>
-                <div class="text-bold q-mb-lg">Car Details</div>
+                <div class="text-bold q-mb-lg">Detail Mobil</div>
                 <div class="row q-mb-lg self-top">
-                    <div class="col-3 q-pt-sm">Car Photos</div>
+                    <div class="col-3 q-pt-sm">Foto Mobil</div>
                     <div class="col">
                         <q-uploader class="car-photos" color="primary" square flat bordered :factory="uploadFactory"
                             :filter="checkFileType" send-raw multiple auto-upload style="width: 100%;" />
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Year</div>
+                    <div class="col-3 q-pt-sm">Tahun Pembuatan</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.year" mask="####"
                         lazy-rules :rules="[
-        (val) => (val && val.length > 0) || 'Car year is required',
-        (val) => (val <= '2024') || 'Car year is not valid'
-    ]" />
+                            (val) => (val && val.length > 0) || 'Tahun pembuatan mobil tidak dapat dikosongkan',
+                            (val) => (val <= '2024') || 'Tahun pembuatan mobil tidak valid'
+                        ]" />
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Vehicle Number</div>
+                    <div class="col-3 q-pt-sm">Plat Nomor</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.vehicle_no" lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || 'Vehicle number is required']" />
+                        :rules="[(val) => (val && val.length > 0) || 'Plat nomor tidak dapat dikosongkan']" />
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Color</div>
+                    <div class="col-3 q-pt-sm">Warna</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.color" lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || 'Car color is required']" />
+                        :rules="[(val) => (val && val.length > 0) || 'Warna mobil tidak dapat dikosongkan']" />
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Seat</div>
+                    <div class="col-3 q-pt-sm">Jumlah Kursi</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.seat" mask="##"
-                        lazy-rules :rules="[(val) => (val && val.length > 0) || 'Car seat is required']" />
+                        lazy-rules :rules="[(val) => (val && val.length > 0) || 'Jumlah kursi tidak dapat dikosongkan']" />
                 </div>
                 <div class="row q-mb-md">
-                    <div class="col-3 q-pt-sm">Transmission</div>
+                    <div class="col-3 q-pt-sm">Transmisi</div>
                     <div class="q-gutter-sm">
-                        <q-radio v-model="form.transmission" val="Automatic" label="Automatic" />
-                        <q-radio v-model="form.transmission" val="Manual" label="Manual" />
+                        <q-radio v-model="form.transmission" val="1" label="Otomatis" />
+                        <q-radio v-model="form.transmission" val="2" label="Manual" />
                     </div>
                 </div>
                 <div class="row q-mb-md">
-                    <div class="col-3 q-pt-sm">Fuel</div>
+                    <div class="col-3 q-pt-sm">Bahan Bakar</div>
                     <div class="q-gutter-sm">
-                        <q-radio v-model="form.fuel" val="1" label="Gasoline" />
-                        <q-radio v-model="form.fuel" val="2" label="Electric" />
+                        <q-radio v-model="form.fuel" val="1" label="Bensin" />
+                        <q-radio v-model="form.fuel" val="2" label="Elektrik" />
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Car Description</div>
+                    <div class="col-3 q-pt-sm">Deskripsi</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense type="textarea"
                         v-model="form.description" lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || 'Car description is required']" />
+                        :rules="[(val) => (val && val.length > 0) || 'Deskripsi mobil tidak dapat dikosongkan']" />
                 </div>
             </q-card-section>
             <q-card-section>
-                <div class="text-bold q-mb-lg">Pricing</div>
+                <div class="text-bold q-mb-lg">Harga</div>
                 <div class="row">
-                    <div class="col-3 q-pt-sm">Price per day</div>
+                    <div class="col-3 q-pt-sm">Harga sewa per hari</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.price" prefix="Rp"
                         @update:model-value="() => { form.price = clearLeadingZeros(form.price) }"
-                        placeholder=" Input rent price per day" mask="###.###.###.###" reverse-fill-mask unmasked-value
+                        placeholder="Masukkan harga sewa" mask="###.###.###.###" reverse-fill-mask unmasked-value
                         lazy-rules :rules="[
-        (val) => (val && val.length > 0) || 'Price per day is required',
-        (val) => (parseInt(val) > 0) || 'Price is not valid'
-    ]" />
+                            (val) => (val && val.length > 0) || 'Harga tidak dapat dikosongkan',
+                            (val) => (parseInt(val) > 0) || 'Harga tidak valid'
+                        ]" />
                 </div>
                 <div class="row">
                     <div class="col-3 q-pt-sm">Deposit</div>
                     <q-input class="col" style="min-width: 200px;" outlined dense v-model="form.deposit" prefix="Rp"
-                        @update:model-value="() => { clearLeadingZeros(form.deposit) }" placeholder="Input rent deposit"
+                        @update:model-value="() => { clearLeadingZeros(form.deposit) }" placeholder="Masukkan harga deposit"
                         mask="###.###.###.###" reverse-fill-mask unmasked-value />
                 </div>
             </q-card-section>
             <q-card-section>
-                <div class="text-bold q-mb-lg">Car Management</div>
+                <div class="text-bold q-mb-lg">Manajemen Mobil</div>
                 <div class="row">
                     <div class="col-3 q-pt-sm">
-                        Car Status
+                        Status Mobil
                         <div class="q-mt-xs text-blue-grey-4">
-                            If status is active, your car can be viewed by customers.
+                            Jika status aktif, mobil akan muncul dalam hasil pencarian oleh penyewa.
                         </div>
                     </div>
-                    <q-toggle class="self-start" v-model="form.status" false-value="N" true-value="A"
-                        :label="`${form.status == 'A' ? 'Active' : 'Inactive'}`" />
+                    <q-toggle class="self-start" v-model="form.status" false-value="0" true-value="1"
+                        :label="`${form.status == '1' ? 'Aktif' : 'Inaktif'}`" />
                 </div>
             </q-card-section>
             <q-card-actions align="right">
-                <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="showConfirm = true" />
-                <q-btn unelevated color="primary" type="submit" label="Save" style="min-width: 120px;" />
+                <q-btn unelevated color="secondary" text-color="accent" label="Batal" @click="showConfirm = true" />
+                <q-btn unelevated color="primary" type="submit" label="Simpan" style="min-width: 120px;" />
             </q-card-actions>
         </q-card>
     </q-form>
-    <ConfirmDialog v-model="showConfirm" :message="'Are you sure? Your changes will not be saved.'"
-        action-btn-title="DON'T SAVE" @confirm-action="cancel()" />
+    <ConfirmDialog v-model="showConfirm" message="Apakah Anda yakin? Perubahan Anda tidak akan disimpan."
+        action-btn-title="JANGAN SIMPAN" @confirm-action="cancel()" />
 </template>
 
 <script setup lang="ts">
@@ -135,12 +135,12 @@ const showConfirm = ref<boolean>(false);
 const form: any = reactive({
     provider_id: props.car?.provider_id || '',
     brand: props.car?.brand || '',
-    car_type: props.car?.car_type || 'Choose category',
+    car_type: props.car?.car_type || 'Pilih kategori',
     year: props.car?.year || '',
     color: props.car?.color || '',
     seat: props.car?.seat || '',
     vehicle_no: props.car?.vehicle_no || '',
-    transmission: props.car?.transmission || 'Automatic',
+    transmission: props.car?.transmission || 'Otomatis',
     fuel: props.car?.fuel || '1',
     price: props.car?.price || '0',
     deposit: props.car?.deposit || '0',
@@ -149,11 +149,11 @@ const form: any = reactive({
 });
 const photos = ref<CarFile[]>(props.car?.car_files || []);
 const carTypeOpt = ref<string[]>([
-    'Choose category',
+    'Pilih kategori',
     'Sedan',
     'SUV',
     'MPV',
-    'Sport'
+    'Hatchback'
 ]);
 
 function clearLeadingZeros(str: string) {
@@ -239,7 +239,7 @@ function cancel() {
 onMounted(() => {
     if (props.isEdit) {
         // repush images
-        
+
     }
 });
 </script>

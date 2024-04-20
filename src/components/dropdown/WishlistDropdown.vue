@@ -6,7 +6,7 @@
                 <div class="row items-center">
                     <span class="text-bold q-mr-sm">Wishlist</span>({{ wishlists.length }})
                     <q-space />
-                    <q-btn v-if="!isLoading && wishlists.length > 0" flat dense text-color="accent" label="View all"
+                    <q-btn v-if="!isLoading && wishlists.length > 0" flat dense text-color="accent" label="Lihat semua"
                         no-caps @click="goToWishlist" />
                 </div>
             </q-item-label>
@@ -61,7 +61,7 @@
 
                 <!-- if have nothing in wishlist -->
                 <q-item v-else v-show="!isLoading">
-                    <q-item-section align="center">Your wishlist is empty</q-item-section>
+                    <q-item-section align="center">Belum ada wishlist</q-item-section>
                 </q-item>
             </q-scroll-area>
         </q-list>

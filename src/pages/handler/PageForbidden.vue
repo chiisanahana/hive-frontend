@@ -7,9 +7,9 @@
             <div class="forbidden-403">
                 <h1>403</h1>
             </div>
-            <h2>Access Denied</h2>
-            <p>We are sorry, but you do not have access to this page or resource.</p>
-            <a @click="goToHome">Back To Homepage</a>
+            <h2>Akses Ditolak</h2>
+            <p>Maaf, Anda tidak memiliki akses ke halaman atau sumber ini.</p>
+            <a @click="goToHome">Kembali ke halaman utama</a>
         </div>
     </div>
 </template>

@@ -6,7 +6,7 @@
                     <q-item-section side>
                         <q-icon class="menu-icon" :color="isActive('') ? 'accent' : 'font'" :name="ionHome"></q-icon>
                     </q-item-section>
-                    <q-item-section>Dashboard</q-item-section>
+                    <q-item-section>Beranda</q-item-section>
                 </q-item>
                 <q-item clickable :active="isActive('chat')" active-class="text-accent" @click="goToChat">
                     <q-item-section side>
@@ -16,39 +16,39 @@
                     <q-item-section>Chat</q-item-section>
                 </q-item>
 
-                <q-expansion-item :icon="ionCar" label="Cars" :expand-icon="ionChevronDown"
+                <q-expansion-item :icon="ionCar" label="Mobil" :expand-icon="ionChevronDown"
                     :header-class="isActive('cars') ? 'text-accent' : ''" default-opened>
                     <q-list>
                         <q-item dense clickable :active="isActive('cars/add')" active-class="text-accent"
                             @click="goToAddCar">
-                            <q-item-section class="child-menu">Add cars</q-item-section>
+                            <q-item-section class="child-menu">Tambah Mobil</q-item-section>
                         </q-item>
                     </q-list>
                     <q-list>
                         <q-item dense clickable :active="isActive('cars', true)" active-class="text-accent"
                             @click="goToManageCars">
-                            <q-item-section class="child-menu">Manage cars</q-item-section>
+                            <q-item-section class="child-menu">Kelola Mobil</q-item-section>
                         </q-item>
                     </q-list>
                 </q-expansion-item>
-                <q-expansion-item :icon="ionReader" label="Orders" :expand-icon="ionChevronDown"
+                <q-expansion-item :icon="ionReader" label="Sewa" :expand-icon="ionChevronDown"
                     :header-class="isActive('orders') ? 'text-accent' : ''" default-opened>
                     <q-list>
                         <q-item dense clickable :active="isActive('orders', false, 'status', 'pending')"
                             active-class="text-accent" @click="goToManageOrders('pending')">
-                            <q-item-section class="child-menu">Pending approval</q-item-section>
+                            <q-item-section class="child-menu">Menunggu Persetujuan</q-item-section>
                         </q-item>
                     </q-list>
                     <q-list>
                         <q-item dense clickable :active="isActive('orders', false, 'status', 'ongoing')"
                             active-class="text-accent" @click="goToManageOrders('ongoing')">
-                            <q-item-section class="child-menu">Ongoing</q-item-section>
+                            <q-item-section class="child-menu">Berjalan</q-item-section>
                         </q-item>
                     </q-list>
                     <q-list>
                         <q-item dense clickable :active="isActive('orders', false, 'status', 'completed')"
                             active-class="text-accent" @click="goToManageOrders('completed')">
-                            <q-item-section class="child-menu">Completed</q-item-section>
+                            <q-item-section class="child-menu">Selesai</q-item-section>
                         </q-item>
                     </q-list>
                 </q-expansion-item>
@@ -62,7 +62,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { ionCar, ionChatbubbleEllipses, ionChevronDown, ionHome, ionReader } from '@quasar/extras/ionicons-v6';
-import { ref } from 'vue';
 
 const route = useRoute();
 const router = useRouter();

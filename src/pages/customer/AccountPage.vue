@@ -3,14 +3,14 @@
         <q-card flat :class="isEdit ? 'col-xs-12 col-sm-9' : 'col-xs-12 col-sm-9 q-pb-lg'">
             <q-card-section>
                 <div class="row">
-                    <div class="text-h6">Account Setting</div>
+                    <div class="text-h6">Pengaturan Profil</div>
                     <q-space />
-                    <q-btn v-if="!isEdit" flat color="accent" icon="edit" label="Edit account" no-caps
+                    <q-btn v-if="!isEdit" flat color="accent" icon="edit" label="Ubah profil" no-caps
                         @click="isEdit = true" />
                 </div>
             </q-card-section>
             <q-card-section v-if="!isDataCompleted()">
-                Complete your account info
+                Lengkapi informasi profilmu!
             </q-card-section>
 
             <q-card-section horizontal>
@@ -19,39 +19,41 @@
                         Profile pict
                     </q-card> -->
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
-                        label="Change your password" no-caps />
+                        label="Ganti kata sandi" no-caps />
                 </q-card-section>
-                <q-card-section class="col q-ml-lg" :class="isEdit ? 'q-gutter-y-xs' : 'q-gutter-y-lg'">
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Name</div>
-                        <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
-                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense v-model="form.name"
-                            autocomplete="on" lazy-rules :rules="[
-                                (val) => (val && val.length > 0) || 'Name is required',
-                                (val) => isValidName(val.trim()) || 'Name is not valid']" />
-                    </div>
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Email</div>
-                        <div v-if="!isEdit" class="col"> {{ customer?.email }} </div>
-                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense debounce="500"
-                            v-model="form.email" autocomplete="on" lazy-rules :rules="[
-                                (val) => (val && val.length > 0) || 'Email is required',
-                                (val) => isValidEmail(val.trim()) || 'Email is not valid',
-                                (val) => isEmailAvail(val.trim())]" />
-                    </div>
-                    <div class="row items-center">
-                        <div :class="isEdit ? 'col-3 field-title' : 'col-3'">Phone number</div>
-                        <div v-if="!isEdit" class="col">
-                            {{ isHasPhoneNumber() ? customer?.phone_number : '-' }}
+                <q-card-section class="col q-ml-lg">
+                    <div :class="isEdit? 'q-gutter-y-sm' : 'q-gutter-y-md'">
+                        <div class="row items-center">
+                            <div class="col-xs-6 col-md-4 col-lg-3">Nama</div>
+                            <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
+                            <q-input v-else class="col-7" style="min-width: 200px;" outlined dense v-model="form.name"
+                                autocomplete="on" lazy-rules :rules="[
+                                    (val) => (val && val.length > 0) || 'Nama tidak dapat dikosongkan',
+                                    (val) => isValidName(val.trim()) || 'Nama tidak valid']" hide-bottom-space />
                         </div>
-                        <q-input v-else class="col-5" style="min-width: 200px;" outlined dense
-                            v-model="form.phone_number" mask="##############" lazy-rules :rules="[
-                                (val) => (val && val.length > 0) || 'Phone number is required',
-                                (val) => val.length >= 10 || 'Phone number is not valid']" />
+                        <div class="row items-center">
+                            <div class="col-xs-6 col-md-4 col-lg-3">Email</div>
+                            <div v-if="!isEdit" class="col"> {{ customer?.email }} </div>
+                            <q-input v-else class="col-7" style="min-width: 200px;" outlined dense debounce="500"
+                                v-model="form.email" autocomplete="on" lazy-rules :rules="[
+                                    (val) => (val && val.length > 0) || 'Email tidak dapat dikosongkan',
+                                    (val) => isValidEmail(val.trim()) || 'Email tidak valid',
+                                    (val) => isEmailAvail(val.trim())]" hide-bottom-space />
+                        </div>
+                        <div class="row items-center">
+                            <div class="col-xs-6 col-md-4 col-lg-3">Nomor telepon</div>
+                            <div v-if="!isEdit" class="col">
+                                {{ isHasPhoneNumber() ? customer?.phone_number : '-' }}
+                            </div>
+                            <q-input v-else class="col-7" style="min-width: 200px;" outlined dense
+                                v-model="form.phone_number" mask="##############" lazy-rules :rules="[
+                                    (val) => (val && val.length > 0) || 'Phone number tidak dapat dikosongkan',
+                                    (val) => val.length >= 10 || 'Phone number tidak valid']" hide-bottom-space />
+                        </div>
                     </div>
                     <div v-if="isEdit" class="row q-gutter-md q-mt-sm justify-end">
-                        <q-btn unelevated color="secondary" text-color="accent" label="Cancel" @click="resetForm" />
-                        <q-btn color="accent" label="Save Profile" :disable="!isValidInput" @click="updateData" />
+                        <q-btn unelevated color="secondary" text-color="accent" label="Batal" @click="resetForm" />
+                        <q-btn color="accent" label="Simpan" :disable="!isValidInput" @click="updateData" />
                     </div>
                 </q-card-section>
             </q-card-section>
@@ -165,8 +167,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.field-title {
-    line-height: 40px;
-    padding-bottom: 20px;
-}
 </style>

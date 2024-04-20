@@ -1,10 +1,10 @@
 <template>
     <div v-if="!isHasBankAccount(provider)">
-        <div class="text-bold q-mb-sm">Bank Account</div>
+        <div class="text-bold q-mb-sm">Rekening Bank</div>
         <div>-</div>
     </div>
     <div v-else-if="bankName != undefined">
-        <div class="text-bold q-mb-sm">Bank Account</div>
+        <div class="text-bold q-mb-sm">Rekening Bank</div>
         <div class="text-blue-grey-4 q-mb-xs">{{ bankName }}</div>
         <div class="q-mb-xs">{{ accNumber }}</div>
         <div>{{ accName }}</div>
