@@ -69,8 +69,8 @@
                             <q-card>
                                 <div class="column q-gutter-sm q-mb-sm">
                                     <q-checkbox dense v-model="filter.seat" val="4" label="4 Kursi" color="accent" />
-                                    <q-checkbox dense v-model="filter.seat" val="6" label="6 Kursi" color="accent" />
-                                    <q-checkbox dense v-model="filter.seat" val="8" label="8 Kursi" color="accent" />
+                                    <q-checkbox dense v-model="filter.seat" val="5" label="5 Kursi" color="accent" />
+                                    <q-checkbox dense v-model="filter.seat" val="7" label="7 Kursi" color="accent" />
                                 </div>
                             </q-card>
                         </q-expansion-item>
