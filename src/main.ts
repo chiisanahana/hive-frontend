@@ -30,5 +30,6 @@ app.use(Quasar, {
 app.use(router);
 app.component(VueCountdown.name!, VueCountdown);
 defineElement(lottie.loadAnimation);
+app.config.globalProperties.window = window
 
 app.mount('#app');

@@ -27,7 +27,7 @@
                         <CarInfoIcon :icon="chairAlt" :asset="true" :text="'Kursi'" :value="car?.seat" />
                         <CarInfoIcon :icon="ionColorPalette" :text="'Warna'" :value="car?.color" />
                         <CarInfoIcon :icon="autoTransmission" :asset="true" :text="'Transmisi'"
-                        :value="getCarTransmission(car)" />
+                            :value="getCarTransmission(car)" />
                         <CarInfoIcon :icon="ionSpeedometer" :text="'Bahan Bakar'" :value="getCarFuel(car)" />
                         <q-space />
                         <div class="rating-box column q-pa-md">
@@ -53,14 +53,16 @@
                 <RentDetailsCardSec :editable="true" :rentDetails="rentDetails" v-model:pickupAddress="pickupAddress"
                     v-model:returnAddress="returnAddress" />
 
-                <BillingSumCardSec v-if="rentDetails != undefined" :startDate="rentDetails.startDate"
-                    :endDate="rentDetails.endDate" :price="car?.price!" :deposit="car?.deposit!" />
+                <BillingSumCardSec :startDate="rentDetails!.startDate"
+                    :endDate="rentDetails!.endDate" :price="car?.price!" :deposit="car?.deposit == undefined ? 0 : car.deposit" />
 
                 <q-card-actions align="right">
                     <q-btn unelevated color="secondary" text-color="accent" label="Tambahkan ke wishlist"
                         @click="addToWishlist" />
                     <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput"
-                        @click="bookNow" />
+                        @click="pay" />
+                    <!-- <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput"
+                        @click="bookNow" /> -->
                 </q-card-actions>
             </q-card>
         </div>
@@ -70,10 +72,11 @@
             <LoginForm :user-type="UserType.C" @post-action="loginSuccess" @route-to-sign-up="signUp" />
         </div>
     </q-dialog>
+    <div id="snap-container"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount, computed } from 'vue';
+import { ref, watch, onBeforeMount, onMounted, computed } from 'vue';
 import { useQuasar, QSpinnerGears } from 'quasar';
 import { useRoute, useRouter } from 'vue-router'
 import type { Car } from '@/interfaces/rest/Car';
@@ -123,6 +126,12 @@ watch(
         else getCar(parseInt(CryptoService.decrypt(newId?.toString() || '')));
     }
 )
+
+function pay() {
+    (window as any).snap.embed('d3ba6fb7-2f01-4f76-95bb-20ce08deaef2', {
+        embedId: 'snap-container'
+    });
+}
 
 function goBack() {
     router.push({ name: 'cars' });
@@ -301,6 +310,15 @@ onBeforeMount(() => {
         else getCar(parseInt(CryptoService.decrypt(id)));
     }
 });
+
+// onMounted(() => {
+//     var payButton = document.getElementById('pay-button');
+//     payButton?.addEventListener('click', function () {
+//         (window as any).snap.embed('7fbbec03-b829-4c44-aaa8-a5134db2b446', {
+//             embedId: 'snap-container'
+//         });
+//     });
+// })
 </script>
 
 <style scoped>
