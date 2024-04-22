@@ -54,7 +54,7 @@
                     v-model:returnAddress="returnAddress" />
 
                 <BillingSumCardSec v-if="rentDetails != undefined" :startDate="rentDetails.startDate"
-                    :endDate="rentDetails.endDate" :price="car?.price!" :deposit="car?.deposit!" />
+                    :endDate="rentDetails.endDate" :price="car?.price!" :deposit="car?.deposit == undefined ? 0 : car.deposit" />
 
                 <q-card-actions align="right">
                     <q-btn unelevated color="secondary" text-color="accent" label="Tambahkan ke wishlist"

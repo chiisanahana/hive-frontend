@@ -4,7 +4,7 @@
         <div class="row">
             <div class="text-body1">Harga sewa</div>
             <q-space />
-            <div v-if="props.price && props.deposit" class="text-body1">
+            <div v-if="props.price != undefined && props.deposit != undefined" class="text-body1">
                 {{ calcDateDiff(props.startDate, props.endDate) + ' x ' +
                     formatAmount(props.price as number) }}
             </div>
@@ -13,7 +13,7 @@
         <div class="row">
             <div class="text-body1">Deposit</div>
             <q-space />
-            <div v-if="props.deposit" class="text-body1">
+            <div v-if="props.deposit != undefined" class="text-body1">
                 {{ formatAmount(props.deposit as number) }}
             </div>
             <q-skeleton v-else type="text" width="140px" />
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="text-body1 text-bold">Total tagihan</div>
             <q-space />
-            <div v-if="props.price && props.deposit" class="text-body1 text-bold">
+            <div v-if="props.price != undefined && props.deposit != undefined" class="text-body1 text-bold">
                 {{ formatAmount(getRentPrice()) }}
             </div>
             <q-skeleton v-else type="text" width="140px" />
