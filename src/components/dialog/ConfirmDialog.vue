@@ -9,7 +9,7 @@
                 </div>
             </q-card-section>
             <q-card-actions align="right">
-                <q-btn flat color="primary" v-close-popup>{{ cancelBtnTitle }}</q-btn>
+                <q-btn flat color="accent" v-close-popup>{{ cancelBtnTitle }}</q-btn>
                 <q-btn flat color="negative" v-close-popup @click="$emit('confirmAction')">{{ actionBtnTitle }}</q-btn>
             </q-card-actions>
         </q-card>

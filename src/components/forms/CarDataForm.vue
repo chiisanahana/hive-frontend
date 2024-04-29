@@ -145,7 +145,7 @@ const form: any = reactive({
     price: props.car?.price || '0',
     deposit: props.car?.deposit || '0',
     description: props.car?.description || '',
-    status: props.car?.status || 'A'
+    status: props.car?.status || '1'
 });
 const photos = ref<CarFile[]>(props.car?.car_files || []);
 const carTypeOpt = ref<string[]>([
