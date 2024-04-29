@@ -140,7 +140,7 @@ const form: any = reactive({
     color: props.car?.color || '',
     seat: props.car?.seat || '',
     vehicle_no: props.car?.vehicle_no || '',
-    transmission: props.car?.transmission || 'Otomatis',
+    transmission: props.car?.transmission || '1',
     fuel: props.car?.fuel || '1',
     price: props.car?.price || '0',
     deposit: props.car?.deposit || '0',
