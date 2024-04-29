@@ -1,126 +1,131 @@
 <template>
     <div class="q-pa-md">
-        <q-form @submit="submit">
-            <q-stepper v-model="step" vertical color="primary" animated>
-                <p class="text-h5 text-bold text-center q-mt-sm">
-                    Daftar
-                    <q-badge align="top">Penyedia</q-badge>
-                </p>
+        <q-scroll-area :style="{ height: height, 'max-height': '600px'}">
+            <q-form @submit="submit">
+                <q-resize-observer @resize="onResize"></q-resize-observer>
+                <q-stepper v-model="step" vertical color="primary" animated>
+                    <p class="text-h5 text-bold text-center q-mt-sm">
+                        Daftar
+                        <q-badge align="top">Penyedia</q-badge>
+                    </p>
 
-                <q-step :name="1" title="Lengkapi informasi pengguna" :icon="ionPerson" :active-icon="ionPerson"
-                    :done="step > 1">
-                    <div class="q-mb-md">Masukkan nama lengkap dan kredensial akun Anda sebagai penyedia mobil.</div>
+                    <q-step :name="1" title="Lengkapi informasi pengguna" :icon="ionPerson" :active-icon="ionPerson"
+                        :done="step > 1">
+                        <div class="q-mb-md">Masukkan nama lengkap dan kredensial akun Anda sebagai penyedia mobil.
+                        </div>
 
-                    <div class="row">
-                        <div class="column col-6 q-gutter-y-sm">
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Nama Lengkap</label>
-                                <q-input outlined dense debunce="500" v-model="form.name"
-                                    @update:model-value="() => { form.name = formatNameCase(form.name) }"
-                                    placeholder="Masukkan nama lengkap" autocomplete="on" hide-bottom-space lazy-rules
-                                    :rules="[
-                                        val => val && val.length > 0 || 'Nama tidak dapat dikosongkan',
-                                        val => isValidName(val.trim()) || 'Nama tidak valid']">
-                                </q-input>
-                            </div>
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Email</label>
-                                <q-input outlined dense debunce="500" v-model="form.email" placeholder="Masukkan email"
-                                    autocomplete="on" hide-bottom-space lazy-rules :rules="[
-                                        val => val && val.length > 0 || 'Email tidak dapat dikosongkan',
-                                        val => isValidEmail(val.trim()) || 'Email tidak valid',
-                                        val => isEmailAvail(val.trim())
-                                    ]">
-                                </q-input>
-                            </div>
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Kata sandi</label>
-                                <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
-                                    placeholder="Masukkan kata sandi" autocomplete="on" hide-bottom-space lazy-rules
-                                    :rules="[
-                                        val => val && val.length > 0 || 'Kata sandi tidak dapat dikosongkan',
-                                        val => val.length >= 8 || 'Kata sandi terlalu pendek'
-                                    ]">
-                                    <template v-slot:append>
-                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                                            @click="isPwd = !isPwd" />
-                                    </template>
-                                </q-input>
+                        <div class="row">
+                            <div class="column col-6 q-gutter-y-sm">
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Nama Lengkap</label>
+                                    <q-input outlined dense debunce="500" v-model="form.name"
+                                        @update:model-value="() => { form.name = formatNameCase(form.name) }"
+                                        placeholder="Masukkan nama lengkap" autocomplete="on" hide-bottom-space
+                                        lazy-rules :rules="[
+                                            val => val && val.length > 0 || 'Nama tidak dapat dikosongkan',
+                                            val => isValidName(val.trim()) || 'Nama tidak valid']">
+                                    </q-input>
+                                </div>
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Email</label>
+                                    <q-input outlined dense debunce="500" v-model="form.email"
+                                        placeholder="Masukkan email" autocomplete="on" hide-bottom-space lazy-rules
+                                        :rules="[
+                                            val => val && val.length > 0 || 'Email tidak dapat dikosongkan',
+                                            val => isValidEmail(val.trim()) || 'Email tidak valid',
+                                            val => isEmailAvail(val.trim())
+                                        ]">
+                                    </q-input>
+                                </div>
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Kata sandi</label>
+                                    <q-input outlined dense :type="isPwd ? 'password' : 'text'" v-model="form.password"
+                                        placeholder="Masukkan kata sandi" autocomplete="on" hide-bottom-space lazy-rules
+                                        :rules="[
+                                            val => val && val.length > 0 || 'Kata sandi tidak dapat dikosongkan',
+                                            val => val.length >= 8 || 'Kata sandi terlalu pendek'
+                                        ]">
+                                        <template v-slot:append>
+                                            <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
+                                                class="cursor-pointer" @click="isPwd = !isPwd" />
+                                        </template>
+                                    </q-input>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <q-stepper-navigation>
-                        <q-btn @click="step = 2" color="primary" label="Lanjutkan" :disable="!validStepOne()" />
-                    </q-stepper-navigation>
-                </q-step>
+                        <q-stepper-navigation>
+                            <q-btn @click="step = 2" color="primary" label="Lanjutkan" :disable="!validStepOne()" />
+                        </q-stepper-navigation>
+                    </q-step>
 
-                <q-step :name="2" title="Ciptakan branding" :icon="ionStorefront" :active-icon="ionStorefront"
-                    :done="step > 2">
-                    <div class="q-mb-md">Masukkan nama branding dan informasi kontak yang akan ditampilkan.</div>
+                    <q-step :name="2" title="Ciptakan branding" :icon="ionStorefront" :active-icon="ionStorefront"
+                        :done="step > 2">
+                        <div class="q-mb-md">Masukkan nama branding dan informasi kontak yang akan ditampilkan.</div>
 
-                    <div class="row">
-                        <div class="column col-6 q-gutter-y-sm">
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Nama Branding</label>
-                                <q-input outlined dense v-model="form.trading_name"
-                                    @update:model-value="() => { form.trading_name = formatNameCase(form.trading_name) }"
-                                    placeholder="Masukkan nama branding" autocomplete="on" hide-bottom-space
-                                    lazy-rules
-                                    :rules="[val => val && val.length > 0 || 'Nama branding tidak dapat dikosongkan']">
-                                </q-input>
-                            </div>
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Nomor Telepon</label>
-                                <q-input outlined dense v-model="form.phone_number" mask="##############"
-                                    placeholder="Masukkan nomor telepon" lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Nomor telepon tidak dapat dikosongkan',
-                                        (val) => val.length >= 10 || 'Nomor telepon tidak valid']" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <q-stepper-navigation>
-                        <q-btn @click="step = 3" color="primary" label="Lanjutkan" :disable="!validStepTwo()" />
-                        <q-btn flat @click="step = 1" color="primary" label="Kembali" class="q-ml-sm" />
-                    </q-stepper-navigation>
-                </q-step>
-
-                <q-step :name="3" title="Lengkapi lokasi rental" :icon="ionLocation" :active-icon="ionLocation">
-                    <div class="q-mb-md">Informasikan alamat jelas rental Anda berada.</div>
-
-                    <div class="row">
-                        <div class="column col-6 q-gutter-y-sm">
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Provinsi</label>
-                                <q-select dense outlined v-model="selectedProvince" :options="provinceList"
-                                    @update:model-value="cityList = []" behavior="menu"
-                                    :rules="[val => val && val.value != '' || 'Provinsi tidak dapat dikosongkan']"
-                                    hide-bottom-space />
-                            </div>
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Kota</label>
-                                <q-select dense outlined v-model="selectedCity" :options="cityList"
-                                    @filter="getCityFilter" behavior="menu" :disable="selectedProvince.value == ''"
-                                    :rules="[val => val && val.value != '' || 'Kota tidak dapat dikosongkan']"
-                                    hide-bottom-space />
-                            </div>
-                            <div class="column">
-                                <label class="field-label q-mb-xs">Alamat</label>
-                                <q-input outlined dense v-model="form.address" placeholder="Masukkan address"
-                                    hide-bottom-space lazy-rules :rules="[
-                                        (val) => (val && val.length > 0) || 'Alamat tidak dapat dikosongkan']" />
+                        <div class="row">
+                            <div class="column col-6 q-gutter-y-sm">
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Nama Branding</label>
+                                    <q-input outlined dense v-model="form.trading_name"
+                                        @update:model-value="() => { form.trading_name = formatNameCase(form.trading_name) }"
+                                        placeholder="Masukkan nama branding" autocomplete="on" hide-bottom-space
+                                        lazy-rules
+                                        :rules="[val => val && val.length > 0 || 'Nama branding tidak dapat dikosongkan']">
+                                    </q-input>
+                                </div>
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Nomor Telepon</label>
+                                    <q-input outlined dense v-model="form.phone_number" mask="##############"
+                                        placeholder="Masukkan nomor telepon" lazy-rules :rules="[
+                                            (val) => (val && val.length > 0) || 'Nomor telepon tidak dapat dikosongkan',
+                                            (val) => val.length >= 10 || 'Nomor telepon tidak valid']" />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <q-stepper-navigation>
-                        <q-btn color="primary" type="submit" label="Daftar" :disable="!validStepThree()" />
-                        <q-btn flat @click="step = 2" color="primary" label="Kembali" class="q-ml-sm" />
-                    </q-stepper-navigation>
-                </q-step>
-            </q-stepper>
-        </q-form>
+                        <q-stepper-navigation>
+                            <q-btn @click="step = 3" color="primary" label="Lanjutkan" :disable="!validStepTwo()" />
+                            <q-btn flat @click="step = 1" color="primary" label="Kembali" class="q-ml-sm" />
+                        </q-stepper-navigation>
+                    </q-step>
+
+                    <q-step :name="3" title="Lengkapi lokasi rental" :icon="ionLocation" :active-icon="ionLocation">
+                        <div class="q-mb-md">Informasikan alamat jelas rental Anda berada.</div>
+
+                        <div class="row">
+                            <div class="column col-6 q-gutter-y-sm">
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Provinsi</label>
+                                    <q-select dense outlined v-model="selectedProvince" :options="provinceList"
+                                        @update:model-value="cityList = []" behavior="menu"
+                                        :rules="[val => val && val.value != '' || 'Provinsi tidak dapat dikosongkan']"
+                                        hide-bottom-space />
+                                </div>
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Kota</label>
+                                    <q-select dense outlined v-model="selectedCity" :options="cityList"
+                                        @filter="getCityFilter" behavior="menu" :disable="selectedProvince.value == ''"
+                                        :rules="[val => val && val.value != '' || 'Kota tidak dapat dikosongkan']"
+                                        hide-bottom-space />
+                                </div>
+                                <div class="column">
+                                    <label class="field-label q-mb-xs">Alamat</label>
+                                    <q-input autogrow outlined dense v-model="form.address"
+                                        placeholder="Masukkan address" hide-bottom-space lazy-rules :rules="[
+                                            (val) => (val && val.length > 0) || 'Alamat tidak dapat dikosongkan']" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <q-stepper-navigation>
+                            <q-btn color="primary" type="submit" label="Daftar" :disable="!validStepThree()" />
+                            <q-btn flat @click="step = 2" color="primary" label="Kembali" class="q-ml-sm" />
+                        </q-stepper-navigation>
+                    </q-step>
+                </q-stepper>
+            </q-form>
+        </q-scroll-area>
     </div>
 </template>
 
@@ -157,6 +162,11 @@ const cityList = ref<Option[]>([]);
 const selectedProvince = ref<Option>({ label: 'Pilih provinsi', value: '' });
 const selectedCity = ref<Option>({ label: 'Pilih kota', value: '' });
 const providerStore = useProviderStore();
+const height = ref<string>('604px');
+
+const onResize: any = (size: any) => {
+    height.value = size.height >= 564 ? '564' : `${size.height}px`;
+}
 
 function isEmailAvail(email: string) {
     return UserService.isEmailExists(email, UserType.P)
