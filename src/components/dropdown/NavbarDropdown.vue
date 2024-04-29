@@ -113,10 +113,10 @@ function logout() {
     quasar.loading.show({ spinner: QSpinnerGears });
     customerStore.logout();
     providerStore.logout();
+    UserService.logout(props.type);
     setTimeout(() => {
-        UserService.logout(props.type);
-        router.push({ name: 'logout' });
         quasar.loading.hide();
+        router.push({ name: 'logout' });
     }, 500);
 }
 
