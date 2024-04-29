@@ -16,7 +16,7 @@
                                 <div class="row items-center text-blue-grey-4">
                                     <q-icon :name="ionLocation" class="q-mr-sm" />
                                     {{ order?.car?.provider?.city }}, {{
-                                order?.car?.provider?.province }}
+                                        order?.car?.provider?.province }}
                                 </div>
                             </div>
                         </div>
@@ -31,15 +31,16 @@
             </q-card>
         </div>
         <div class="col-7">
-            <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
-                :order="order" />
-            
+            <div id="snap-container"></div>
+            <!-- <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
+                :order="order" /> -->
+
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
@@ -57,6 +58,7 @@ const route = useRoute();
 const quasar = useQuasar();
 const order = ref<Order>();
 const rentDetails = ref<RentDetails>();
+declare let snap: any;
 
 function getOrderDetails(orderId: number) {
     quasar.loading.show({ spinner: QSpinnerGears });
@@ -87,5 +89,11 @@ onBeforeMount(() => {
     if (typeof orderId === 'string') {
         getOrderDetails(parseInt(CryptoService.decrypt(orderId)));
     }
+});
+
+onMounted(() => {
+    snap.embed('b5a53aa7-51b0-4422-a921-5aa44afad0b7', {
+        embedId: 'snap-container'
+    });
 });
 </script>

@@ -53,16 +53,15 @@
                 <RentDetailsCardSec :editable="true" :rentDetails="rentDetails" v-model:pickupAddress="pickupAddress"
                     v-model:returnAddress="returnAddress" />
 
-                <BillingSumCardSec :startDate="rentDetails!.startDate"
-                    :endDate="rentDetails!.endDate" :price="car?.price!" :deposit="car?.deposit == undefined ? 0 : car.deposit" />
+                <BillingSumCardSec :startDate="rentDetails!.startDate" :endDate="rentDetails!.endDate"
+                    :price="car?.price!" :deposit="car?.deposit == undefined ? 0 : car.deposit" />
 
                 <q-card-actions align="right">
                     <q-btn unelevated color="secondary" text-color="accent" label="Tambahkan ke wishlist"
                         @click="addToWishlist" />
+                    <!-- <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput" /> -->
                     <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput"
-                        @click="pay" />
-                    <!-- <q-btn color="primary" label="Pesan sekarang" style="min-width: 140px;" :disabled="!isValidInput"
-                        @click="bookNow" /> -->
+                        @click="bookNow" />
                 </q-card-actions>
             </q-card>
         </div>
@@ -72,7 +71,6 @@
             <LoginForm :user-type="UserType.C" @post-action="loginSuccess" @route-to-sign-up="signUp" />
         </div>
     </q-dialog>
-    <div id="snap-container"></div>
 </template>
 
 <script setup lang="ts">
@@ -126,12 +124,6 @@ watch(
         else getCar(parseInt(CryptoService.decrypt(newId?.toString() || '')));
     }
 )
-
-function pay() {
-    (window as any).snap.embed('d3ba6fb7-2f01-4f76-95bb-20ce08deaef2', {
-        embedId: 'snap-container'
-    });
-}
 
 function goBack() {
     router.push({ name: 'cars' });
@@ -237,54 +229,59 @@ function bookNow() {
         return;
     }
 
-    quasar.bottomSheet({
-        class: 'payment-opt',
-        message: 'Pilih metode pembayaran',
-        actions: [
-            {
-                label: 'BCA Virtual Account',
-                img: '/src/assets/images/va.png',
-                id: 'va'
-            },
-            // {
-            //     label: 'Credit Card',
-            //     img: '/src/assets/images/cc.png',
-            //     id: 'cc'
-            // },
-        ]
-    }).onOk(action => {
-        quasar.loading.show({ spinner: QSpinnerGears });
-        setRentDetailsValue();
-        OrderService.createOrder(
-            car.value?.id!, UserService.getLoggedInCust().id, rentBasePrice.value, rentDetails.value!
-        ).then((response) => {
-            // console.log('order created', response.data)
-            PaymentService.initiatePayment(
-                response.data.id,
-                action.id == 'va' ? 'Virtual Account' : 'Credit Card',
-                rentPrice.value,
-            ).then((response) => {
-                const encryptedId = CryptoService.encrypt(response.data.order_id);
-                quasar.loading.hide();
-                router.push({ name: 'payment', query: { oid: encryptedId } })
-            }).catch((error) => {
-                console.log(error);
-                quasar.loading.hide();
-                quasar.notify({
-                    color: 'negative',
-                    position: 'top-right',
-                    message: Message.INTERNAL_SERVER_ERROR
-                });
-            })
-        }).catch((error) => {
-            quasar.loading.hide();
-            quasar.notify({
-                color: 'negative',
-                position: 'top-right',
-                message: Message.INTERNAL_SERVER_ERROR
-            });
-        })
-    });
+    router.push({ name: 'payment' });
+
+    // quasar.bottomSheet({
+    //     class: 'payment-opt',
+    //     message: 'Pilih metode pembayaran',
+    //     actions: [
+    //         {
+    //             label: 'BCA Virtual Account',
+    //             img: '/src/assets/images/va.png',
+    //             id: 'va'
+    //         },
+    //         // {
+    //         //     label: 'Credit Card',
+    //         //     img: '/src/assets/images/cc.png',
+    //         //     id: 'cc'
+    //         // },
+    //     ]
+    // }).onOk(action => {
+    //     quasar.loading.show({ spinner: QSpinnerGears });
+    //     setRentDetailsValue();
+    //     OrderService.createOrder(
+    //         car.value?.id!, UserService.getLoggedInCust().id, rentBasePrice.value, rentDetails.value!
+    //     ).then((response) => {
+    //         // console.log('order created', response.data)
+    //         PaymentService.initiatePayment(
+    //             response.data.id,
+    //             action.id == 'va' ? 'Virtual Account' : 'Credit Card',
+    //             rentPrice.value,
+    //         ).then((response) => {
+    //             const encryptedId = CryptoService.encrypt(response.data.order_id);
+    //             quasar.loading.hide();
+    //             router.push({ name: 'payment', query: { oid: encryptedId } })
+    //         }).catch((error) => {
+    //             console.log(error);
+    //             quasar.loading.hide();
+    //             quasar.notify({
+    //                 color: 'negative',
+    //                 position: 'top-right',
+    //                 message: Message.INTERNAL_SERVER_ERROR
+    //             });
+    //         })
+    //     }).catch((error) => {
+    //         quasar.loading.hide();
+    //         quasar.notify({
+    //             color: 'negative',
+    //             position: 'top-right',
+    //             message: Message.INTERNAL_SERVER_ERROR
+    //         });
+    //     })
+    // });
+
+    // TODO: get token here
+    
 }
 
 function loginSuccess() {
@@ -310,15 +307,6 @@ onBeforeMount(() => {
         else getCar(parseInt(CryptoService.decrypt(id)));
     }
 });
-
-// onMounted(() => {
-//     var payButton = document.getElementById('pay-button');
-//     payButton?.addEventListener('click', function () {
-//         (window as any).snap.embed('7fbbec03-b829-4c44-aaa8-a5134db2b446', {
-//             embedId: 'snap-container'
-//         });
-//     });
-// })
 </script>
 
 <style scoped>
