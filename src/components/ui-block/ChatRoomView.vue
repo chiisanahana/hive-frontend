@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-md row justify-center">
-        <q-scroll-area style="width:100%; height: calc(100vh - 72px - 72px - 32px);"    >
+        <q-scroll-area style="width:100%; height: calc(100vh - 72px - 72px - 32px);">
             <div v-if="room != null" v-for="(chat, index) in chatStore.getChats">
                 <div class="row justify-center">
                     <q-chip
@@ -11,14 +11,14 @@
                     </q-chip>
                 </div>
                 <q-chat-message v-if="isSentByMe(chat)" bg-color="indigo-1" text-color="font" :text="[chat.message]"
-                    :stamp="formatTimestampToTime(chat.created_datetime)" sent class="q-mr-xl" />
+                    :stamp="formatTimestampToTime(chat.created_datetime)" sent class="q-mr-xl q-ml-auto"
+                    style="max-width: 50%;" />
                 <q-chat-message v-else bg-color="accent" text-color="white" :text="[chat.message]"
-                    :stamp="formatTimestampToTime(chat.created_datetime)" class="q-ml-md" />
+                    :stamp="formatTimestampToTime(chat.created_datetime)" class="q-ml-md" style="max-width: 50%;" />
             </div>
         </q-scroll-area>
     </div>
     <div class="q-pa-md">
-        <!-- {{ testing }} -->
         <form @submit="sendChat">
             <q-input dense filled v-model="text">
                 <template v-slot:after>
@@ -89,19 +89,35 @@ function sendChat() {
     const msg = text.value;
     text.value = '';
 
-    chatStore.addChat({
-        chat_room_id: props.room?.id,
-        customer_id: props.room?.customer?.id,
-        message: msg,
-        is_read: false,
-        created_datetime: new Date().toLocaleString('sv').replace(' ', 'T')
-    } as Chat);
+    if (props.userType == UserType.C) {
+        chatStore.addChat({
+            chat_room_id: props.room?.id,
+            customer_id: props.room?.customer?.id,
+            message: msg,
+            is_read: false,
+            created_datetime: new Date().toLocaleString('sv').replace(' ', 'T')
+        } as Chat);
 
-    ChatService.sendChat({
-        chat_room_id: props.room?.id,
-        message: msg,
-        customer_id: props.room?.customer?.id
-    } as Chat);
+        ChatService.sendChat({
+            chat_room_id: props.room?.id,
+            message: msg,
+            customer_id: props.room?.customer?.id
+        } as Chat);
+    } else {
+        chatStore.addChat({
+            chat_room_id: props.room?.id,
+            provider_id: props.room?.provider?.id,
+            message: msg,
+            is_read: false,
+            created_datetime: new Date().toLocaleString('sv').replace(' ', 'T')
+        } as Chat);
+
+        ChatService.sendChat({
+            chat_room_id: props.room?.id,
+            message: msg,
+            provider_id: props.room?.provider?.id
+        } as Chat);
+    }
 }
 
 // onBeforeMount(() => {

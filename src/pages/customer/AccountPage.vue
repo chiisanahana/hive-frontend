@@ -1,6 +1,17 @@
 <template>
+    <q-banner v-if="!isDataCompleted() && showBanner" dense class="bg-primary text-white">
+        <template v-slot:avatar>
+            <q-icon :name="ionInformationCircle" color="white" />
+        </template>
+        Lengkapi informasi profilmu!
+        <template v-slot:action>
+            <q-btn flat color="white" label="Tutup" @click="showBanner = false" />
+            <q-btn flat color="white" label="Perbarui Data" @click="isEdit = true; showBanner = false" />
+        </template>
+    </q-banner>
+
     <div class="row q-pa-md justify-center">
-        <q-card flat :class="isEdit ? 'col-xs-12 col-sm-9' : 'col-xs-12 col-sm-9 q-pb-lg'">
+        <q-card flat :class="isEdit ? 'col-xs-12 col-sm-9' : 'col-xs-12 col-sm-9 q-pb-md'">
             <q-card-section>
                 <div class="row">
                     <div class="text-h6">Pengaturan Profil</div>
@@ -9,20 +20,24 @@
                         @click="isEdit = true" />
                 </div>
             </q-card-section>
-            <q-card-section v-if="!isDataCompleted()">
-                Lengkapi informasi profilmu!
-            </q-card-section>
 
             <q-card-section horizontal>
                 <q-card-section class="col-auto" style="min-width: 300px">
-                    <!-- <q-card flat bordered class="q-pa-md" style="min-width: 300px">
-                        Profile pict
-                    </q-card> -->
+                    <q-card flat bordered class="q-pa-sm row justify-center" style="min-width: 300px">
+                        <q-avatar v-if="customer?.profile_picture != null">
+                            <img :src="getProfPict(customer)">
+                        </q-avatar>
+                        <q-avatar v-else rounded size="16vw" color="orange" class="text-white">
+                            {{ customer?.name?.charAt(0).toUpperCase() }}
+                        </q-avatar>
+                    </q-card>
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
-                        label="Ganti kata sandi" no-caps />
+                        label="Ganti foto profil" :icon="ionCamera" no-caps />
+                    <q-btn unelevated outline color="accent" class="full-width q-mt-md" label="Ganti kata sandi"
+                        no-caps />
                 </q-card-section>
                 <q-card-section class="col q-ml-lg">
-                    <div :class="isEdit? 'q-gutter-y-sm' : 'q-gutter-y-md'">
+                    <div :class="isEdit ? 'q-gutter-y-sm' : 'q-gutter-y-md'">
                         <div class="row items-center">
                             <div class="col-xs-6 col-md-4 col-lg-3">Nama</div>
                             <div v-if="!isEdit" class="col">{{ customer?.name }}</div>
@@ -69,12 +84,15 @@ import { isValidEmail, isValidName } from '@/composables/validator';
 import type { Customer } from '@/interfaces/rest/Customer';
 import { Message, UserType } from '@/enums/enum';
 import { useCustomerStore } from '@/stores/customer';
+import { ionCamera, ionInformationCircle } from '@quasar/extras/ionicons-v6';
+import { getProfPict } from '@/composables/getter';
 
 const quasar = useQuasar();
 const customer = ref<Customer>();
 const isEdit = ref<boolean>(false);
 const isValidInput = computed(() => form.name !== '' && form.email !== '' && form.phone_number !== '');
 const customerStore = useCustomerStore();
+const showBanner = ref<boolean>(true);
 
 const form = reactive({
     name: '',
@@ -165,6 +183,3 @@ onMounted(() => {
     getCustomer();
 });
 </script>
-
-<style scoped>
-</style>

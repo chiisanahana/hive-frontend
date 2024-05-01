@@ -25,21 +25,22 @@
 
                 <RentDetailsCardSec :editable="false" :rentDetails="rentDetails" />
 
-                <BillingSumCardSec :startDate="formatTimestampToDateDisplay(order?.start_datetime!)"
-                    :endDate="formatTimestampToDateDisplay(order?.end_datetime!)" :price="order?.car?.price"
-                    :deposit="order?.car?.deposit" />
+                <BillingSumCardSec v-if="rentDetails != undefined" :startDate="rentDetails?.startDate"
+                    :endDate="rentDetails?.endDate" :price="order?.car?.price"
+                    :deposit="order?.car?.deposit == undefined ? 0 : order?.car.deposit" />
             </q-card>
         </div>
-        <div class="col-7">
-            <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
-                :order="order" />
+        <div class="col-6">
+            <div id="snap-container" style="width: 100%;"></div>
+            <!-- <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
+                :order="order" /> -->
             
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
@@ -50,13 +51,14 @@ import BillingSumCardSec from '@/components/cards/BillingSumCardSec.vue';
 import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import { ionLocation } from '@quasar/extras/ionicons-v6';
-import cc from '@/assets/images/cc.png';
 import type { Order } from '@/interfaces/rest/Order';
+import { calcDateDiff } from '@/composables/calculator';
 
 const route = useRoute();
 const quasar = useQuasar();
 const order = ref<Order>();
 const rentDetails = ref<RentDetails>();
+declare let snap: any;
 
 function getOrderDetails(orderId: number) {
     quasar.loading.show({ spinner: QSpinnerGears });
@@ -87,5 +89,11 @@ onBeforeMount(() => {
     if (typeof orderId === 'string') {
         getOrderDetails(parseInt(CryptoService.decrypt(orderId)));
     }
+});
+
+onMounted(() => {
+    snap.embed('2e3ea903-305f-48e6-b880-ee67d63fdd3b', {
+        embedId: 'snap-container'
+    });
 });
 </script>

@@ -228,22 +228,22 @@ function bookNow() {
         return;
     }
 
-    quasar.bottomSheet({
-        class: 'payment-opt',
-        message: 'Pilih metode pembayaran',
-        actions: [
-            {
-                label: 'BCA Virtual Account',
-                img: '/src/assets/images/va.png',
-                id: 'va'
-            },
-            // {
-            //     label: 'Credit Card',
-            //     img: '/src/assets/images/cc.png',
-            //     id: 'cc'
-            // },
-        ]
-    }).onOk(action => {
+    // quasar.bottomSheet({
+    //     class: 'payment-opt',
+    //     message: 'Pilih metode pembayaran',
+    //     actions: [
+    //         {
+    //             label: 'BCA Virtual Account',
+    //             img: '/src/assets/images/va.png',
+    //             id: 'va'
+    //         },
+    //         // {
+    //         //     label: 'Credit Card',
+    //         //     img: '/src/assets/images/cc.png',
+    //         //     id: 'cc'
+    //         // },
+    //     ]
+    // }).onOk(action => {
         quasar.loading.show({ spinner: QSpinnerGears });
         setRentDetailsValue();
         OrderService.createOrder(
@@ -252,14 +252,15 @@ function bookNow() {
             // console.log('order created', response.data)
             PaymentService.initiatePayment(
                 response.data.id,
-                action.id == 'va' ? 'Virtual Account' : 'Credit Card',
+                // action.id == 'va' ? 'Virtual Account' : 'Credit Card',
                 rentPrice.value,
             ).then((response) => {
+                // console.log('payment initiated', response.data);
                 const encryptedId = CryptoService.encrypt(response.data.order_id);
                 quasar.loading.hide();
                 router.push({ name: 'payment', query: { oid: encryptedId } })
             }).catch((error) => {
-                console.log(error);
+                // console.log('payment error', error);
                 quasar.loading.hide();
                 quasar.notify({
                     color: 'negative',
@@ -268,6 +269,7 @@ function bookNow() {
                 });
             })
         }).catch((error) => {
+            // console.log('order error', error);
             quasar.loading.hide();
             quasar.notify({
                 color: 'negative',
@@ -275,7 +277,7 @@ function bookNow() {
                 message: Message.INTERNAL_SERVER_ERROR
             });
         })
-    });
+    // });
 }
 
 function loginSuccess() {

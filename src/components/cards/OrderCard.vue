@@ -97,13 +97,15 @@ function setStatus(status: string) {
     quasar.loading.show({ spinner: QSpinnerGears });
     OrderService.updateOrderStatus(props.order.id!, status)
         .then((response) => {
-            // console.log(response.data)
+            // console.log('update order', response.data);
             let title: string = status == '2' ? Notif.RENT_APPROVE_TITLE : Notif.RENT_REJECT_TITLE;
             let message: string = status == '2' ? Notif.RENT_APPROVE_MSG : Notif.RENT_REJECT_MSG;
             message = message.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!);
 
-            NotifService.createNotif(props.order.customer!.id, UserType.C, title, message)
+            // console.log('prepare for notif', props.order.customer_id, UserType.C, title, message);
+            NotifService.createNotif(props.order.customer_id!, UserType.C, title, message)
                 .then((response) => {
+                    // console.log('create notif order', response.data);
                     if (status == '6') {
                         NotifService.createNotif(props.order.customer!.id, UserType.C,
                             Notif.PAYMENT_REFUND_TITLE,
@@ -120,6 +122,7 @@ function setStatus(status: string) {
             emit('postUpdate', props.order.id!, status);
             quasar.loading.hide();
         }).catch((error) => {
+            // console.log(error);
             quasar.notify({
                 color: 'negative',
                 position: 'top-right',

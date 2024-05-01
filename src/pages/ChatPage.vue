@@ -10,7 +10,7 @@
                         <q-item clickable v-ripple @click="goToChatRoom(room)"
                             :active="chatStore.getCurrentRoom != null && room.id == chatStore.getCurrentRoom.id"
                             active-class="bg-secondary">
-                            <q-item-section avatar>
+                            <q-item-section avatar v-if="userType != undefined && userType == UserType.C">
                                 <q-avatar v-if="room.provider?.profile_picture != null">
                                     <img :src="getProfPict(room.provider)">
                                 </q-avatar>
@@ -18,10 +18,18 @@
                                     {{ room.provider!.trading_name?.charAt(0).toUpperCase() }}
                                 </q-avatar>
                             </q-item-section>
+                            <q-item-section avatar v-else>
+                                <q-avatar v-if="room.customer?.profile_picture != null">
+                                    <img :src="getProfPict(room.customer)">
+                                </q-avatar>
+                                <q-avatar v-else color="orange" class="text-white">
+                                    {{ room.customer!.name?.charAt(0).toUpperCase() }}
+                                </q-avatar>
+                            </q-item-section>
 
                             <q-item-section>
                                 <q-item-label lines="1" class="text-weight-bold">
-                                    {{ room.provider?.trading_name }}
+                                    {{ userType == UserType.C ? room.provider?.trading_name : room.customer?.name }}
                                 </q-item-label>
                                 <q-item-label caption lines="2">
                                     {{ getLastMessage(room) }}
@@ -30,7 +38,9 @@
 
                             <q-item-section side top>
                                 <q-item-label caption>{{ formatChatTime(getLastSentTime(room)) }}</q-item-label>
-                                <q-badge v-if="getUnreadCount(room) > 0" rounded color="red">{{ getUnreadCount(room) }}</q-badge>
+                                <q-badge v-if="getUnreadCount(room) > 0" rounded color="red">
+                                    {{ getUnreadCount(room) }}
+                                </q-badge>
                             </q-item-section>
                         </q-item>
 
@@ -130,7 +140,11 @@ function getUnreadCount(room: ChatRoom) {
     let count: number = 0;
     if (room.chats.length > 0) {
         room.chats.map((data) => {
-            if (!data.is_read) count++;
+            if (userType.value == UserType.C) {
+                if (!data.is_read && data.customer_id == null) count++;
+            } else {
+                if (!data.is_read && data.provider_id == null) count++;
+            }
         })
     }
     return count;
