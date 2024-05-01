@@ -85,7 +85,7 @@ function submit() {
         .catch((error) => {
             quasar.loading.hide();
             if (error.response && error.response.status == 401) {
-                errMsg.value = 'Login failed. Please check your email or password.';
+                errMsg.value = 'Gagal masuk. Periksa email dan kata sandi Anda.';
                 form.email = '';
                 form.password = '';
             } else {
