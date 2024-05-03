@@ -24,7 +24,7 @@
             <q-card-section horizontal>
                 <q-card-section class="col-auto" style="min-width: 300px">
                     <q-card flat bordered class="q-pa-sm row justify-center" style="min-width: 300px">
-                        <q-avatar v-if="customer?.profile_picture != null">
+                        <q-avatar v-if="customer?.profile_picture != null" rounded size="16vw">
                             <img :src="getProfPict(customer)">
                         </q-avatar>
                         <q-avatar v-else rounded size="16vw" color="orange" class="text-white">
@@ -32,9 +32,9 @@
                         </q-avatar>
                     </q-card>
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
-                        label="Ganti foto profil" :icon="ionCamera" no-caps />
-                    <q-btn unelevated outline color="accent" class="full-width q-mt-md" label="Ganti kata sandi"
-                        no-caps />
+                        label="Ganti foto profil" :icon="ionCamera" no-caps @click="profileDialog = true" />
+                    <!-- <q-btn unelevated outline color="accent" class="full-width q-mt-md" label="Ganti kata sandi"
+                        no-caps /> -->
                 </q-card-section>
                 <q-card-section class="col q-ml-lg">
                     <div :class="isEdit ? 'q-gutter-y-sm' : 'q-gutter-y-md'">
@@ -74,6 +74,7 @@
             </q-card-section>
         </q-card>
     </div>
+    <ProfileDoalog v-model="profileDialog" @close="updateProfile" />
 </template>
 
 <script setup lang="ts">
@@ -86,6 +87,7 @@ import { Message, UserType } from '@/enums/enum';
 import { useCustomerStore } from '@/stores/customer';
 import { ionCamera, ionInformationCircle } from '@quasar/extras/ionicons-v6';
 import { getProfPict } from '@/composables/getter';
+import ProfileDoalog from '@/components/dialog/ProfileDialog.vue';
 
 const quasar = useQuasar();
 const customer = ref<Customer>();
@@ -93,6 +95,7 @@ const isEdit = ref<boolean>(false);
 const isValidInput = computed(() => form.name !== '' && form.email !== '' && form.phone_number !== '');
 const customerStore = useCustomerStore();
 const showBanner = ref<boolean>(true);
+const profileDialog = ref<boolean>(false);
 
 const form = reactive({
     name: '',
@@ -108,6 +111,7 @@ function getCustomer() {
     quasar.loading.hide();
 }
 
+//  TODO: cuma buat customer
 function updateData() {
     quasar.loading.show({ spinner: QSpinnerGears });
 
@@ -121,6 +125,35 @@ function updateData() {
             customerStore.setLoggedInUser(customer.value!);
             quasar.loading.hide();
             resetForm();
+            quasar.notify({
+                color: 'positive',
+                position: 'top-right',
+                message: Message.PROFILE_UPDATE_SUCCESS
+            });
+        })
+        .catch((error) => {
+            quasar.loading.hide();
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        })
+}
+
+// TODO: blm kelar
+function updateProfile(fileId: string) {
+    quasar.loading.show({ spinner: QSpinnerGears });
+
+    const isProvider = customer.value?.is_provider;
+    UserService.updateProfilePict(customer.value?.id!, fileId, UserType.C)
+        .then((response) => {
+            // console.log('updated', response.data);
+            customer.value = response.data;
+            customer.value!.is_provider = isProvider;
+            UserService.storeUser(customer.value, UserType.C);
+            customerStore.setLoggedInUser(customer.value!);
+            quasar.loading.hide();
             quasar.notify({
                 color: 'positive',
                 position: 'top-right',

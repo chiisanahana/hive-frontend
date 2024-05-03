@@ -33,6 +33,10 @@ class UserService {
         return http.put(`/${type}s/${id}/`, data);
     }
 
+    updateProfilePict(id: number, fileId: string, type: UserType): Promise<any> {
+        return http.put(`/${type}s/${id}/`, { profile_picture: fileId });
+    }
+
     storeUser(data: any, type: UserType): void {
         if (type == UserType.C) {
             localStorage.setItem(
