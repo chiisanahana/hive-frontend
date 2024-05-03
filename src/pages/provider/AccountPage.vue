@@ -21,11 +21,16 @@
 
             <q-card-section class="row">
                 <div class="col-3">
-                    <!-- <q-card flat bordered class="q-pa-md" style="min-width: 300px">
-                        Profile pict
-                    </q-card> -->
+                    <q-card flat bordered class="q-pa-sm row justify-center">
+                        <q-avatar v-if="provider?.profile_picture != null" rounded size="16vw">
+                            <img :src="getProfPict(provider)">
+                        </q-avatar>
+                        <q-avatar v-else rounded size="16vw" color="orange" class="text-white">
+                            {{ provider?.trading_name?.charAt(0).toUpperCase() }}
+                        </q-avatar>
+                    </q-card>
                     <q-btn unelevated color="secondary" text-color="accent" class="full-width q-mt-md"
-                        label="Ganti kata sandi" no-caps />
+                        label="Ganti foto profil" :icon="ionCamera" no-caps @click="profileDialog = true" />
                 </div>
                 <div class="col-sm-1"></div>
 
@@ -134,6 +139,7 @@
             </q-card-section>
         </q-card>
     </div>
+    <ProfileDoalog v-model="profileDialog" @close="updateProfile" />
 </template>
 
 <script setup lang="ts">
@@ -145,15 +151,18 @@ import { isHasBankAccount, isValidEmail, isValidName } from '@/composables/valid
 import { Message, UserType } from '@/enums/enum';
 import type { Provider } from '@/interfaces/rest/Provider';
 import type { Option } from '@/interfaces/Option';
-import { ionWallet } from '@quasar/extras/ionicons-v6';
+import { ionCamera, ionWallet } from '@quasar/extras/ionicons-v6';
 import BankAccountInfo from '@/components/ui-block/BankAccountInfo.vue';
 import { useProviderStore } from '@/stores/provider';
+import { getProfPict } from '@/composables/getter';
+import ProfileDoalog from '@/components/dialog/ProfileDialog.vue';
 
 const quasar = useQuasar();
 const provider = ref<Provider>();
 const isEdit = ref<boolean>(false);
 const showBanner = ref<boolean>(true);
 const isValidInput = computed(() => isDataCompleted());
+const profileDialog = ref<boolean>(false);
 
 const form = reactive({
     name: '',
@@ -259,6 +268,32 @@ function updateData() {
             providerStore.setLoggedInUser(provider.value!);
             quasar.loading.hide();
             resetForm();
+            quasar.notify({
+                color: 'positive',
+                position: 'top-right',
+                message: Message.PROFILE_UPDATE_SUCCESS
+            });
+        })
+        .catch((error) => {
+            quasar.loading.hide();
+            quasar.notify({
+                color: 'negative',
+                position: 'top-right',
+                message: Message.INTERNAL_SERVER_ERROR
+            });
+        })
+}
+
+function updateProfile(fileId: string) {
+    quasar.loading.show({ spinner: QSpinnerGears });
+
+    UserService.updateProfilePict(provider.value?.id!, fileId, UserType.P)
+        .then((response) => {
+            // console.log('updated', response.data);
+            provider.value = response.data;
+            UserService.storeUser(provider.value, UserType.P);
+            providerStore.setLoggedInUser(provider.value!);
+            quasar.loading.hide();
             quasar.notify({
                 color: 'positive',
                 position: 'top-right',

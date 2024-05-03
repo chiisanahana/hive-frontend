@@ -111,7 +111,6 @@ function getCustomer() {
     quasar.loading.hide();
 }
 
-//  TODO: cuma buat customer
 function updateData() {
     quasar.loading.show({ spinner: QSpinnerGears });
 
@@ -141,7 +140,6 @@ function updateData() {
         })
 }
 
-// TODO: blm kelar
 function updateProfile(fileId: string) {
     quasar.loading.show({ spinner: QSpinnerGears });
 
