@@ -1,5 +1,5 @@
 <template>
-    <q-banner v-if="!isDataCompleted() && showBanner" dense class="bg-primary text-white">
+    <q-banner v-if="!isDataCompleted() && showBanner && !isEdit" dense class="bg-primary text-white">
         <template v-slot:avatar>
             <q-icon :name="ionInformationCircle" color="white" />
         </template>

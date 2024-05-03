@@ -1,5 +1,5 @@
 <template>
-    <q-banner v-if="!isHasBankAccount(provider) && showBanner" dense class="bg-primary text-white">
+    <q-banner v-if="!isHasBankAccount(provider) && showBanner && !isEdit" dense class="bg-primary text-white">
         <template v-slot:avatar>
             <q-icon :name="ionWallet" color="white" />
         </template>
