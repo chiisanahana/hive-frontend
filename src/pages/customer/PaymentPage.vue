@@ -16,7 +16,7 @@
                                 <div class="row items-center text-blue-grey-4">
                                     <q-icon :name="ionLocation" class="q-mr-sm" />
                                     {{ order?.car?.provider?.city }}, {{
-                                order?.car?.provider?.province }}
+                                        order?.car?.provider?.province }}
                                 </div>
                             </div>
                         </div>
@@ -34,30 +34,29 @@
             <div id="snap-container" style="width: 100%;"></div>
             <!-- <PaymentVaCard v-if="order != undefined && order.payments[0].payment_method == 'Virtual Account'"
                 :order="order" /> -->
-            
+
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinnerGears, useQuasar } from 'quasar';
 import CryptoService from '@/services/crypto.service';
 import OrderService from '@/services/order.service';
-import { formatTimestampToDate, formatTimestampToTime, formatTimestampToDateDisplay } from '@/composables/formatter';
+import { formatTimestampToDate, formatTimestampToTime } from '@/composables/formatter';
 import RentDetailsCardSec from '@/components/cards/RentDetailsCardSec.vue';
 import BillingSumCardSec from '@/components/cards/BillingSumCardSec.vue';
-import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import { ionLocation } from '@quasar/extras/ionicons-v6';
 import type { Order } from '@/interfaces/rest/Order';
-import { calcDateDiff } from '@/composables/calculator';
 
 const route = useRoute();
 const quasar = useQuasar();
 const order = ref<Order>();
 const rentDetails = ref<RentDetails>();
+const token = ref<string>();
 declare let snap: any;
 
 function getOrderDetails(orderId: number) {
@@ -66,6 +65,12 @@ function getOrderDetails(orderId: number) {
         // console.log(response.data);
         quasar.loading.hide();
         order.value = response.data;
+        token.value = order.value?.payments[0].token;
+        console.log('token get', token.value);
+
+        snap.embed(token.value, {
+            embedId: 'snap-container'
+        });
 
         rentDetails.value = {
             city: '',
@@ -89,11 +94,5 @@ onBeforeMount(() => {
     if (typeof orderId === 'string') {
         getOrderDetails(parseInt(CryptoService.decrypt(orderId)));
     }
-});
-
-onMounted(() => {
-    snap.embed('2e3ea903-305f-48e6-b880-ee67d63fdd3b', {
-        embedId: 'snap-container'
-    });
 });
 </script>

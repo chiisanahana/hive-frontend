@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 
+function removeQueryParams(to: any) {
+  if (Object.keys(to.query).length) {
+    return { path: to.path, query: {}, hash: to.hash }
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -44,6 +50,7 @@ const router = createRouter({
       path: '/history',
       name: 'history',
       component: () => import('@/pages/customer/HistoryPage.vue'),
+      // beforeEnter: [removeQueryParams]
     },
     {
       path: '/history/details',

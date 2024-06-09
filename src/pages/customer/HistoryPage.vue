@@ -38,7 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import UserService from '@/services/user.service';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
@@ -50,10 +51,25 @@ import { calcTimeDiff } from '@/composables/calculator';
 import { Notif, UserType } from '@/enums/enum';
 import { formatTimestampToDateDisplay } from '@/composables/formatter';
 
+const route = useRoute();
 const data = ref<Order[]>([]);
 const orders = ref<Order[]>([]);
 const filter = ref<string>('');
 const isLoading = ref<boolean>(false);
+const wait = ref<boolean>(false);
+
+watch(
+    () => route.query.order_id, async () => {
+        console.log(route.query.order_id)
+        const invoice = route.query.order_id;
+        if (invoice != undefined) wait.value = true;
+        // if (typeof invoice === 'string')
+        // orders.value.map((o: Order) => {
+        //     if (o.payments.length > 0 && o.payments[0].invoice_no == invoice) o.status = '1';
+
+        // })
+    }
+)
 
 function getOrders() {
     isLoading.value = true;
@@ -149,6 +165,13 @@ function onOrderCancelled(orderId: number) {
 }
 
 onMounted(() => {
-    getOrders();
+    isLoading.value = true;
+    if (wait.value) {
+        setTimeout(() => {
+            getOrders();
+        }, 5000);
+    } else {
+        getOrders();
+    }
 });
 </script>

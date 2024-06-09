@@ -17,12 +17,11 @@ class PaymentService {
     }
 
     initiatePayment(orderId: number, amount: number): Promise<any> {
-        return http.post('/payments/', {
+        return http.post('/payment/initiate', {
             order_id: orderId,
-            invoice_no: UtilService.generateInvoice(),
+            // invoice_no: UtilService.generateInvoice(),
             // payment_method: paymentMethod,
-            amount: amount,
-            status: 'IN'
+            amount: amount
         });
     }
 

@@ -59,6 +59,7 @@ import { ionLogOut, ionStorefront, ionPerson, ionCash } from '@quasar/extras/ion
 import { formatAmount } from '@/composables/formatter';
 import { useCustomerStore } from '@/stores/customer';
 import { useProviderStore } from '@/stores/provider';
+import userService from '@/services/user.service';
 
 const props = defineProps<{
     user: Customer | Provider;
@@ -111,9 +112,9 @@ function handleProviderAuth() {
 
 function logout() {
     quasar.loading.show({ spinner: QSpinnerGears });
+    UserService.logout(props.type);
     customerStore.logout();
     providerStore.logout();
-    UserService.logout(props.type);
     setTimeout(() => {
         quasar.loading.hide();
         router.push({ name: 'logout' });
