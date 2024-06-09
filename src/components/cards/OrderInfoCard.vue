@@ -22,7 +22,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Metode pembayaran</div>
-                    <div class="col-xs-12 col-sm-6">{{ order.payments[0].payment_method }}</div>
+                    <div class="col-xs-12 col-sm-6">{{ getPaymentMethod(order.payments[0]) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-4 q-mr-md">Waktu pembayaran</div>
@@ -203,7 +203,7 @@ import OrderService from '@/services/order.service';
 import UserService from '@/services/user.service';
 import NotifService from '@/services/notification.service';
 import { formatAmount, formatTimestampToDateDisplay, formatTimestampToTimeFull } from '@/composables/formatter';
-import { getOrderStatus } from '@/composables/getter';
+import { getOrderStatus, getPaymentMethod } from '@/composables/getter';
 import { ionChevronBack, ionChevronDown, ionCopy, ionInformationCircle } from '@quasar/extras/ionicons-v6';
 import { calcDateDiff, calcDepositReturn } from '@/composables/calculator';
 import RatingDialog from '@/components/dialog/RatingDialog.vue';
@@ -230,13 +230,13 @@ const isProvider = ref<boolean>();
 const providerStore = useProviderStore();
 
 function getTransactionDateTime() {
-    if (props.order.payments[0].payment_method == 'Virtual Account') {
-        const datetime = Date.parse(props.order.payments[0].transaction_datetime!) + 600000;
-        return date.formatDate(datetime, 'D MMM YYYY HH:mm:ss');
-    } else {
+    // if (props.order.payments[0].payment_method == 'Virtual Account') {
+    //     const datetime = Date.parse(props.order.payments[0].transaction_datetime!) + 600000;
+    //     return date.formatDate(datetime, 'D MMM YYYY HH:mm:ss');
+    // } else {
         return formatTimestampToDateDisplay(props.order.payments[0].transaction_datetime) + ' ' +
             formatTimestampToTimeFull(props.order.payments[0].transaction_datetime)
-    }
+    // }
 }
 
 function isHasDeposit() {
@@ -290,10 +290,10 @@ function setStatus(status: string) {
             let message: string = status == '2' ? Notif.RENT_APPROVE_MSG : Notif.RENT_REJECT_MSG;
             message = message.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!);
 
-            NotifService.createNotif(props.order.customer!.id, UserType.C, title, message)
+            NotifService.createNotif(props.order.customer_id!, UserType.C, title, message)
                 .then((response) => {
                     if (status == '6') {
-                        NotifService.createNotif(props.order.customer!.id, UserType.C,
+                        NotifService.createNotif(props.order.customer_id!, UserType.C,
                             Notif.PAYMENT_REFUND_TITLE,
                             Notif.PAYMENT_REFUND_MSG.replace('{amount}', props.order.payments[0].amount.toString()).replace('{invoice}', props.order.payments[0].invoice_no)
                         );
@@ -320,12 +320,12 @@ function handleCompleteOrder() {
         .then((response) => {
             UserService.get(UserService.getLoggedInPrv().id, UserType.P)
                 .then((response) => {
-                    NotifService.createNotif(props.order.customer!.id, UserType.C,
+                    NotifService.createNotif(props.order.customer_id!, UserType.C,
                         Notif.RENT_COMPLETE_TITLE,
                         Notif.RENT_COMPLETE_MSG.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!)
                     ).then((response) => {
                         if (props.order.car?.deposit != 0) {
-                            NotifService.createNotif(props.order.customer!.id, UserType.C,
+                            NotifService.createNotif(props.order.customer_id!, UserType.C,
                                 Notif.DEPOSIT_REFUND_TITLE,
                                 Notif.DEPOSIT_REFUND_MSG.replace('{amount}', calcDepositReturn(props.order).toString()).replace('{invoice}', props.order.payments[0].invoice_no)
                             );

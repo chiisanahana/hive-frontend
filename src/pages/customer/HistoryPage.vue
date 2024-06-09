@@ -38,38 +38,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import UserService from '@/services/user.service';
 import type { Order } from '@/interfaces/rest/Order';
 import OrderService from '@/services/order.service';
-import PaymentService from '@/services/payment.service';
 import NotifService from '@/services/notification.service';
 import HistoryCardSkeleton from '@/components/skeleton/HistoryCardSkeleton.vue';
 import OrderHistoryCard from '@/components/cards/OrderHistoryCard.vue';
-import { calcTimeDiff } from '@/composables/calculator';
-import { Notif, UserType } from '@/enums/enum';
-import { formatTimestampToDateDisplay } from '@/composables/formatter';
+import { UserType } from '@/enums/enum';
+import { useCustomerStore } from '@/stores/customer';
+import { useNotifStore } from '@/stores/notif';
 
 const route = useRoute();
+const router = useRouter();
 const data = ref<Order[]>([]);
 const orders = ref<Order[]>([]);
 const filter = ref<string>('');
 const isLoading = ref<boolean>(false);
-const wait = ref<boolean>(false);
-
-watch(
-    () => route.query.order_id, async () => {
-        console.log(route.query.order_id)
-        const invoice = route.query.order_id;
-        if (invoice != undefined) wait.value = true;
-        // if (typeof invoice === 'string')
-        // orders.value.map((o: Order) => {
-        //     if (o.payments.length > 0 && o.payments[0].invoice_no == invoice) o.status = '1';
-
-        // })
-    }
-)
+const customerStore = useCustomerStore();
+const notifStore = useNotifStore();
 
 function getOrders() {
     isLoading.value = true;
@@ -78,7 +66,7 @@ function getOrders() {
             // console.log(response.data);
             data.value = response.data.filter((order: any) => {
                 // dummy workaround to complete payment
-                handleCompletePayment(order);
+                // handleCompletePayment(order);
                 // just make sure to show only sucessful order with payment initiated
                 return order.payments.length > 0;
             });
@@ -127,24 +115,24 @@ function resetFilter() {
 }
 
 // **notes: this is just quick workaround
-function handleCompletePayment(order: Order) {
-    if (order.payments.length == 0 || order.payments[0].status != 'IN' ||
-        order.payments[0].payment_method != 'Virtual Account') {
-        return;
-    }
+// function handleCompletePayment(order: Order) {
+//     if (order.payments.length == 0 || order.payments[0].status != 'IN' ||
+//         order.payments[0].payment_method != 'Virtual Account') {
+//         return;
+//     }
 
-    const payment = order.payments[0];
-    const diff = calcTimeDiff(payment.transaction_datetime!, new Date().toISOString());
-    if (diff > 1) {
-        PaymentService.completePayment(payment.id!).then((response) => {
-            OrderService.updateOrderStatus(order.id!, '1');
-            NotifService.createNotif(order.customer!.id!, UserType.C,
-                Notif.PAYMENT_COMPLETE_TITLE,
-                Notif.PAYMENT_COMPLETE_MSG.replace('{car}', order?.car?.brand!).replace('{date}', formatTimestampToDateDisplay(order?.start_datetime))
-            );
-        });
-    }
-}
+//     const payment = order.payments[0];
+//     const diff = calcTimeDiff(payment.transaction_datetime!, new Date().toISOString());
+//     if (diff > 1) {
+//         PaymentService.completePayment(payment.id!).then((response) => {
+//             OrderService.updateOrderStatus(order.id!, '1');
+//             NotifService.createNotif(order.customer!.id!, UserType.C,
+//                 Notif.PAYMENT_COMPLETE_TITLE,
+//                 Notif.PAYMENT_COMPLETE_MSG.replace('{car}', order?.car?.brand!).replace('{date}', formatTimestampToDateDisplay(order?.start_datetime))
+//             );
+//         });
+//     }
+// }
 
 function onOrderRated(orderId: number, rating: number) {
     isLoading.value = true;
@@ -165,11 +153,19 @@ function onOrderCancelled(orderId: number) {
 }
 
 onMounted(() => {
-    isLoading.value = true;
-    if (wait.value) {
+    const order_id = route.query.order_id;
+    router.replace({ query: undefined });
+    if (order_id != undefined) {
+        // wait for payment callback
+        isLoading.value = true;
         setTimeout(() => {
             getOrders();
-        }, 5000);
+            // reload notification for success payment
+            NotifService.get(customerStore.getLoggedInUser.id, UserType.C)
+                .then((response) => {
+                    notifStore.setNotif(response.data);
+                });
+        }, 2000);
     } else {
         getOrders();
     }

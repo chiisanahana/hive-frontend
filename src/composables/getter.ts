@@ -1,6 +1,7 @@
 import type { Car } from "@/interfaces/rest/Car";
 import type { CarFile } from "@/interfaces/rest/CarFile";
 import type { Customer } from "@/interfaces/rest/Customer";
+import type { Payment } from "@/interfaces/rest/Payment";
 import type { Provider } from "@/interfaces/rest/Provider";
 import FileService from "@/services/file.service";
 
@@ -24,6 +25,11 @@ export function getOrderStatus(status: string): string {
         default:
             return '';
     }
+}
+
+export function getPaymentMethod(payment: Payment | undefined): string {
+    if (payment == undefined) return '';
+    return payment.payment_method == 'credit_card' ? 'Kartu Kredit' : 'Virtual Account';
 }
 
 export function getCarTransmission(car: Car | undefined): string {

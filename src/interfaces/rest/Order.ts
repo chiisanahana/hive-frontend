@@ -6,7 +6,6 @@ export interface Order {
     id?: number;
     car?: Car;
     car_id?: number;
-    customer?: Customer;
     customer_id?: number;
     start_datetime: string;
     end_datetime: string;

@@ -7,8 +7,8 @@
             <h2>Anda telah keluar</h2>
             <p>Terima kasih telah menggunakan HiVe!</p>
             <div class="q-gutter-md q-mt-lg">
-                <a class="secondary" @click="goToLogin">Masuk dengan akun lain</a>
-                <a class="primary" @click="goToHome">Kembali ke halaman utama</a>
+                <a class="secondary cursor-pointer" @click="goToLogin">Masuk dengan akun lain</a>
+                <a class="primary cursor-pointer" @click="goToHome">Kembali ke halaman utama</a>
             </div>
         </div>
     </div>

@@ -19,21 +19,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <OrderInfoSkeleton v-if="order == undefined" />
-            <OrderInfoCard v-else-if="order.payments[0].status != 'IN'" :order="order" @post-rate="onOrderRated"
-                @post-status-update="onOrderStatusUpdated" />
-            <div v-else>
-                <PaymentVaCard v-if="getPaymentMethod() == 'Virtual Account'" :order="order" />
-                <q-card flat v-else-if="getPaymentMethod() == 'Credit Card'">
-                    <q-card-section>
-                        <div class="text-h6 text-center">Detail pembayaran</div>
-
-                        <q-card-actions align="right" class="q-mt-xl">
-                            <q-btn unelevated color="secondary" text-color="accent" label="Kembali ke riwayat"
-                                @click="back" />
-                        </q-card-actions>
-                    </q-card-section>
-                </q-card>
-            </div>
+            <OrderInfoCard v-else :order="order" @post-rate="onOrderRated" @post-status-update="onOrderStatusUpdated" />
         </div>
     </div>
 </template>
@@ -47,7 +33,7 @@ import { formatTimestampToDate, formatTimestampToTime } from '@/composables/form
 import RentDetailsCardSec from '@/components/cards/RentDetailsCardSec.vue';
 import type { RentDetails } from '@/interfaces/RentDetails';
 import type { Order } from '@/interfaces/rest/Order';
-import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
+// import PaymentVaCard from '@/components/cards/PaymentVaCard.vue';
 import OrderInfoCard from '@/components/cards/OrderInfoCard.vue';
 import OrderInfoSkeleton from '@/components/skeleton/OrderInfoSkeleton.vue';
 
@@ -76,15 +62,9 @@ function getOrderDetails(orderId: number) {
     });
 }
 
-function getPaymentMethod() {
-    if (order.value != undefined) {
-        return order.value.payments[0].payment_method;
-    }
-}
-
-function back() {
-    router.go(-1);
-}
+// function back() {
+//     router.go(-1);
+// }
 
 function onOrderRated(orderId: number) {
     getOrderDetails(orderId);
