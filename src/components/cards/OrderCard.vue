@@ -107,7 +107,7 @@ function setStatus(status: string) {
                 .then((response) => {
                     // console.log('create notif order', response.data);
                     if (status == '6') {
-                        NotifService.createNotif(props.order.customer!.id, UserType.C,
+                        NotifService.createNotif(props.order.customer_id!, UserType.C,
                             Notif.PAYMENT_REFUND_TITLE,
                             Notif.PAYMENT_REFUND_MSG.replace('{amount}', payments.value[0].amount.toString()).replace('{invoice}', payments.value[0].invoice_no)
                         );
@@ -142,12 +142,12 @@ function handleCompleteOrder() {
                         Notif.BALANCE_ADDED_TITLE,
                         Notif.BALANCE_ADDED_MSG.replace('{amount}', props.order.base_price!).replace('{car}', props.order.car?.brand!)
                     );
-                    NotifService.createNotif(props.order.customer!.id, UserType.C,
+                    NotifService.createNotif(props.order.customer_id!, UserType.C,
                         Notif.RENT_COMPLETE_TITLE,
                         Notif.RENT_COMPLETE_MSG.replace('{car}', props.order.car?.brand!).replace('{city}', props.order.car?.provider?.city!)
                     ).then((response) => {
                         if (props.order.car?.deposit != 0) {
-                            NotifService.createNotif(props.order.customer!.id, UserType.C,
+                            NotifService.createNotif(props.order.customer_id!, UserType.C,
                                 Notif.DEPOSIT_REFUND_TITLE,
                                 Notif.DEPOSIT_REFUND_MSG.replace('{amount}', calcDepositReturn(props.order).toString()).replace('{invoice}', payments.value[0].invoice_no)
                             );
