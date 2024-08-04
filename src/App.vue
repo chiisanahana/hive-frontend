@@ -32,7 +32,7 @@ const noDrawer = ref<string[]>([
     '/provider/sign-up',
 ])
 const useHeader = computed(() => !noHeader.value.includes(route.fullPath));
-const useFooter = computed(() => route.fullPath == '/');
+const useFooter = computed(() => route.fullPath == '/' || route.fullPath == '/faq');
 const usePrvDrawer = computed(() => route.fullPath.includes('provider') && !noDrawer.value.includes(route.fullPath));
 const mounted = ref<boolean>(false);
 

@@ -12,20 +12,42 @@
         </div>
 
         <div class="row justify-center q-pt-md q-px-md q-pb-xs">
-            <div class="row items-center col-xs-11 col-sm-10">
-                <div class="row items-center">
-                    <div class="q-mr-sm">Hubungi kami:</div>
-                    <q-btn flat round :icon="ionLogoInstagram" />
-                    <q-btn flat round :icon="ionLogoWhatsapp" />
+            <div class="row items-end col-xs-11 col-sm-10">
+                <div class="column">
+                    <div class="clickable" @click="goToFaq">
+                        FAQ
+                    </div>
+                    <div class="row items-center">
+                        <div class="q-mr-sm">Hubungi kami:</div>
+                        <q-btn flat round :icon="ionLogoInstagram" />
+                        <q-btn flat round :icon="ionLogoWhatsapp" />
+                    </div>
                 </div>
                 <q-space />
-                <div>Copyright &copy; 2024. Hive. All rights reserved</div>
+                <div style="margin-bottom: 12px">Copyright &copy; 2024. Hive. All rights reserved</div>
             </div>
         </div>
     </q-footer>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import logo from '@/assets/images/logo-white.png';
 import { ionLogoInstagram, ionLogoWhatsapp } from '@quasar/extras/ionicons-v6';
+
+const router = useRouter();
+
+function goToFaq() {
+    router.push({ name: 'faq' });
+}
 </script>
+
+<style scoped>
+.clickable {
+    cursor: pointer
+}
+
+.clickable:hover {
+    font-weight: bold;
+}
+</style>
